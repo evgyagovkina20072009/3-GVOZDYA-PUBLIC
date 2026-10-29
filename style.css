@@ -1,0 +1,1968 @@
+:root {
+  --font-main: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 14px;
+  --transition-speed: 0.35s;
+
+  --color-high: #ef4444;
+  --color-medium: #eab308;
+  --color-flexible: #22c55e;
+  --color-devil: #ff2a00;
+}
+
+/* Дневная тема: максимальная прозрачность стекла и глубокий контрастный шрифт */
+body.theme-day {
+  --bg-city: linear-gradient(rgba(241, 245, 249, 0.45), rgba(226, 232, 240, 0.52)),
+             linear-gradient(120deg, #d1dde9, #e2e8f0);
+  --text-main: #020617; /* Глубокий контрастный цвет для чтения */
+  --text-muted: #1e293b;
+  --card-bg: rgba(255, 255, 255, 0.55);
+  --card-border: rgba(203, 213, 225, 0.6);
+  --weekday-bg: rgba(255, 255, 255, 0.22); /* Максимально прозрачный фон колонок */
+  --weekend-bg: rgba(255, 255, 255, 0.34);
+  --today-bg: rgba(255, 255, 255, 0.44);
+  --today-border: #1d4ed8;
+  --header-bg: rgba(255, 255, 255, 0.52);
+  --header-border: rgba(203, 213, 225, 0.7);
+  --btn-secondary-bg: rgba(255, 255, 255, 0.65);
+  --btn-secondary-text: #0f172a;
+  --task-bg: rgba(255, 255, 255, 0.72);
+  --task-border: rgba(203, 213, 225, 0.85);
+  --task-shadow: 0 2px 6px rgba(15, 23, 42, 0.08);
+}
+
+/* Ночная тема: максимальная прозрачность и яркий контрастный белый шрифт */
+body.theme-night {
+  --bg-city: linear-gradient(rgba(15, 23, 42, 0.52), rgba(2, 6, 23, 0.62)),
+             linear-gradient(120deg, #152238, #263b57);
+  --text-main: #ffffff; /* Абсолютно белый контрастный текст */
+  --text-muted: #cbd5e1;
+  --card-bg: rgba(30, 41, 59, 0.55);
+  --card-border: rgba(71, 85, 105, 0.5);
+  --weekday-bg: rgba(15, 23, 42, 0.24); /* Максимально прозрачный темный фон колонок */
+  --weekend-bg: rgba(15, 23, 42, 0.36);
+  --today-bg: rgba(30, 41, 59, 0.48);
+  --today-border: #60a5fa;
+  --header-bg: rgba(15, 23, 42, 0.55);
+  --header-border: rgba(51, 65, 85, 0.65);
+  --btn-secondary-bg: rgba(30, 41, 59, 0.65);
+  --btn-secondary-text: #f8fafc;
+  --task-bg: rgba(30, 41, 59, 0.68);
+  --task-border: rgba(71, 85, 105, 0.75);
+  --task-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  font-family: var(--font-main);
+}
+
+html, body {
+  height: 100vh;
+  overflow: hidden;
+}
+
+body {
+  background-image: var(--bg-city);
+  background-size: cover;
+  background-attachment: fixed;
+  background-position: center center;
+  background-repeat: no-repeat;
+  color: var(--text-main);
+  transition: background-image var(--transition-speed) ease, color var(--transition-speed) ease;
+}
+
+.background-overlay {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* Компактный каркас под экраны ноутбуков */
+.app-layout {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  padding: 8px 12px;
+  gap: 8px;
+  box-sizing: border-box;
+}
+
+/* Шапка приложения */
+.app-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  padding: 6px 14px;
+  background: var(--header-bg);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid var(--header-border);
+  border-radius: var(--radius-md);
+  box-shadow: 0 3px 12px rgba(0, 0, 0, 0.08);
+  flex-shrink: 0;
+}
+
+.header-left, .header-center, .header-right {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.header-center {
+  flex-grow: 1;
+  justify-content: center;
+  max-width: 680px;
+}
+
+/* Поиск */
+.search-container {
+  position: relative;
+  width: 190px;
+}
+
+.search-input {
+  width: 100%;
+  padding: 5px 10px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--header-border);
+  background: var(--card-bg);
+  color: var(--text-main);
+  font-size: 0.82rem;
+  outline: none;
+}
+
+.search-input::placeholder {
+  color: var(--text-muted);
+}
+
+.search-results {
+  position: absolute;
+  top: 110%;
+  left: 0;
+  right: 0;
+  max-height: 240px;
+  overflow-y: auto;
+  background: var(--header-bg);
+  backdrop-filter: blur(14px);
+  border: 1px solid var(--header-border);
+  border-radius: var(--radius-sm);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+  z-index: 50;
+}
+
+/* Навигация по неделям */
+.week-nav {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.week-range-label {
+  font-weight: 700;
+  font-size: 0.88rem;
+  min-width: 155px;
+  text-align: center;
+  letter-spacing: -0.01em;
+}
+
+/* Кнопки */
+.btn {
+  padding: 5px 10px;
+  border-radius: var(--radius-sm);
+  border: 1px solid transparent;
+  cursor: pointer;
+  font-size: 0.82rem;
+  font-weight: 500;
+  transition: all 0.15s ease;
+}
+
+.btn-nav {
+  background: var(--btn-secondary-bg);
+  color: var(--btn-secondary-text);
+  border: 1px solid var(--header-border);
+  width: 28px;
+  padding: 3px;
+}
+
+.btn-today {
+  background: var(--btn-secondary-bg);
+  color: var(--btn-secondary-text);
+  border: 1px solid var(--header-border);
+}
+
+.btn-header-action {
+  background: var(--btn-secondary-bg);
+  color: var(--btn-secondary-text);
+  border: 1px solid var(--header-border);
+}
+
+.btn-header-action:hover, .btn-today:hover, .btn-nav:hover {
+  background: rgba(37, 99, 235, 0.12);
+  border-color: #3b82f6;
+}
+
+.btn-primary {
+  background: #2563eb;
+  color: #ffffff;
+}
+
+.btn-primary:hover {
+  background: #1d4ed8;
+}
+
+.btn-secondary {
+  background: var(--btn-secondary-bg);
+  color: var(--btn-secondary-text);
+  border: 1px solid var(--header-border);
+}
+
+.btn-danger {
+  background: #ef4444;
+  color: #ffffff;
+}
+
+.btn-danger:hover {
+  background: #dc2626;
+}
+
+.btn-calendar-trigger {
+  width: 32px;
+  height: 32px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--header-border);
+  background: var(--btn-secondary-bg);
+  color: var(--text-main);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.2s ease, background-color 0.2s ease;
+}
+
+.btn-calendar-trigger:hover {
+  transform: scale(1.05);
+  background: #2563eb;
+  color: #ffffff;
+}
+
+/* ============================================================================
+   НЕДЕЛЬНАЯ СЕТКА: СВЕРНУТЫЕ СВЕРХУ КОЛОНКИ С РАЗВОРАЧИВАНИЕМ ВНИЗ
+   ============================================================================ */
+.main-workspace {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  overflow: hidden;
+}
+
+.week-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 8px;
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+  align-items: start; /* Колонки прижаты строго к верхней линии */
+}
+
+/* Колонки дней: растут сверху вниз в зависимости от объема задач */
+.day-column {
+  display: flex;
+  flex-direction: column;
+  background: var(--weekday-bg);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid var(--card-border);
+  border-radius: var(--radius-md);
+  padding: 6px 8px;
+  width: 100%;
+  height: auto;
+  align-self: flex-start; /* Верхнее базирование */
+  box-sizing: border-box;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.04);
+  transition: min-height 0.22s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.day-column:hover {
+  border-color: rgba(59, 130, 246, 0.55);
+}
+
+.day-column.weekend {
+  background: var(--weekend-bg);
+  border-top: 3px solid #64748b; /* Благородный верхний кант для визуального отличия */
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.06);
+}
+
+body.theme-day .day-column.weekend {
+  background: rgba(241, 245, 249, 0.38);
+  border-color: rgba(148, 163, 184, 0.65);
+  border-top: 3px solid #475569;
+}
+
+body.theme-night .day-column.weekend {
+  background: rgba(15, 23, 42, 0.38);
+  border-color: rgba(71, 85, 105, 0.7);
+  border-top: 3px solid #64748b;
+}
+
+/* Государственные праздничные дни РФ: заголовки красного цвета */
+.day-column.holiday .day-name,
+.day-column.holiday .day-date {
+  color: #ef4444 !important;
+}
+
+body.theme-day .day-column.holiday .day-name,
+body.theme-day .day-column.holiday .day-date {
+  color: #dc2626 !important;
+}
+
+.day-column.holiday {
+  border-top-color: #ef4444 !important;
+}
+
+.day-column.today {
+  background: var(--today-bg);
+  border: 2px solid var(--today-border);
+  box-shadow: 0 0 14px rgba(37, 99, 235, 0.22);
+}
+
+/* Свёрнутое состояние: колонка компактно зафиксирована вверху */
+.day-column.collapsed {
+  min-height: 42px;
+  cursor: pointer;
+}
+
+.day-column.collapsed .day-header {
+  border-bottom: none;
+  padding-bottom: 0;
+  margin-bottom: 0;
+}
+
+.day-column.collapsed .day-tasks-container,
+.day-column.collapsed .day-secret-container {
+  display: none !important;
+}
+
+/* Развёрнутое состояние: колонка раскрывается вниз, длина подстраивается под задачи */
+.day-column.expanded {
+  min-height: 110px;
+  max-height: calc(100vh - 84px);
+  display: flex;
+  flex-direction: column;
+}
+
+/* Шапка дня: на единой верхней горизонтальной линии со стрелкой */
+.day-header {
+  border-bottom: 1px solid var(--header-border);
+  padding-bottom: 5px;
+  margin-bottom: 5px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px;
+  user-select: none;
+  flex-shrink: 0;
+}
+
+.day-header-info {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  text-align: left;
+}
+
+.day-name {
+  font-size: 0.74rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  line-height: 1.1;
+}
+
+.day-date {
+  font-size: 0.98rem;
+  font-weight: 800;
+  margin-top: 1px;
+  line-height: 1.1;
+  color: var(--text-main);
+}
+
+.day-column.today .day-name {
+  font-size: 0.82rem;
+  color: var(--today-border);
+  font-weight: 800;
+}
+
+.day-column.today .day-date {
+  font-size: 1.18rem;
+  color: var(--today-border);
+  font-weight: 800;
+}
+
+/* Кнопка-стрелка разворачивания/сворачивания вниз/вверх */
+.btn-toggle-col {
+  width: 22px;
+  height: 22px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--header-border);
+  background: var(--btn-secondary-bg);
+  color: var(--text-muted);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.65rem;
+  padding: 0;
+  transition: transform 0.2s ease, background-color 0.2s ease, color 0.2s ease;
+  flex-shrink: 0;
+}
+
+.btn-toggle-col:hover {
+  background: rgba(37, 99, 235, 0.15);
+  color: #2563eb;
+  border-color: #3b82f6;
+}
+
+/* Список задач дня: высота гибко адаптируется под текст задач */
+.day-tasks-container {
+  flex: 1;
+  min-height: 30px;
+  max-height: calc(100vh - 160px);
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding-right: 2px;
+  margin-top: 2px;
+}
+
+.btn-add-task-quick {
+  width: 100%;
+  padding: 5px 8px;
+  border-radius: var(--radius-sm);
+  border: 1px dashed var(--header-border);
+  background: rgba(255, 255, 255, 0.08);
+  color: var(--text-muted);
+  font-size: 0.76rem;
+  font-weight: 600;
+  cursor: pointer;
+  margin-top: 4px;
+  transition: all 0.15s ease;
+  text-align: center;
+}
+
+body.theme-day .btn-add-task-quick {
+  background: rgba(255, 255, 255, 0.45);
+}
+
+.btn-add-task-quick:hover {
+  border-color: #3b82f6;
+  color: #2563eb;
+  background: rgba(37, 99, 235, 0.1);
+}
+
+/* Секретное напоминание дня внизу колонки */
+.day-secret-container {
+  border-top: 1px dashed var(--header-border);
+  padding-top: 5px;
+  margin-top: 5px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  flex-shrink: 0;
+}
+
+/* ============================================================================
+   ЭМБЛЕМА: ТРИ КОВАНЫХ ГВОЗДЯ (АДАПТИВНОСТЬ ДЕНЬ / НОЧЬ)
+   ============================================================================ */
+.brand-badge {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  text-decoration: none;
+  user-select: none;
+  cursor: pointer;
+  transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.brand-badge:hover {
+  transform: translateY(-1px);
+}
+
+.brand-mark {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: filter 0.3s ease;
+}
+
+.forged-nails-emblem {
+  display: block;
+}
+
+body.theme-night .nail-head,
+body.theme-night .nail-shaft {
+  fill: url(#nightNailGrad);
+}
+
+body.theme-night .nail-ridge {
+  stroke: #ffffff;
+  stroke-width: 0.8;
+  opacity: 0.95;
+}
+
+body.theme-night .brand-mark {
+  filter: drop-shadow(0 0 8px rgba(255, 251, 235, 0.6)) drop-shadow(0 0 16px rgba(255, 255, 255, 0.35));
+}
+
+body.theme-night .brand-badge:hover .brand-mark {
+  filter: drop-shadow(0 0 12px rgba(255, 251, 235, 0.85)) drop-shadow(0 0 22px rgba(255, 255, 255, 0.5));
+}
+
+body.theme-day .nail-head,
+body.theme-day .nail-shaft {
+  fill: url(#dayNailGrad);
+  stroke: #0f172a;
+  stroke-width: 0.3;
+}
+
+body.theme-day .nail-ridge {
+  stroke: #94a3b8;
+  stroke-width: 0.7;
+  opacity: 0.85;
+}
+
+body.theme-day .brand-mark {
+  filter: drop-shadow(0 2px 4px rgba(15, 23, 42, 0.28));
+}
+
+body.theme-day .brand-badge:hover .brand-mark {
+  filter: drop-shadow(0 3px 6px rgba(15, 23, 42, 0.4));
+}
+
+.brand-text-block {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 2px;
+}
+
+.brand-title {
+  font-size: 1.35rem;
+  font-weight: 800;
+  letter-spacing: 0.16em;
+  line-height: 1;
+  text-transform: uppercase;
+  font-family: -apple-system, BlinkMacSystemFont, "Montserrat", "Segoe UI", Roboto, sans-serif;
+  color: #ffffff;
+  text-shadow: 0 0 14px rgba(255, 255, 255, 0.4), 0 2px 5px rgba(0, 0, 0, 0.8);
+}
+
+body.theme-day .brand-title {
+  color: #020617;
+  text-shadow: 0 1px 2px rgba(255, 255, 255, 0.8);
+}
+
+.brand-slogan {
+  font-size: 0.55rem;
+  font-weight: 700;
+  letter-spacing: 0.26em;
+  text-transform: uppercase;
+  color: #cbd5e1;
+  white-space: nowrap;
+  opacity: 0.9;
+}
+
+body.theme-day .brand-slogan {
+  color: #1e293b;
+}
+
+/* ============================================================================
+   ПРИВЕТСТВЕННОЕ ОКНО ОНБОРДИНГА
+   ============================================================================ */
+.onboarding-card {
+  max-width: 1040px;
+  width: 92vw;
+  padding: 20px 30px 16px 30px;
+  background: var(--card-bg);
+  backdrop-filter: blur(22px);
+  -webkit-backdrop-filter: blur(22px);
+  border: 1px solid var(--card-border);
+  border-radius: var(--radius-lg);
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.42), inset 0 1px 1px rgba(255, 255, 255, 0.18);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  transition: opacity 0.4s ease, transform 0.4s ease;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Inter", Arial, sans-serif;
+  box-sizing: border-box;
+}
+
+.onboarding-top {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 14px;
+  border-bottom: 1px solid var(--header-border);
+  padding-bottom: 10px;
+  margin-bottom: 12px;
+  width: 100%;
+}
+
+.onboarding-nails-header {
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  gap: 7px;
+  padding: 5px 10px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid var(--card-border);
+  border-radius: var(--radius-sm);
+  flex-shrink: 0;
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.2);
+}
+
+body.theme-day .onboarding-nails-header {
+  background: rgba(255, 255, 255, 0.7);
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.04);
+}
+
+.onboarding-nail {
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
+  transform-origin: bottom center;
+  transition: transform 0.15s ease;
+}
+
+.onboarding-heading-group {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  text-align: left;
+  gap: 2px;
+}
+
+.onboarding-title {
+  font-size: 1.25rem;
+  font-weight: 700;
+  letter-spacing: -0.015em;
+  color: var(--text-main);
+  line-height: 1.2;
+  margin: 0;
+}
+
+.onboarding-slogan {
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  line-height: 1.2;
+  margin: 0 0 0 1.95rem;
+}
+
+.onboarding-body-grid {
+  display: grid;
+  grid-template-columns: 1.15fr 0.85fr;
+  gap: 24px;
+  margin-bottom: 12px;
+  align-items: stretch;
+}
+
+.onboarding-col {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.onboarding-p {
+  font-size: 0.86rem;
+  line-height: 1.48;
+  color: var(--text-main);
+  margin: 0;
+  text-align: justify;
+}
+
+.onboarding-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.onboarding-list li {
+  font-size: 0.84rem;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(255, 255, 255, 0.05);
+  padding: 6px 10px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--card-border);
+  color: var(--text-main);
+}
+
+body.theme-day .onboarding-list li {
+  background: rgba(255, 255, 255, 0.65);
+}
+
+.onboarding-devil-block {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px dashed var(--card-border);
+  padding: 8px 12px;
+  border-radius: var(--radius-sm);
+}
+
+body.theme-day .onboarding-devil-block {
+  background: rgba(255, 255, 255, 0.65);
+}
+
+.devil-avatar {
+  font-size: 1.55rem;
+  line-height: 1;
+  flex-shrink: 0;
+}
+
+.devil-question {
+  font-size: 0.83rem;
+  line-height: 1.38;
+  color: var(--text-main);
+  margin: 0;
+}
+
+.onboarding-footer {
+  border-top: 1px solid var(--header-border);
+  padding-top: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.onboarding-summary {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  text-align: left;
+  flex: 1;
+}
+
+.summary-highlight {
+  font-size: 1.04rem;
+  font-weight: 800;
+  color: var(--text-main);
+  line-height: 1.32;
+}
+
+.summary-sub {
+  font-size: 0.76rem;
+  color: var(--text-muted);
+}
+
+.onboarding-actions {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.onboarding-actions .btn-urban-volumetric {
+  width: 190px;
+  min-height: 40px;
+  padding-left: 8px;
+  padding-right: 8px;
+  white-space: nowrap;
+}
+
+.btn-urban-volumetric {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  padding: 8px 22px;
+  font-size: 0.86rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  color: #ffffff;
+  background: linear-gradient(180deg, #334155 0%, #1e293b 60%, #0f172a 100%);
+  border: 1px solid #475569;
+  border-top-color: #64748b;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  box-shadow: 
+    0 4px 10px rgba(0, 0, 0, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.25),
+    inset 0 -2px 0 rgba(0, 0, 0, 0.4);
+  transition: all 0.15s ease;
+  user-select: none;
+}
+
+body.theme-day .btn-urban-volumetric {
+  color: #ffffff;
+  background: linear-gradient(180deg, #475569 0%, #334155 60%, #1e293b 100%);
+  border: 1px solid #334155;
+  border-top-color: #64748b;
+  box-shadow: 
+    0 4px 10px rgba(15, 23, 42, 0.2),
+    inset 0 1px 0 rgba(255, 255, 255, 0.3),
+    inset 0 -2px 0 rgba(0, 0, 0, 0.3);
+}
+
+.btn-urban-volumetric:hover {
+  transform: translateY(-1px);
+  filter: brightness(1.08);
+  box-shadow: 
+    0 6px 14px rgba(0, 0, 0, 0.35),
+    inset 0 1px 0 rgba(255, 255, 255, 0.35),
+    inset 0 -2px 0 rgba(0, 0, 0, 0.4);
+}
+
+.btn-urban-volumetric:active {
+  transform: translateY(1px);
+  box-shadow: 
+    0 2px 5px rgba(0, 0, 0, 0.4),
+    inset 0 2px 4px rgba(0, 0, 0, 0.4);
+}
+
+.accent-hammer, .rule-hammer, .btn-hammer-icon {
+  display: inline-block;
+  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.2));
+}
+
+@keyframes hammerStrike1 {
+  0% { transform: translateY(0); }
+  25% { transform: translateY(5px); }
+  50% { transform: translateY(1px); }
+  75% { transform: translateY(3px); }
+  100% { transform: translateY(2px); }
+}
+
+@keyframes hammerStrike2 {
+  0% { transform: translateY(0); }
+  25% { transform: translateY(5px); }
+  50% { transform: translateY(1px); }
+  75% { transform: translateY(3px); }
+  100% { transform: translateY(2px); }
+}
+
+@keyframes hammerStrike3 {
+  0% { transform: translateY(0); }
+  25% { transform: translateY(5px); }
+  50% { transform: translateY(1px); }
+  75% { transform: translateY(3px); }
+  100% { transform: translateY(2px); }
+}
+
+.strike-nail-1 { animation: hammerStrike1 0.25s ease-in-out forwards; }
+.strike-nail-2 { animation: hammerStrike2 0.25s ease-in-out 0.2s forwards; }
+.strike-nail-3 { animation: hammerStrike3 0.25s ease-in-out 0.4s forwards; }
+
+.modal-fade-out {
+  opacity: 0 !important;
+  pointer-events: none;
+  transition: opacity 0.4s ease-out;
+}
+
+/* ============================================================================
+   ШТОРКА ГОДОВОГО КАЛЕНДАРЯ И МОДАЛЬНЫЕ ОКНА
+   ============================================================================ */
+.year-drawer {
+  position: fixed;
+  top: 0;
+  right: 0;
+  width: 45vw;
+  max-width: 620px;
+  min-width: 380px;
+  height: 100vh;
+  background: #0a1128;
+  color: #ffffff;
+  z-index: 100;
+  box-shadow: -8px 0 32px rgba(0, 0, 0, 0.45);
+  display: flex;
+  flex-direction: column;
+  padding: 18px;
+  transform: translateX(0);
+  transition: transform var(--transition-speed) cubic-bezier(0.16, 1, 0.3, 1);
+  overflow-y: auto;
+}
+
+.year-drawer.closed {
+  transform: translateX(105%);
+}
+
+.drawer-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+  padding-bottom: 12px;
+}
+
+.year-navigation {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.drawer-year-title {
+  font-size: 1.35rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+}
+
+.drawer-btn {
+  background: rgba(255, 255, 255, 0.1);
+  color: #ffffff;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: var(--radius-sm);
+  padding: 5px 10px;
+  cursor: pointer;
+  font-size: 0.95rem;
+}
+
+.drawer-close-btn {
+  background: rgba(255, 255, 255, 0.12);
+  color: #ffffff;
+  border: none;
+  border-radius: 50%;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 1.15rem;
+}
+
+.drawer-legend {
+  display: flex;
+  gap: 16px;
+  padding: 8px 0;
+  font-size: 0.76rem;
+  color: #94a3b8;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.legend-circle {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+.circle-yellow { background: var(--color-medium); }
+.circle-green { background: var(--color-flexible); }
+
+.year-months-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  margin-top: 8px;
+}
+
+.drawer-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.45);
+  backdrop-filter: blur(2px);
+  z-index: 90;
+}
+
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 200;
+}
+
+.modal-card {
+  background: var(--card-bg);
+  backdrop-filter: blur(16px);
+  border: 1px solid var(--card-border);
+  border-radius: var(--radius-lg);
+  padding: 20px;
+  width: 90%;
+  max-width: 460px;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.2);
+  color: var(--text-main);
+}
+
+.modal-confirm {
+  max-width: 350px;
+  text-align: center;
+}
+
+.modal-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 14px;
+}
+
+.modal-close {
+  background: none;
+  border: none;
+  font-size: 1.4rem;
+  color: var(--text-muted);
+  cursor: pointer;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  margin-bottom: 12px;
+}
+
+.form-group label {
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--text-muted);
+}
+
+.form-group textarea, .form-group input {
+  padding: 7px 10px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--card-border);
+  background: var(--card-bg);
+  color: var(--text-main);
+  outline: none;
+}
+
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.priority-selector {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.priority-opt {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 0.8rem;
+  cursor: pointer;
+}
+
+.modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-top: 16px;
+}
+
+.hidden {
+  display: none !important;
+}
+
+@media print {
+  body {
+    background: #ffffff !important;
+    color: #000000 !important;
+  }
+  .app-header, .year-drawer, .drawer-backdrop, .modal-overlay, .btn-calendar-trigger {
+    display: none !important;
+  }
+  .week-grid {
+    height: auto !important;
+    gap: 4px !important;
+  }
+  .day-column {
+    background: #ffffff !important;
+    border: 1px solid #000000 !important;
+    box-shadow: none !important;
+  }
+}
+
+
+/* ============================================================================
+   ШАГ 4: КАРТОЧКА ДЕЛА — ВРЕМЯ, ВАЖНОСТЬ (❗ / ☀️), ПОЛНЫЙ ТЕКСТ И ДЕЙСТВИЯ
+   ============================================================================ */
+.task-card {
+  position: relative;
+  background: var(--task-bg);
+  border: 1px solid var(--task-border);
+  border-radius: var(--radius-sm);
+  padding: 7px 9px;
+  font-size: 0.83rem;
+  line-height: 1.35;
+  box-shadow: var(--task-shadow);
+  word-break: break-word;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  cursor: pointer;
+  transition: border-color 0.15s ease, transform 0.15s ease, box-shadow 0.15s ease, opacity 0.2s ease;
+}
+
+.task-card:hover {
+  border-color: #3b82f6;
+  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.16);
+  transform: translateY(-1px);
+}
+
+/* Верхняя строка карточки: Время + Значок важности слева, Звёздочка и Корзина справа */
+.task-card-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px;
+  width: 100%;
+}
+
+.task-card-meta {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+/* Время: жирный белый шрифт, в контрастной рамке, увеличенный размер */
+.task-card-time {
+  display: inline-block;
+  font-size: 0.77rem; /* Увеличенный размер шрифта */
+  font-weight: 800; /* Жирный шрифт */
+  color: #ffffff !important; /* Белый цвет текста */
+  background: #0f172a;
+  border: 1px solid rgba(255, 255, 255, 0.45); /* Контрастная рамка */
+  border-radius: var(--radius-sm);
+  padding: 1px 6px;
+  line-height: 1.3;
+  letter-spacing: 0.03em;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.25);
+}
+
+body.theme-day .task-card-time {
+  background: #0f172a;
+  border: 1px solid #334155;
+  color: #ffffff !important;
+}
+
+body.theme-night .task-card-time {
+  background: rgba(15, 23, 42, 0.9);
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  color: #ffffff !important;
+}
+
+/* Значок важности: красный восклицательный знак ❗ или жёлтое солнышко ☀️ */
+.task-priority-icon {
+  font-size: 0.92rem;
+  line-height: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.25));
+  user-select: none;
+}
+
+/* Действия в верхнем углу карточки: звёздочка (⭐) и корзина (🗑️) */
+.task-card-actions {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  flex-shrink: 0;
+  margin-left: auto;
+}
+
+.btn-task-action {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  color: var(--text-muted);
+  border-radius: var(--radius-sm);
+  padding: 1px 4px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.85rem;
+  line-height: 1;
+  transition: transform 0.15s ease, color 0.15s ease, opacity 0.15s ease;
+  opacity: 0.8;
+}
+
+.task-card:hover .btn-task-action {
+  opacity: 1;
+}
+
+.btn-task-history:hover {
+  color: #eab308;
+  transform: scale(1.2);
+}
+
+.btn-task-delete:hover {
+  color: #ef4444;
+  transform: scale(1.2);
+}
+
+/* Тело карточки: полный текст дела */
+.task-card-body {
+  width: 100%;
+}
+
+.task-card-title {
+  color: var(--text-main);
+  font-size: 0.84rem;
+  line-height: 1.4;
+  white-space: normal;
+  word-break: break-word;
+  transition: color 0.15s ease;
+}
+
+.task-card:hover .task-card-title {
+  color: #2563eb;
+}
+
+body.theme-night .task-card:hover .task-card-title {
+  color: #60a5fa;
+}
+
+/* Выполненное дело: спокойный серый тон и зачёркнутый текст */
+.task-card.is-completed {
+  background: rgba(148, 163, 184, 0.18) !important;
+  border-color: rgba(148, 163, 184, 0.35) !important;
+  opacity: 0.65 !important;
+  filter: grayscale(0.5);
+  box-shadow: none !important;
+}
+
+body.theme-day .task-card.is-completed {
+  background: rgba(226, 232, 240, 0.65) !important;
+  border-color: rgba(203, 213, 225, 0.8) !important;
+}
+
+body.theme-night .task-card.is-completed {
+  background: rgba(30, 41, 59, 0.38) !important;
+  border-color: rgba(71, 85, 105, 0.5) !important;
+}
+
+.task-card.is-completed .task-card-title {
+  text-decoration: line-through !important;
+  color: var(--text-muted) !important;
+}
+
+.task-card.is-completed .task-card-time {
+  opacity: 0.6;
+}
+
+.task-card.editable {
+  cursor: pointer;
+}
+
+.task-card.past-locked {
+  cursor: not-allowed;
+  opacity: 0.75;
+}
+
+
+/* Модальное окно истории правок и переносов под звёздочкой ⭐ */
+.modal-history {
+  max-width: 440px;
+  width: 90%;
+}
+
+.history-task-info {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--text-main);
+  padding-bottom: 8px;
+  margin-bottom: 10px;
+  border-bottom: 1px solid var(--header-border);
+  word-break: break-word;
+}
+
+.history-entries-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  max-height: 280px;
+  overflow-y: auto;
+  padding-right: 4px;
+}
+
+.history-item {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--card-border);
+  border-left: 3px solid #3b82f6;
+  border-radius: var(--radius-sm);
+  padding: 7px 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+body.theme-day .history-item {
+  background: rgba(241, 245, 249, 0.65);
+}
+
+.history-item.history-type-postponed {
+  border-left-color: #eab308;
+}
+
+.history-item-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 0.72rem;
+  color: var(--text-muted);
+}
+
+.history-item-details {
+  font-size: 0.82rem;
+  color: var(--text-main);
+  line-height: 1.35;
+}
+
+/* Всплывающее предупреждение (Toast) */
+.toast-notification {
+  position: fixed;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%) translateY(0);
+  background: rgba(15, 23, 42, 0.92);
+  color: #f8fafc;
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1px solid rgba(239, 68, 68, 0.5);
+  border-radius: var(--radius-md);
+  padding: 10px 18px;
+  font-size: 0.85rem;
+  font-weight: 500;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+  z-index: 300;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  opacity: 1;
+  transition: opacity 0.35s ease, transform 0.35s ease;
+  pointer-events: none;
+}
+
+body.theme-day .toast-notification {
+  background: rgba(255, 255, 255, 0.95);
+  color: #0f172a;
+  border-color: rgba(220, 38, 38, 0.6);
+  box-shadow: 0 10px 30px rgba(15, 23, 42, 0.2);
+}
+
+.toast-notification.toast-fade {
+  opacity: 0;
+  transform: translateX(-50%) translateY(12px);
+}
+
+
+/* Прошедшие неактивные дни: уходят в серый приглушённый тон */
+.day-column.past-day {
+  background: rgba(148, 163, 184, 0.14) !important;
+  border-color: rgba(148, 163, 184, 0.35) !important;
+  opacity: 0.72;
+  filter: grayscale(0.6);
+  cursor: default;
+}
+
+body.theme-day .day-column.past-day {
+  background: rgba(226, 232, 240, 0.4) !important;
+  border-color: rgba(203, 213, 225, 0.6) !important;
+}
+
+body.theme-night .day-column.past-day {
+  background: rgba(30, 41, 59, 0.32) !important;
+  border-color: rgba(51, 65, 85, 0.5) !important;
+}
+
+.day-column.past-day:hover {
+  border-color: rgba(148, 163, 184, 0.5) !important;
+  box-shadow: none !important;
+}
+
+.day-column.past-day .day-header-info .day-name,
+.day-column.past-day .day-header-info .day-date {
+  color: var(--text-muted) !important;
+}
+
+/* Прямое редактирование названия дела по месту для будущих задач */
+.task-card-title.inline-editable {
+  outline: none;
+  border-radius: 3px;
+  padding: 1px 4px;
+  margin: -1px -4px;
+  cursor: text;
+  transition: background-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.task-card-title.inline-editable:hover {
+  background: rgba(37, 99, 235, 0.08);
+}
+
+.task-card-title.inline-editable:focus {
+  background: rgba(255, 255, 255, 0.9);
+  color: #0f172a !important;
+  box-shadow: 0 0 0 2px #3b82f6;
+}
+
+body.theme-night .task-card-title.inline-editable:focus {
+  background: rgba(15, 23, 42, 0.95);
+  color: #ffffff !important;
+  box-shadow: 0 0 0 2px #60a5fa;
+}
+
+
+/* Галочка выполнения в окне дела */
+.task-completion-group {
+  margin-top: 6px;
+  padding: 8px 10px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid var(--card-border);
+  border-radius: var(--radius-sm);
+}
+
+body.theme-day .task-completion-group {
+  background: rgba(241, 245, 249, 0.65);
+}
+
+.completion-checkbox-label {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  cursor: pointer;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--text-main);
+  user-select: none;
+}
+
+.completion-checkbox-label input[type="checkbox"] {
+  width: 17px;
+  height: 17px;
+  accent-color: #2563eb;
+  cursor: pointer;
+}
+
+/* ==========================================================================
+   ШАГ 5. Гвозди, чёртик и ручной перенос дел
+   ========================================================================= */
+.task-nails { display: inline-flex; align-items: center; gap: 2px; margin-left: 1px; }
+/* Металлический строительный гвоздь: шляпка, блик на стержне, остриё. */
+.metal-nail {
+  display: inline-block; position: relative; width: 7px; height: 22px;
+  clip-path: polygon(0% 0%, 100% 0%, 100% 13%, 66% 18%, 66% 78%, 50% 100%, 34% 78%, 34% 18%, 0% 13%);
+  background: linear-gradient(90deg, #64748b 0%, #cbd5e1 30%, #ffffff 52%, #94a3b8 77%, #334155 100%);
+  filter: drop-shadow(1px 1px 1px rgba(0,0,0,.4));
+}
+body.theme-night .metal-nail { filter: drop-shadow(0 0 3px rgba(255,255,255,.45)); }
+.task-card.devil-alert:not(.is-completed) {
+  border: 2px solid #ff3b1f !important;
+  box-shadow: 0 0 9px rgba(255,59,31,.65), inset 0 0 5px rgba(255,59,31,.2), 0 0 18px rgba(255,120,0,.35) !important;
+  animation: devil-pulse 2.3s ease-in-out infinite;
+}
+@keyframes devil-pulse {
+  0%, 100% { box-shadow: 0 0 7px rgba(255,59,31,.48), 0 0 13px rgba(255,120,0,.3); }
+  50% { box-shadow: 0 0 13px rgba(255,59,31,.9), 0 0 23px rgba(255,120,0,.6); }
+}
+.task-devil { font-size: 1.08rem; filter: drop-shadow(0 0 4px rgba(255,70,0,.65)); }
+/* Нижняя строка карточки: действия переноса слева, плашка справа. */
+.task-transfer-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px;
+  padding-top: 4px;
+  border-top: 1px dashed var(--card-border);
+  min-width: 0;
+}
+.task-transfer-badge {
+  box-sizing: border-box;
+  margin-left: auto;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+  padding: 3px 4px;
+  min-height: 25px;
+  flex: 0 0 auto;
+  white-space: nowrap;
+  border: 2px solid #ff7272;
+  border-radius: 7px;
+  background: linear-gradient(180deg, #b91c1c 0%, #841414 100%);
+  color: #ffffff !important;
+  font-size: 0.64rem;
+  font-weight: 800;
+  line-height: 1.1;
+  text-shadow: 0 1px 1px rgba(0,0,0,.6);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.2), 0 0 6px rgba(255,59,48,.28);
+}
+.task-transfer-badge-icons { display: inline-flex; align-items: center; gap: 2px; flex: 0 0 auto; }
+.task-transfer-badge .metal-nail { width: 5px; height: 17px; }
+.task-transfer-badge-label { white-space: nowrap; }
+.task-transfer-badge-devil .task-transfer-badge-icons { font-size: 1rem; line-height: 1; }
+/* У завершённой задачи метка остаётся читаемой, несмотря на приглушение карточки. */
+.task-card.is-completed .task-transfer-badge { filter: none; }
+/* На узких экранах индикатор переносится на следующую строку справа. */
+@media (max-width: 470px) {
+  .task-transfer-badge { font-size: 0.66rem; }
+}
+.btn-task-transfer {
+  background: var(--btn-secondary-bg); border: 1px solid var(--card-border);
+  border-radius: 5px; padding: 3px 2px; font-size: .61rem; white-space: nowrap;
+  line-height: 1.1; color: var(--text-main); cursor: pointer;
+}
+.btn-task-transfer:hover { border-color: #3b82f6; color: #2563eb; }
+.btn-task-done { color: #16a34a; font-weight: 900; font-size: 1.1rem; }
+.btn-task-done:hover { transform: scale(1.2); color: #22c55e; }
+.task-card.is-completed { cursor: default; }
+.modal-transfer { max-width: 380px; }
+.transfer-task-title { margin: 0 0 12px; font-weight: 650; overflow-wrap: anywhere; }
+#transferDate { width: 100%; padding: 8px 10px; border: 1px solid var(--card-border); border-radius: 7px; background: var(--card-bg); color: var(--text-main); }
+@media (prefers-reduced-motion: reduce) { .task-card.devil-alert { animation: none !important; } }
+@media print { .task-transfer-actions, .btn-task-done { display: none !important; } }
+
+/* Шаг 5: досрочное выполнение допускает исправление до срока. */
+.task-card.is-completed.editable { cursor: pointer; }
+.task-completed-toggle {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  margin: 6px 0 14px;
+  font-size: 0.87rem;
+  font-weight: 600;
+  color: var(--text-main);
+  cursor: pointer;
+}
+.task-completed-toggle input { width: 17px; height: 17px; accent-color: #16a34a; cursor: pointer; }
+
+
+/* Финально невыполненная задача с 😈: только название и красный чёртик. */
+.task-card.task-failed {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  cursor: pointer; /* Открывает только историю; редактировать нельзя. */
+  opacity: 1;
+  animation: none !important;
+  border: 2px solid #ef4444 !important;
+  background: rgba(127, 29, 29, 0.13);
+  box-shadow: none !important;
+}
+.task-card.task-failed:hover {
+  transform: none;
+  box-shadow: none !important;
+  border-color: #ef4444 !important;
+}
+.task-card.task-failed:focus-visible {
+  outline: 3px solid #ef4444;
+  outline-offset: 2px;
+}
+.task-failed-title {
+  flex: 1 1 auto;
+  min-width: 0;
+  color: var(--text-main);
+  font-weight: 700;
+  overflow-wrap: anywhere;
+}
+.task-failed-devil {
+  flex: 0 0 auto;
+  font-size: 1.2rem;
+  filter: drop-shadow(0 0 3px rgba(239, 68, 68, 0.65));
+}
+
+
+/* ============================================================================
+   ШАГ 6. АРХИВЫ ЗАДАЧ, МЕНЮ ДАННЫХ И МОТИВАЦИЯ
+   ============================================================================ */
+.app-header { flex-wrap: wrap; position: relative; z-index: 30; }
+.header-right { flex-wrap: wrap; justify-content: flex-end; }
+.btn-archive-completed, .btn-archive-failed {
+  border-radius: 7px; padding: 6px 9px; border: 1px solid rgba(255,255,255,.25);
+  cursor: pointer; font-size: .8rem; line-height: 1.15; font-weight: 800;
+  color: #fff; white-space: nowrap;
+  transition: transform .2s ease, box-shadow .2s ease;
+}
+.btn-archive-completed { background: linear-gradient(145deg,#16a34a,#166534); box-shadow:0 2px 6px rgba(22,163,74,.27); }
+.btn-archive-failed { background: linear-gradient(145deg,#ef4444,#991b1b); box-shadow:0 2px 6px rgba(239,68,68,.27); }
+.btn-archive-completed:hover, .btn-archive-failed:hover { transform: translateY(-2px) scale(1.035); box-shadow:0 5px 13px rgba(0,0,0,.25); }
+.btn-archive-completed:focus-visible,.btn-archive-failed:focus-visible, #dataMenuBtn:focus-visible { outline:2px solid #60a5fa;outline-offset:2px; }
+.data-menu-wrapper { position: relative; }
+.data-dropdown {
+  position: absolute; z-index: 100; right: 0; top: calc(100% + 7px);
+  min-width: 250px; max-width: min(290px,90vw); padding: 5px;
+  border-radius: 10px; border: 1px solid var(--header-border);
+  background: var(--card-bg); backdrop-filter: blur(22px);
+  box-shadow: 0 14px 30px rgba(0,0,0,.27);
+  display: flex; flex-direction: column; gap: 3px;
+}
+.data-dropdown button {
+  width: 100%; text-align: left; border: none; border-radius: 6px;
+  padding: 10px 12px; background: transparent; color: var(--text-main);
+  cursor: pointer; font-weight: 600; font-size: .85rem;
+}
+.data-dropdown button:hover,.data-dropdown button:focus-visible { background: rgba(59,130,246,.2); outline: none; }
+.data-dropdown button.data-menu-danger { color: #ef4444; }
+.modal-archive { max-width: 720px; width: min(94vw,720px); max-height: min(90vh,800px); display:flex; flex-direction:column; }
+.archive-help,.period-help { font-size: .8rem; color: var(--text-muted); margin: 0 0 10px; }
+.archive-list { display:flex; flex-direction:column; gap:9px; max-height: min(65vh,620px); overflow-y:auto; min-height: 0; padding: 3px 6px 3px 2px; }
+.archive-record { border: 1px solid var(--card-border); border-radius: 10px; padding: 11px 12px; background: var(--task-bg); }
+.archive-record-title { font-size: .97rem; font-weight: 800; color:var(--text-main); overflow-wrap:anywhere; margin-bottom: 7px; }
+.archive-record-info { display:grid; grid-template-columns:1fr 1fr; gap:5px 13px; color: var(--text-muted); font-size: .78rem; line-height: 1.3; }
+.archive-history-btn { margin-top: 9px; }
+.archive-empty { text-align:center; color:var(--text-muted);padding: 24px 8px; }
+.modal-period { max-width:480px; }
+#periodStart,#periodEnd { min-width: 0; width:100%; }
+#dataConfirmDescription { margin-top: 12px; color:var(--text-main); line-height: 1.45; overflow-wrap:anywhere; }
+/* Благодарность внизу дня, отдельная от списка дел и кнопки добавления. */
+.day-perfect-message {
+  flex: 0 0 auto; margin-top: 7px; padding: 9px 7px;
+  border: 1px solid rgba(22,163,74,.65); border-radius: 8px;
+  background: linear-gradient(120deg,rgba(22,163,74,.24),rgba(134,239,172,.18));
+  color:var(--text-main); font-weight:800; text-align:center;
+  font-size:.73rem; line-height:1.4; box-shadow:0 0 8px rgba(22,163,74,.16);
+  animation: perfect-day-appear .55s ease-out both;
+}
+@keyframes perfect-day-appear { from {opacity:0;transform:translateY(8px) scale(.97)} to {opacity:1;transform:translateY(0) scale(1)} }
+/* История поверх открытого архива. */
+#historyModal { z-index: 240; }
+@media (max-width: 780px) {
+  .app-header { justify-content: center; }
+  .header-center { order: 2; flex: 1 1 100%; max-width: none; justify-content: center; }
+  .header-right { order: 3; justify-content: center; }
+  .archive-record-info { grid-template-columns: 1fr; }
+}
+@media (prefers-reduced-motion: reduce) {
+ .day-perfect-message, .btn-archive-completed, .btn-archive-failed { animation: none !important; transition: none !important; }
+}
+@media print {
+ .day-perfect-message { border: 1px solid #16a34a; background: none !important; }
+ .data-dropdown { display:none !important; }
+}
+
+/* Шаг 6.1 — компактные кнопки архивов перед годовым календарём. */
+.header-right { margin-left: auto; }
+#archiveCompletedBtn, #archiveFailedBtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 34px;
+  width: 34px;
+  height: 34px;
+  padding: 0;
+  font-size: 1.25rem;
+  line-height: 1;
+  border-radius: 8px;
+}
+#openYearDrawerBtn { flex: 0 0 32px; }
+
+/* Специфичнее общей .modal-card (max-width: 460px),
+   которая раньше сжимала окно "О планировщике" и ломала две колонки. */
+.modal-card.onboarding-card {
+  width: min(94vw, 1040px);
+  max-width: 1040px;
+  max-height: calc(100vh - 32px);
+  padding: 20px 30px 18px;
+  overflow-y: auto;
+}
+.modal-card.onboarding-card .onboarding-body-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.12fr) minmax(0, .88fr);
+  gap: 26px;
+}
+@media (max-width: 680px) {
+  .modal-card.onboarding-card { width: 95vw; padding: 16px; }
+  .modal-card.onboarding-card .onboarding-body-grid {
+    grid-template-columns: minmax(0,1fr);
+    gap: 14px;
+  }
+  .modal-card.onboarding-card .onboarding-footer {
+    flex-wrap: wrap;
+  }
+}
+
+/* Иконки архивов и годовой календарь — единая группа у правого края. */
+.header-end-controls {
+  display: inline-flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 8px;
+  flex: 0 0 auto;
+  margin-left: auto;
+  white-space: nowrap;
+}
+
+
+/* Шаг 6.2 — поиск по задачам всех недель и заметная найденная карточка. */
+.search-container { z-index: 120; }
+.search-results {
+  width: min(390px, calc(100vw - 26px));
+  max-height: min(360px, 55vh);
+  top: calc(100% + 7px);
+  padding: 5px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  background: var(--card-bg);
+  border: 1px solid var(--header-border);
+  box-shadow: 0 16px 32px rgba(0,0,0,.26);
+}
+.search-result-item {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  text-align: left;
+  background: transparent;
+  color: var(--text-main);
+  border: 1px solid transparent;
+  border-radius: 7px;
+  padding: 9px 10px;
+  cursor: pointer;
+}
+.search-result-item:hover,
+.search-result-item:focus-visible {
+  background: rgba(59,130,246,.18);
+  border-color: #3b82f6;
+  outline: none;
+}
+.search-result-title {
+  font-size: .85rem;
+  font-weight: 750;
+  line-height: 1.3;
+  overflow-wrap: anywhere;
+}
+.search-result-meta {
+  font-size: .74rem;
+  line-height: 1.3;
+  color: var(--text-muted);
+}
+.search-result-empty {
+  padding: 12px 10px;
+  color: var(--text-muted);
+  font-size: .82rem;
+}
+.task-card.search-task-highlight,
+.task-card.search-task-highlight.task-failed,
+.task-card.search-task-highlight.is-completed {
+  border: 3px solid #facc15 !important;
+  outline: 2px solid #2563eb !important;
+  outline-offset: 1px;
+  box-shadow: 0 0 0 5px rgba(250,204,21,.3), 0 0 20px rgba(250,204,21,.75) !important;
+  background-image: linear-gradient(rgba(250,204,21,.16),rgba(250,204,21,.16));
+}
+@media (max-width: 780px) {
+  .search-results { left: 50%; transform: translateX(-50%); }
+}
+
+
+/* ============================================================================
+   ШАГ 7: секреты в одну строку и годовой календарь
+   ============================================================================ */
+.day-secret-container {
+  position: relative;
+  min-width: 0;
+  display: block;
+}
+.secret-icons-row {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: clamp(2px, .35vw, 5px);
+  flex-wrap: nowrap;
+  width: 100%;
+  min-width: 0;
+}
+.secret-icon-button, .secret-add-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 1 27px;
+  min-width: 0;
+  width: 27px;
+  height: 29px;
+  padding: 1px;
+  border-radius: 7px;
+  border: 1px solid var(--header-border);
+  background: var(--btn-secondary-bg);
+  color: var(--btn-secondary-text);
+  cursor: pointer;
+  line-height: 1;
+  font-size: clamp(12px, 1.2vw, 19px);
+}
+.secret-icon-button:hover, .secret-add-button:hover {
+  border-color: #2563eb;
+  background: rgba(59,130,246,.16);
+}
+.secret-add-button { font-size: 16px; font-weight: 800; }
+.secret-add-button:has(span) { flex: 0 0 auto; width: 49px; gap: 1px; }
+.secret-add-button span { font-size: 17px; }
+.secret-medical-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1em;
+  height: 1em;
+  flex-shrink: 0;
+}
+.secret-medical-icon svg { display: block; width: 100%; height: 100%; }
+.secret-emoji { white-space: nowrap; }
+.modal-secret-editor { max-width: 460px; }
+.secret-form-label { display: block; font-weight: 700; margin: 5px 0 8px; }
+.secret-palette {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 8px;
+  margin-bottom: 18px;
+}
+.secret-palette-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 46px;
+  padding: 4px;
+  border: 1px solid var(--header-border);
+  border-radius: 8px;
+  background: var(--btn-secondary-bg);
+  cursor: pointer;
+  font-size: 25px;
+}
+.secret-palette-button.selected { border: 3px solid #2563eb; background: rgba(59,130,246,.15); }
+.secret-palette-button .secret-medical-icon { font-size: 29px; }
+.secret-popover {
+  position: fixed;
+  z-index: 230;
+  border: 1px solid #94a3b8;
+  border-radius: 12px;
+  background: #f8fafc;
+  color: #0f172a;
+  padding: 12px;
+  box-shadow: 0 8px 25px rgba(0,0,0,.3);
+}
+.secret-popover-text { line-height: 1.4; font-size: .85rem; overflow-wrap: anywhere; max-height: 35vh; overflow-y: auto; white-space: pre-wrap; }
+.secret-popover-actions { display: flex; gap: 6px; justify-content: flex-end; margin-top: 12px; }
+.secret-popover-actions .btn { font-size: .75rem; padding: 5px 7px; }
+.calendar-selected-day { outline: 3px solid #facc15 !important; outline-offset: 1px; box-shadow: 0 0 18px rgba(250,204,21,.55) !important; }
+.year-drawer {
+  width: 45vw;
+  max-width: none;
+  min-width: 380px;
+}
+.year-drawer.closed { pointer-events: none; }
+.drawer-header { gap: 12px; }
+.year-navigation { gap: 7px; }
+.drawer-legend { flex-wrap: wrap; gap: 8px 14px; color: #e2e8f0; }
+.circle-yellow { background: #facc15; }
+.circle-green { background: #4ade80; }
+.circle-red { background: #f87171; }
+.year-months-grid {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 18px 12px;
+}
+.year-month {
+  min-width: 0;
+  border: 1px solid rgba(148,163,184,.18);
+  border-radius: 10px;
+  background: rgba(255,255,255,.035);
+  padding: 8px 5px 10px;
+}
+.year-month-title { text-align: center; font-size: .88rem; font-weight: 750; color: #fff; margin: 0 0 8px; }
+.year-month-days { display: grid; grid-template-columns: repeat(7,minmax(0,1fr)); gap: 2px; }
+.year-weekday-label { color: #cbd5e1; font-size: .65rem; font-weight: 700; text-align: center; }
+.year-date-button, .year-day-blank {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  min-width: 0;
+  aspect-ratio: 1;
+  border-radius: 50%;
+}
+.year-date-button {
+  border: 1px solid transparent;
+  background: transparent;
+  color: #fff;
+  font-size: clamp(9px,.75vw,13px);
+  cursor: pointer;
+  font-weight: 500;
+  padding: 0;
+}
+.year-date-button:hover, .year-date-button:focus-visible { outline: 1px solid rgba(147,197,253,.75); outline-offset: 1px; }
+.year-date-yellow { background: #facc15; color: #101827; font-weight: 900; }
+.year-date-green { background: #4ade80; color: #101827; font-weight: 900; }
+.year-date-red { background: #f87171; color: #101827; font-weight: 900; }
+.year-date-secret-only { border: 2px solid #fff; background: transparent; color: #fff; font-weight: 700; }
+.year-date-task-and-secret { border: 2px solid #fff; }
+/* Today is underlined without a white ring; white circles indicate secrets only. */
+.year-date-today { text-decoration: underline; text-decoration-color: #93c5fd; text-decoration-thickness: 2px; text-underline-offset: 2px; }
+@media (max-width: 1100px) {
+  .year-months-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .year-date-button { font-size: 12px; }
+}
+@media (max-width: 650px) {
+  .year-drawer { width: min(100vw, 470px); min-width: 0; padding: 12px; }
+  .year-months-grid { grid-template-columns: repeat(2,minmax(0,1fr)); gap: 10px; }
+  .year-navigation { gap: 4px; }
+  .drawer-btn { font-size: .75rem; padding: 5px 6px; }
+  .drawer-year-title { font-size: 1.1rem; }
+  .year-date-button { font-size: 11px; }
+}
+@media (max-width: 385px) { .year-months-grid { grid-template-columns: 1fr; } }
+@media print { .secret-popover, .modal-secret-editor { display: none !important; } }
+
+/* Шаг 7: найденная задача заметно выделяется жёлтым в любой неделе,
+   в том числе в завершённых и приглушённых прошедших днях. */
+.day-column.past-day:has(.task-card.search-task-highlight) {
+  opacity: 1 !important;
+  filter: none !important;
+}
+body.theme-day .task-card.search-task-highlight,
+body.theme-night .task-card.search-task-highlight,
+.task-card.search-task-highlight,
+.task-card.search-task-highlight.is-completed,
+.task-card.search-task-highlight.task-failed,
+.task-card.search-task-highlight.past-locked,
+.task-card.search-task-highlight.devil-alert:not(.is-completed),
+.task-card.search-task-highlight:hover {
+  background: #fde68a !important;
+  background-image: none !important;
+  border: 3px solid #eab308 !important;
+  outline: 2px solid #facc15 !important;
+  outline-offset: 2px;
+  box-shadow: 0 0 0 5px rgba(250,204,21,.40), 0 0 18px rgba(234,179,8,.95) !important;
+  opacity: 1 !important;
+  filter: none !important;
+  animation: none !important;
+  color: #1f2937 !important;
+}
+.task-card.search-task-highlight .task-card-title,
+.task-card.search-task-highlight .task-failed-title,
+.task-card.search-task-highlight .task-card-time {
+  color: #1f2937 !important;
+  opacity: 1 !important;
+}
