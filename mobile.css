@@ -3,7 +3,8 @@
  * Компьютерная версия и печатная форма A4 остаются неизменными.
  */
 .mobile-day-jump,
-.mobile-quick-add {
+.mobile-quick-add,
+.mobile-add-day {
   display: none;
 }
 
