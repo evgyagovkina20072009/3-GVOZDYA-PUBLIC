@@ -1,0 +1,46 @@
+
+/* Второе окно: краткая инструкция с пятью раскрывающимися кнопками. */
+#tgHelpModal { z-index: 20010; padding: 18px; }
+#tgHelpModal .tg-help-card {
+  width: min(780px, 94vw); max-height: min(90vh, 860px);
+  display:flex; flex-direction:column; overflow:hidden;
+  padding: 22px 26px 18px; border-radius: var(--radius-lg);
+  border:1px solid var(--card-border); color:var(--text-main);
+  background:var(--card-bg); backdrop-filter:blur(22px);
+  box-shadow:0 24px 60px rgba(0,0,0,.42);
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;
+}
+#tgHelpModal .tg-help-header { display:flex; justify-content:space-between; align-items:flex-start; gap:12px; border-bottom:1px solid var(--header-border); padding-bottom:13px; }
+#tgHelpModal .tg-help-header h2 { font-size:1.3rem; line-height:1.2; margin:0 0 5px; }
+#tgHelpModal .tg-help-header p { margin:0 0 4px; color:var(--text-main); font-size:.92rem; }
+#tgHelpModal .tg-help-header small { color:var(--text-muted); }
+#tgHelpModal .tg-help-close { background:transparent; border:1px solid var(--card-border); border-radius:8px; color:var(--text-main); font-size:26px; width:36px; height:36px; cursor:pointer; flex:none; }
+#tgHelpModal .tg-help-list { overflow-y:auto; min-height:0; padding:14px 4px 8px 0; display:flex; flex-direction:column; gap:9px; }
+#tgHelpModal .tg-help-section { border:1px solid var(--card-border); border-radius:9px; background:rgba(128,149,171,.09); overflow:visible; flex:none; }
+#tgHelpModal .tg-help-section summary { display:flex; align-items:center; justify-content:space-between; padding:14px; gap:10px; cursor:pointer; list-style:none; font-size:.95rem; font-weight:700; }
+#tgHelpModal .tg-help-section summary::-webkit-details-marker { display:none; }
+#tgHelpModal .tg-help-section summary:hover { background:rgba(128,149,171,.12); }
+#tgHelpModal .tg-help-chevron { flex:none; width:9px; height:9px; border-right:2px solid currentColor; border-bottom:2px solid currentColor; transform:rotate(45deg); margin-right:5px; transition:transform .15s; }
+#tgHelpModal details[open] .tg-help-chevron { transform:rotate(225deg); }
+#tgHelpModal .tg-help-section-body { border-top:1px solid var(--card-border); padding:13px 16px 17px; font-size:.89rem; line-height:1.55; }
+#tgHelpModal .tg-help-section-body p { margin:0 0 13px; }
+#tgHelpModal .tg-help-section-body p:last-child { margin-bottom:0; }
+#tgHelpModal .tg-help-section-body ul { margin:0 0 13px; padding-left:24px; }
+#tgHelpModal .tg-help-section-body li { margin:4px 0; }
+#tgHelpModal .tg-help-nail-list { display:flex; flex-direction:column; gap:8px; margin:12px 0; }
+#tgHelpModal .tg-help-nail-list > div { display:flex; align-items:center; gap:12px; }
+#tgHelpModal .tg-help-nails { display:inline-flex; align-items:center; gap:2px; min-width:52px; }
+#tgHelpModal .tg-help-archive-head { display:flex; align-items:center; gap:12px; }
+#tgHelpModal .tg-help-archive-icon { display:inline-flex; align-items:center; justify-content:center; width:42px; height:42px; border-radius:50%; color:white; font-size:23px; flex:none; }
+#tgHelpModal .tg-help-green { background:#229653; }
+#tgHelpModal .tg-help-red { background:#c83737; }
+#tgHelpModal .tg-help-section-body hr { border:0; border-top:1px solid var(--card-border); margin:20px 0; }
+#tgHelpModal .tg-help-footer { flex:none; border-top:1px solid var(--header-border); padding-top:13px; display:flex; flex-direction:column; align-items:center; gap:12px; text-align:center; font-size:.87rem; }
+#tgHelpModal .tg-help-footer .tg-help-done { min-height:42px; }
+@media(max-width:600px) {
+  #tgHelpModal { padding:8px; }
+  #tgHelpModal .tg-help-card { width:100%; max-height:95vh; padding:16px 14px; }
+  #tgHelpModal .tg-help-header h2 { font-size:1.12rem; }
+  #tgHelpModal .tg-help-section summary { padding:13px 10px; font-size:.86rem; }
+  #tgHelpModal .tg-help-section-body { padding:12px; }
+}
