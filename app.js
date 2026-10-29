@@ -69,7 +69,7 @@ function initOnboarding() {
     if (nail3) nail3.classList.add('strike-nail-3');
 
     try {
-      localStorage.setItem('tg_onboarding_viewed', 'true');
+      localStorage.setItem('tg_onboarding_viewed_public_v1', 'true');
     } catch (e) {
       console.warn('[Три гвоздя] Ошибка доступа к LocalStorage:', e);
     }
@@ -86,7 +86,7 @@ function initOnboarding() {
 
   let isViewed = false;
   try {
-    isViewed = localStorage.getItem('tg_onboarding_viewed') === 'true';
+    isViewed = localStorage.getItem('tg_onboarding_viewed_public_v1') === 'true';
   } catch (e) {
     isViewed = false;
   }
@@ -112,7 +112,7 @@ function initOnboarding() {
 const STORAGE_KEYS = {
   TASKS: 'tg_tasks',
   SECRETS: 'tg_secrets',
-  ONBOARDING: 'tg_onboarding_viewed'
+  ONBOARDING: 'tg_onboarding_viewed_public_v1'
 };
 
 const StorageAPI = {
