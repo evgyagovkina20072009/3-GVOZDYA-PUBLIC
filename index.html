@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Три гвоздя - Планировщик</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="print.css">
+  <link rel="stylesheet" href="help.css">
+</head>
+<body class="theme-day">
+  <div class="background-overlay"></div>
+
+  <!-- Главный контейнер -->
+  <div class="app-layout">
+    
+    <!-- Шапка приложения -->
+    <header class="app-header">
+      <div class="header-left">
+        <div class="brand-badge" title="3 Гвоздя — Прибей хаос к плану">
+          <!-- Новая эмблема: три кованых светящихся гвоздя по убыванию размера -->
+          <div class="brand-mark">
+            <svg class="forged-nails-emblem" viewBox="0 0 58 76" width="32" height="42" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <defs>
+                <linearGradient id="nightNailGrad" x1="0" y1="0" x2="0" y2="76" gradientUnits="userSpaceOnUse">
+                  <stop offset="0%" stop-color="#ffffff"/>
+                  <stop offset="25%" stop-color="#fffbeb"/>
+                  <stop offset="70%" stop-color="#e2e8f0"/>
+                  <stop offset="100%" stop-color="#94a3b8"/>
+                </linearGradient>
+                <linearGradient id="dayNailGrad" x1="0" y1="0" x2="0" y2="76" gradientUnits="userSpaceOnUse">
+                  <stop offset="0%" stop-color="#0f172a"/>
+                  <stop offset="35%" stop-color="#1e293b"/>
+                  <stop offset="70%" stop-color="#334155"/>
+                  <stop offset="100%" stop-color="#0f172a"/>
+                </linearGradient>
+                <filter id="nightNailGlow" x="-50%" y="-20%" width="200%" height="140%">
+                  <feGaussianBlur stdDeviation="1.5" result="blur"/>
+                  <feComposite in="SourceGraphic" in2="blur" operator="over"/>
+                </filter>
+              </defs>
+
+              <!-- 1. Большой левый гвоздь -->
+              <g class="nail-item nail-left">
+                <polygon points="6,2 18,2 19,4.2 14.5,6.8 9.5,6.8 5,4.2" class="nail-head"/>
+                <path d="M9.5,6.8 H14.5 L12.5,69 L12,74 L11.5,69 Z" class="nail-shaft"/>
+                <line x1="12" y1="3" x2="12" y2="70" class="nail-ridge"/>
+              </g>
+
+              <!-- 2. Средний центральный гвоздь -->
+              <g class="nail-item nail-mid">
+                <polygon points="23,13 35,13 36,15 31.8,17.2 26.2,17.2 22,15" class="nail-head"/>
+                <path d="M26.2,17.2 H31.8 L29.5,68.5 L29,73.5 L28.5,68.5 Z" class="nail-shaft"/>
+                <line x1="29" y1="14" x2="29" y2="69.5" class="nail-ridge"/>
+              </g>
+
+              <!-- 3. Малый правый гвоздь -->
+              <g class="nail-item nail-right">
+                <polygon points="40,24 51,24 52,25.8 48,27.8 43,27.8 39,25.8" class="nail-head"/>
+                <path d="M43,27.8 H48 L46,62.5 L45.5,67 L45,62.5 Z" class="nail-shaft"/>
+                <line x1="45.5" y1="24.8" x2="45.5" y2="63.5" class="nail-ridge"/>
+              </g>
+            </svg>
+          </div>
+
+          <!-- Название и слоган -->
+          <div class="brand-text-block">
+            <div class="brand-title">3 ГВОЗДЯ</div>
+            <div class="brand-slogan">ПРИБЕЙ ХАОС К ПЛАНУ</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="header-center">
+        <!-- Поиск -->
+        <div class="search-container">
+          <input type="text" id="searchInput" class="search-input" placeholder="Поиск по задачам..." autocomplete="off">
+          <div id="searchResults" class="search-results hidden"></div>
+        </div>
+
+        <!-- Навигация по неделям -->
+        <div class="week-nav">
+          <button id="prevWeekBtn" class="btn btn-nav" title="Предыдущая неделя">&larr;</button>
+          <span id="currentWeekRange" class="week-range-label">Загрузка...</span>
+          <button id="nextWeekBtn" class="btn btn-nav" title="Следующая неделя">&rarr;</button>
+          <button id="todayBtn" class="btn btn-today" title="Перейти к текущей неделе">Сегодня</button>
+        </div>
+      </div>
+
+      <div class="header-right">
+        <!-- Кнопка «О планировщике» -->
+        <button id="aboutPlannerBtn" class="btn btn-header-action" title="История и философия планировщика">О планировщике</button>
+        <!-- Шаг 6: архив выполненных и окончательно невыполненных задач -->
+        <button type="button" id="printBtn" class="btn btn-header-action" title="Выбрать период и распечатать план">Печать</button>
+        <!-- Шаг 6: управление данными в одном раскрывающемся меню -->
+        <div class="data-menu-wrapper">
+          <button type="button" id="dataMenuBtn" class="btn btn-header-action" aria-haspopup="true" aria-expanded="false" aria-controls="dataDropdown">Данные ▾</button>
+          <div id="dataDropdown" class="data-dropdown hidden" role="menu">
+            <button type="button" role="menuitem" data-action="backup">💾 Сохранить копию (JSON)</button>
+            <button type="button" role="menuitem" data-action="period">📄 Копировать план за период</button>
+            <button type="button" role="menuitem" data-action="restore">📂 Восстановить из файла</button>
+            <button type="button" role="menuitem" data-action="clear" class="data-menu-danger">🗑 Очистить все данные</button>
+          </div>
+          <input type="file" id="step6ImportInput" accept=".json,application/json" class="hidden">
+        </div>
+        <!-- Архивы справа: значки непосредственно перед годовым календарём -->
+        <div class="header-end-controls">
+          <button type="button" id="archiveCompletedBtn" class="btn btn-archive-completed" title="Выполненные дела" aria-label="Открыть историю выполненных дел">👍</button>
+          <button type="button" id="archiveFailedBtn" class="btn btn-archive-failed" title="Невыполненные дела" aria-label="Открыть историю окончательно невыполненных дел">😈</button>
+
+        <!-- Кнопка вызова годового календаря -->
+        <button id="openYearDrawerBtn" class="btn-calendar-trigger" title="Открыть годовой календарь">
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2">
+            <rect x="3" y="4" width="18" height="18" rx="3"/>
+            <line x1="16" y1="2" x2="16" y2="6"/>
+            <line x1="8" y1="2" x2="8" y2="6"/>
+            <line x1="3" y1="10" x2="21" y2="10"/>
+            <circle cx="8" cy="14" r="1.5" fill="currentColor"/>
+            <circle cx="12" cy="14" r="1.5" fill="currentColor"/>
+            <circle cx="16" cy="14" r="1.5" fill="currentColor"/>
+            <circle cx="8" cy="18" r="1.5" fill="currentColor"/>
+            <circle cx="12" cy="18" r="1.5" fill="currentColor"/>
+            <circle cx="16" cy="18" r="1.5" fill="currentColor"/>
+          </svg>
+        </button>
+        </div>
+      </div>
+    </header>
+
+    <!-- Основной экран: Недельная сетка на 7 колонок -->
+    <main class="main-workspace">
+      <div id="weekGrid" class="week-grid">
+        <!-- 7 колонок генерируются через JS -->
+      </div>
+    </main>
+  </div>
+
+  <!-- Приветственное модальное окно онбординга (Раздел 7 ТЗ — двухколоночный формат без скролла) -->
+  <div id="onboardingModal" class="modal-overlay hidden" role="dialog" aria-modal="true">
+    <div class="modal-card onboarding-card">
+      
+      <!-- Шапка окна: строго по левой стороне, деловая архитектурная композиция -->
+      <div class="onboarding-top">
+        <div class="onboarding-nails-header" aria-label="Три строительных гвоздя">
+          <svg id="onboardingNail1" class="onboarding-nail nail-1" viewBox="0 0 24 38" width="22" height="34" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <rect x="2" y="1" width="20" height="3.5" rx="1.2" fill="url(#metalNailGrad)" stroke="#475569" stroke-width="0.8"/>
+            <path d="M10 4.5H14V28L12 36L10 28V4.5Z" fill="url(#metalNailGrad)" stroke="#475569" stroke-width="0.8"/>
+            <defs>
+              <linearGradient id="metalNailGrad" x1="0" y1="0" x2="1" y2="0">
+                <stop offset="0%" stop-color="#cbd5e1"/>
+                <stop offset="50%" stop-color="#ffffff"/>
+                <stop offset="100%" stop-color="#94a3b8"/>
+              </linearGradient>
+            </defs>
+          </svg>
+
+          <svg id="onboardingNail2" class="onboarding-nail nail-2" viewBox="0 0 24 38" width="18" height="28" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <rect x="3" y="1.5" width="18" height="3" rx="1" fill="url(#metalNailGrad)" stroke="#475569" stroke-width="0.8"/>
+            <path d="M10.5 4.5H13.5V25L12 32L10.5 25V4.5Z" fill="url(#metalNailGrad)" stroke="#475569" stroke-width="0.8"/>
+          </svg>
+
+          <svg id="onboardingNail3" class="onboarding-nail nail-3" viewBox="0 0 24 38" width="15" height="23" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <rect x="4" y="2" width="16" height="2.5" rx="0.8" fill="url(#metalNailGrad)" stroke="#475569" stroke-width="0.8"/>
+            <path d="M11 4.5H13V21L12 27L11 21V4.5Z" fill="url(#metalNailGrad)" stroke="#475569" stroke-width="0.8"/>
+          </svg>
+        </div>
+
+        <div class="onboarding-heading-group">
+          <h2 class="onboarding-title"><span class="accent-hammer">🔨</span> Добро пожаловать в «Три гвоздя»!</h2>
+          <div class="onboarding-slogan">Прибей хаос к плану!</div>
+        </div>
+      </div>
+
+      <!-- Двухколоночный контентный блок без прокрутки -->
+      <div class="onboarding-body-grid">
+        <!-- Левая колонка: Предыстория метода руководителя -->
+        <div class="onboarding-col onboarding-col-story">
+          <p class="onboarding-p">
+            В деловом управлении и тайм-менеджменте известен метод «трёх гвоздей» — простой, но мудрый способ определить истинную важность задач.<br>
+            Время — единственный ресурс, который невозможно вернуть, и не каждое дело заслуживает его одинаково.<br>
+            Метод помогает отличить действительно важное от иллюзии занятости.<br>
+            Ведь искусство планирования — <strong>не успеть всё, а не упустить главное — в работе и в жизни.</strong>
+          </p>
+          <p class="onboarding-p">
+            Мы немного переосмыслили эту историю.
+          </p>
+          <p class="onboarding-p">
+            Здесь ты можешь планировать дела, радоваться победам и переносить то, до чего никак не доходят руки.
+          </p>
+        </div>
+
+        <!-- Правая колонка: Система трёх гвоздей и карточка Чёртика -->
+        <div class="onboarding-col onboarding-col-rules">
+          <ul class="onboarding-list">
+            <li><svg width="46" height="30" viewBox="0 0 46 30" xmlns="http://www.w3.org/2000/svg" aria-label="1 гвоздь" role="img" style="flex:0 0 46px"><g transform="translate(0,0)"><rect x="0.5" y="1" width="12" height="3.5" rx="1" fill="#b4c0cf" stroke="#475569" stroke-width=".7"/><path d="M4.8 4.5H8.2V21L6.5 29L4.8 21Z" fill="#cbd5e1" stroke="#64748b" stroke-width=".7"/><path d="M6 5V24" stroke="#fff" stroke-width="1" opacity=".8"/></g></svg> <span><strong>Первый гвоздь</strong> — ну, бывает!</span></li>
+            <li><svg width="46" height="30" viewBox="0 0 46 30" xmlns="http://www.w3.org/2000/svg" aria-label="2 гвоздя" role="img" style="flex:0 0 46px"><g transform="translate(0,0)"><rect x="0.5" y="1" width="12" height="3.5" rx="1" fill="#b4c0cf" stroke="#475569" stroke-width=".7"/><path d="M4.8 4.5H8.2V21L6.5 29L4.8 21Z" fill="#cbd5e1" stroke="#64748b" stroke-width=".7"/><path d="M6 5V24" stroke="#fff" stroke-width="1" opacity=".8"/></g><g transform="translate(15,0)"><rect x="0.5" y="1" width="12" height="3.5" rx="1" fill="#b4c0cf" stroke="#475569" stroke-width=".7"/><path d="M4.8 4.5H8.2V21L6.5 29L4.8 21Z" fill="#cbd5e1" stroke="#64748b" stroke-width=".7"/><path d="M6 5V24" stroke="#fff" stroke-width="1" opacity=".8"/></g></svg> <span><strong>Второй гвоздь</strong> — опять откладываем?</span></li>
+            <li><svg width="46" height="30" viewBox="0 0 46 30" xmlns="http://www.w3.org/2000/svg" aria-label="3 гвоздя" role="img" style="flex:0 0 46px"><g transform="translate(0,0)"><rect x="0.5" y="1" width="12" height="3.5" rx="1" fill="#b4c0cf" stroke="#475569" stroke-width=".7"/><path d="M4.8 4.5H8.2V21L6.5 29L4.8 21Z" fill="#cbd5e1" stroke="#64748b" stroke-width=".7"/><path d="M6 5V24" stroke="#fff" stroke-width="1" opacity=".8"/></g><g transform="translate(15,0)"><rect x="0.5" y="1" width="12" height="3.5" rx="1" fill="#b4c0cf" stroke="#475569" stroke-width=".7"/><path d="M4.8 4.5H8.2V21L6.5 29L4.8 21Z" fill="#cbd5e1" stroke="#64748b" stroke-width=".7"/><path d="M6 5V24" stroke="#fff" stroke-width="1" opacity=".8"/></g><g transform="translate(30,0)"><rect x="0.5" y="1" width="12" height="3.5" rx="1" fill="#b4c0cf" stroke="#475569" stroke-width=".7"/><path d="M4.8 4.5H8.2V21L6.5 29L4.8 21Z" fill="#cbd5e1" stroke="#64748b" stroke-width=".7"/><path d="M6 5V24" stroke="#fff" stroke-width="1" opacity=".8"/></g></svg> <span><strong>Третий гвоздь</strong> — может, пора разобраться?</span></li>
+          </ul>
+
+          <div class="onboarding-devil-block">
+            <span class="devil-avatar" role="img" aria-label="Чёртик">😈</span>
+            <p class="devil-question">
+              А дальше появляется чёртик. И у него всего один вопрос: «Тебе точно это надо?»
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Нижний блок: Суть и лаконичная объёмная кнопка -->
+      <div class="onboarding-footer">
+        <div class="onboarding-summary">
+          <span class="summary-highlight">«Три гвоздя» — не просто планировщик. Это способ понять, какие задачи действительно важны для тебя.</span>
+          <span class="summary-sub">Не стремись успеть всё. Научись выбирать главное.</span>
+        </div>
+
+        <div class="onboarding-actions">
+          <button id="startAppBtn" class="btn btn-urban-volumetric">
+            Приступить к делу! <span class="btn-hammer-icon">🔨</span>
+          </button>
+          <button id="openDetailedHelpBtn" class="btn btn-urban-volumetric" type="button" aria-label="А теперь подробнее" title="Скоро здесь будет инструкция">
+            А теперь подробнее...
+          </button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Шторка годового календаря (выезжает справа) -->
+  <aside id="yearDrawer" class="year-drawer closed" aria-hidden="true">
+    <div class="drawer-header">
+      <div class="year-navigation">
+        <button id="prevYearBtn" class="drawer-btn" type="button">&larr; Пред</button>
+        <span id="drawerYearLabel" class="drawer-year-title">2026</span>
+        <button id="nextYearBtn" class="drawer-btn" type="button">След &rarr;</button>
+      </div>
+      <button id="closeYearDrawerBtn" class="drawer-close-btn" title="Свернуть календарь">&rarr;</button>
+    </div>
+    <div class="drawer-legend">
+      <span class="legend-item"><span class="legend-circle circle-yellow"></span> Есть активные дела</span>
+      <span class="legend-item"><span class="legend-circle circle-green"></span> Выполнено</span>
+      <span class="legend-item"><span class="legend-circle circle-red"></span> Не выполнено 😈</span>
+    </div>
+    <div id="yearMonthsGrid" class="year-months-grid">
+      <!-- 12 месяцев генерируются скриптом -->
+    </div>
+  </aside>
+
+  <!-- Затемнение при открытой шторке (для клика вне шторки) -->
+  <div id="drawerBackdrop" class="drawer-backdrop hidden"></div>
+
+  <!-- Модальное окно создания / редактирования задачи -->
+  <div id="taskModal" class="modal-overlay hidden" role="dialog" aria-modal="true">
+    <div class="modal-card">
+      <div class="modal-head">
+        <h3 id="modalTitle">Новое дело</h3>
+        <button id="closeModalBtn" class="modal-close">&times;</button>
+      </div>
+      <form id="taskForm">
+        <input type="hidden" id="taskTargetDate">
+        <input type="hidden" id="taskEditingId">
+        <div class="form-group">
+          <label for="taskInputTitle">Суть дела (исполнитель / место):</label>
+          <textarea id="taskInputTitle" required placeholder="Например: Встреча с аудитором, кабинет 304" rows="3"></textarea>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="taskInputTime">Время (опционально):</label>
+            <input type="time" id="taskInputTime">
+          </div>
+          <div class="form-group">
+            <label>Приоритет:</label>
+            <div class="priority-selector">
+              <label class="priority-opt priority-high" title="Важно">
+                <input type="radio" name="taskPriority" value="high" checked>
+                <span>❗ Важно</span>
+              </label>
+              <label class="priority-opt priority-medium" title="Средний">
+                <input type="radio" name="taskPriority" value="medium">
+                <span>☀️ Средне</span>
+              </label>
+              <label class="priority-opt priority-flexible" title="Свободно">
+                <input type="radio" name="taskPriority" value="flexible">
+                <span>😊 Свободно</span>
+              </label>
+            </div>
+          </div>
+        </div>
+        <label class="task-completed-toggle" for="taskInputCompleted">
+          <input type="checkbox" id="taskInputCompleted">
+          <span>Дело выполнено (до срока отметку можно снять)</span>
+        </label>
+        <div class="modal-actions">
+          <button type="button" id="cancelModalBtn" class="btn btn-secondary">Отмена</button>
+          <button type="submit" class="btn btn-primary">Сохранить</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+    <!-- Модальное окно истории изменений под звёздочкой ⭐ (Шаг 4) -->
+  <div id="historyModal" class="modal-overlay hidden" role="dialog" aria-modal="true">
+    <div class="modal-card modal-history">
+      <div class="modal-head">
+        <h3 id="historyModalTitle">История дела ⭐</h3>
+        <button id="closeHistoryModalBtn" class="modal-close">&times;</button>
+      </div>
+      <div id="historyTaskInfo" class="history-task-info"></div>
+      <div id="historyEntriesList" class="history-entries-list"></div>
+      <div class="modal-actions">
+        <button id="closeHistoryBottomBtn" class="btn btn-secondary">Закрыть</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Шаг 5: выбор будущей даты переноса -->
+  <div id="transferModal" class="modal-overlay hidden" role="dialog" aria-modal="true" aria-labelledby="transferModalTitle">
+    <div class="modal-card modal-transfer">
+      <div class="modal-head">
+        <h3 id="transferModalTitle">Перенести дело</h3>
+        <button type="button" id="closeTransferModalBtn" class="modal-close" aria-label="Закрыть">&times;</button>
+      </div>
+      <form id="transferForm">
+        <input type="hidden" id="transferTaskId">
+        <p id="transferTaskTitle" class="transfer-task-title"></p>
+        <div class="form-group">
+          <label for="transferDate">Выбери новую дату:</label>
+          <input id="transferDate" type="date" required>
+        </div>
+        <div class="modal-actions">
+          <button type="button" id="cancelTransferBtn" class="btn btn-secondary">Отмена</button>
+          <button type="submit" class="btn btn-primary">Перенести</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Модальное окно подтверждения удаления -->
+  <div id="confirmDeleteModal" class="modal-overlay hidden" role="dialog" aria-modal="true">
+    <div class="modal-card modal-confirm">
+      <h3>Удалить задачу?</h3>
+      <p id="confirmDeleteText" class="confirm-desc">Вы действительно хотите удалить эту задачу?</p>
+      <div class="modal-actions">
+        <button id="confirmDeleteNoBtn" class="btn btn-secondary">Нет</button>
+        <button id="confirmDeleteYesBtn" class="btn btn-danger">Да</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Шаг 6: общий архив выполненных и окончательно невыполненных дел -->
+  <div id="archiveModal" class="modal-overlay hidden" role="dialog" aria-modal="true" aria-labelledby="archiveTitle">
+    <div class="modal-card modal-archive">
+      <div class="modal-head">
+        <h3 id="archiveTitle">История задач</h3>
+        <button type="button" id="closeArchiveBtn" class="modal-close" aria-label="Закрыть">&times;</button>
+      </div>
+      <p class="archive-help">Порядок по первоначальной дате назначения: новые сверху, старые снизу.</p>
+      <div id="archiveList" class="archive-list"></div>
+      <div class="modal-actions"><button type="button" id="archiveCloseBottomBtn" class="btn btn-secondary">Закрыть</button></div>
+    </div>
+  </div>
+
+  <!-- Шаг 6: копия плана за выбранный период -->
+  <div id="periodModal" class="modal-overlay hidden" role="dialog" aria-modal="true" aria-labelledby="periodTitle">
+    <div class="modal-card modal-period">
+      <div class="modal-head">
+        <h3 id="periodTitle">Копировать план за период</h3>
+        <button type="button" id="closePeriodBtn" class="modal-close" aria-label="Закрыть">&times;</button>
+      </div>
+      <form id="periodForm">
+        <p class="period-help">Будет создан удобный для чтения текстовый файл .txt. Для полного восстановления используй «Сохранить копию (JSON)».</p>
+        <div class="form-row">
+          <div class="form-group"><label for="periodStart">С даты</label><input type="date" id="periodStart" required></div>
+          <div class="form-group"><label for="periodEnd">По дату</label><input type="date" id="periodEnd" required></div>
+        </div>
+        <div class="modal-actions">
+          <button type="button" id="cancelPeriodBtn" class="btn btn-secondary">Отмена</button>
+          <button type="submit" class="btn btn-primary">Скачать план .txt</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Шаг 6: подтверждение полного восстановления или очистки -->
+  <div id="dataConfirmModal" class="modal-overlay hidden" role="dialog" aria-modal="true" aria-labelledby="dataConfirmTitle">
+    <div class="modal-card modal-confirm">
+      <h3 id="dataConfirmTitle">Подтвердить действие?</h3>
+      <p id="dataConfirmDescription" class="confirm-desc"></p>
+      <div class="modal-actions">
+        <button type="button" id="dataConfirmNoBtn" class="btn btn-secondary">Отмена</button>
+        <button type="button" id="dataConfirmYesBtn" class="btn btn-danger">Да, продолжить</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Шаг 7: редактирование секретного напоминания -->
+  <div id="secretEditorModal" class="modal-overlay hidden" role="dialog" aria-modal="true" aria-labelledby="secretEditorTitle">
+    <div class="modal-card modal-secret-editor">
+      <div class="modal-head">
+        <h3 id="secretEditorTitle">Новый секрет</h3>
+        <button type="button" id="closeSecretEditorBtn" class="modal-close" aria-label="Закрыть">&times;</button>
+      </div>
+      <form id="secretEditorForm">
+        <label class="secret-form-label">Выбери значок:</label>
+        <div id="secretIconPalette" class="secret-palette" role="group" aria-label="Палитра секретных значков"></div>
+        <div class="form-group">
+          <label for="secretEditorText">Комментарий (необязательно):</label>
+          <textarea id="secretEditorText" rows="3" maxlength="1000" placeholder="Можно оставить поле пустым"></textarea>
+        </div>
+        <div class="modal-actions">
+          <button type="button" id="cancelSecretEditorBtn" class="btn btn-secondary">Отмена</button>
+          <button type="submit" class="btn btn-primary">Сохранить</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Шаг 7: всплывающее пояснение секретного значка (вне дневной колонки) -->
+  <div id="secretPopover" class="secret-popover hidden" role="dialog" aria-label="Секретное напоминание">
+    <p id="secretPopoverText" class="secret-popover-text"></p>
+    <div class="secret-popover-actions">
+      <button id="secretPopoverEdit" type="button" class="btn btn-secondary">Редактировать</button>
+      <button id="secretPopoverDelete" type="button" class="btn btn-danger">Удалить</button>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+  <script src="print.js"></script>
+  <script src="help.js"></script>
+</body>
+</html>
