@@ -1,0 +1,783 @@
+/*
+ * «Три гвоздя»: мобильный интерфейс. Только экран <= 767px.
+ * Компьютерная версия и печатная форма A4 остаются неизменными.
+ */
+.mobile-day-jump,
+.mobile-quick-add,
+.mobile-add-day {
+  display: none;
+}
+
+@media screen and (max-width: 767px) {
+  html,
+  body {
+    width: 100%;
+    min-width: 0;
+    height: 100%;
+    overflow: hidden;
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    background-attachment: scroll;
+  }
+
+  .app-layout {
+    width: 100%;
+    min-width: 0;
+    height: 100vh;
+    height: 100dvh;
+    padding: max(8px, env(safe-area-inset-top)) 9px max(6px, env(safe-area-inset-bottom));
+    gap: 8px;
+  }
+
+  .app-header {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 8px;
+    padding: 10px;
+    border-radius: 16px;
+    align-items: stretch;
+    flex-shrink: 0;
+    position: relative;
+    z-index: 35;
+  }
+
+  .header-left,
+  .header-center,
+  .header-right {
+    min-width: 0;
+    max-width: none;
+    width: 100%;
+    margin: 0;
+  }
+
+  .header-left {
+    justify-content: center;
+  }
+
+  .brand-badge {
+    gap: 10px;
+  }
+
+  .brand-mark .forged-nails-emblem {
+    width: 28px;
+    height: 36px;
+  }
+
+  .brand-title {
+    font-size: 1.27rem;
+    letter-spacing: .13em;
+  }
+
+  .brand-slogan {
+    font-size: .57rem;
+    letter-spacing: .14em;
+    white-space: normal;
+  }
+
+  .header-right {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+
+  .header-right > .btn-header-action,
+  .header-right > .data-menu-wrapper > .btn-header-action {
+    min-height: 40px;
+    padding: 7px 10px;
+    font-size: .78rem;
+    font-weight: 700;
+    white-space: nowrap;
+  }
+
+  .header-right > .data-menu-wrapper {
+    position: relative;
+    flex: 0 0 auto;
+  }
+
+  .header-end-controls {
+    gap: 6px;
+    flex: 0 0 auto;
+    margin: 0;
+  }
+
+  .header-end-controls #archiveCompletedBtn,
+  .header-end-controls #archiveFailedBtn,
+  .header-end-controls #openYearDrawerBtn {
+    flex: 0 0 40px;
+    width: 40px;
+    height: 40px;
+    min-height: 40px;
+    border-radius: 11px;
+  }
+
+  .header-end-controls #openYearDrawerBtn svg {
+    width: 22px;
+    height: 22px;
+  }
+
+  .header-center {
+    display: flex;
+    flex-direction: column-reverse;
+    align-items: stretch;
+    gap: 8px;
+  }
+
+  .week-nav {
+    width: 100%;
+    display: grid;
+    grid-template-columns: 42px minmax(0, 1fr) 42px 68px;
+    gap: 5px;
+    align-items: center;
+  }
+
+  .week-range-label {
+    min-width: 0;
+    max-width: 100%;
+    font-size: .79rem;
+    line-height: 1.22;
+    text-align: center;
+    overflow-wrap: anywhere;
+  }
+
+  #prevWeekBtn,
+  #nextWeekBtn,
+  #todayBtn {
+    height: 42px;
+    min-width: 0;
+    border-radius: 10px;
+    font-weight: 800;
+    padding: 5px;
+  }
+
+  .search-container {
+    z-index: 180;
+    width: 100%;
+  }
+
+  .search-input,
+  .form-group input,
+  .form-group textarea,
+  #secretEditorText,
+  #transferDate {
+    font-size: 16px;
+  }
+
+  .search-input {
+    height: 42px;
+    padding: 9px 12px;
+    border-radius: 10px;
+  }
+
+  .search-results {
+    left: 0 !important;
+    right: 0;
+    transform: none !important;
+    width: 100%;
+    max-height: min(38dvh, 270px);
+  }
+
+  .data-dropdown {
+    right: 0;
+    left: auto;
+    max-width: calc(100vw - 24px);
+    max-height: 55dvh;
+    overflow-y: auto;
+  }
+
+  /* Короткая строка быстрого перехода по дням недели */
+  .mobile-day-jump {
+    display: flex;
+    align-items: stretch;
+    gap: 5px;
+    width: 100%;
+    min-width: 0;
+    flex: 0 0 auto;
+    overflow-x: auto;
+    padding: 1px 0 4px;
+    scrollbar-width: thin;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .mobile-day-chip {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    flex: 1 0 42px;
+    min-width: 42px;
+    min-height: 52px;
+    padding: 5px 2px;
+    border: 1px solid var(--header-border);
+    border-radius: 11px;
+    background: var(--header-bg);
+    color: var(--text-main);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    cursor: pointer;
+  }
+
+  .mobile-day-chip .mobile-chip-name {
+    font-size: .70rem;
+    line-height: 1.2;
+    font-weight: 750;
+    opacity: .8;
+  }
+
+  .mobile-day-chip .mobile-chip-date {
+    font-size: 1.05rem;
+    font-weight: 850;
+    line-height: 1.2;
+  }
+
+  .mobile-day-chip.is-today {
+    border-color: var(--today-border);
+    box-shadow: inset 0 0 0 1px var(--today-border);
+  }
+
+  .mobile-day-chip.is-current {
+    background: #1e3a5f;
+    border-color: #93c5fd;
+    color: #fff;
+    box-shadow: 0 3px 9px rgba(15, 23, 42, .22);
+  }
+
+  .mobile-day-chip:focus-visible,
+  .mobile-add-day:focus-visible,
+  .mobile-quick-add:focus-visible {
+    outline: 3px solid #facc15;
+    outline-offset: 2px;
+  }
+
+  /* Семь дней как вертикальная лента карточек */
+  .main-workspace {
+    display: block;
+    flex: 1 1 auto;
+    min-width: 0;
+    min-height: 0;
+    overflow-y: auto;
+    overflow-x: hidden;
+    overscroll-behavior: contain;
+    -webkit-overflow-scrolling: touch;
+    padding: 0 0 calc(77px + env(safe-area-inset-bottom));
+    scroll-padding-top: 6px;
+  }
+
+  .week-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    align-items: start;
+    width: 100%;
+    height: auto;
+    min-height: 0;
+    gap: 9px;
+    padding: 1px 1px 8px;
+  }
+
+  .day-column {
+    width: 100%;
+    min-width: 0;
+    max-height: none;
+    padding: 11px 12px;
+    border-radius: 15px;
+    box-shadow: 0 5px 16px rgba(0, 0, 0, .13);
+    scroll-margin-top: 6px;
+  }
+
+  .day-column.expanded,
+  .day-column.collapsed {
+    min-height: 62px;
+    height: auto;
+    max-height: none;
+  }
+
+  .day-column.today {
+    border-width: 2px;
+  }
+
+  .day-header {
+    min-height: 43px;
+    gap: 9px;
+  }
+
+  .day-column.collapsed .day-header {
+    min-height: 42px;
+  }
+
+  .day-header-info {
+    flex: 1 1 auto;
+    min-width: 0;
+    flex-direction: row;
+    align-items: baseline;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .day-name,
+  .day-column.today .day-name {
+    font-size: .90rem;
+    line-height: 1.2;
+    color: var(--text-main);
+  }
+
+  .day-date,
+  .day-column.today .day-date {
+    margin: 0;
+    font-size: 1.07rem;
+    line-height: 1.2;
+  }
+
+  .btn-toggle-col,
+  .mobile-add-day {
+    width: 42px;
+    height: 42px;
+    min-height: 42px;
+    border-radius: 11px;
+    flex: 0 0 42px;
+    font-size: 1rem;
+    touch-action: manipulation;
+  }
+
+  .mobile-add-day {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid #2563eb;
+    background: #2563eb;
+    color: #fff;
+    font-size: 1.45rem;
+    font-weight: 700;
+    cursor: pointer;
+  }
+
+  .day-tasks-container {
+    flex: initial;
+    min-height: 0;
+    max-height: none;
+    overflow: visible;
+    gap: 9px;
+    padding-right: 0;
+    margin-top: 5px;
+  }
+
+  .task-card {
+    min-width: 0;
+    padding: 11px 12px;
+    border-radius: 12px;
+    font-size: .97rem;
+    line-height: 1.42;
+    gap: 8px;
+  }
+
+  .task-card-title {
+    font-size: 1rem;
+    line-height: 1.45;
+    overflow-wrap: anywhere;
+  }
+
+  .task-card-meta {
+    gap: 7px;
+  }
+
+  .task-card-time {
+    padding: 5px 9px;
+    border-radius: 7px;
+    font-size: .85rem;
+  }
+
+  .task-priority-icon {
+    font-size: 1.15rem;
+  }
+
+  .task-card-actions {
+    gap: 3px;
+  }
+
+  .btn-task-action {
+    min-width: 40px;
+    min-height: 40px;
+    padding: 6px;
+    font-size: 1rem;
+    opacity: 1;
+    touch-action: manipulation;
+  }
+
+  .btn-task-done {
+    min-width: 40px;
+    min-height: 40px;
+  }
+
+  .task-transfer-actions {
+    align-items: center;
+    gap: 7px;
+    padding-top: 10px;
+  }
+
+  .btn-task-transfer {
+    min-height: 42px;
+    padding: 10px 12px;
+    border-radius: 9px;
+    font-size: .83rem;
+    font-weight: 700;
+    touch-action: manipulation;
+  }
+
+  .task-transfer-badge {
+    min-height: 34px;
+    padding: 5px 7px;
+    font-size: .72rem;
+  }
+
+  .btn-add-task-quick {
+    min-height: 44px;
+    margin-top: 7px;
+    border-radius: 10px;
+    font-size: .95rem;
+    font-weight: 750;
+  }
+
+  .day-secret-container {
+    margin-top: 10px;
+    padding-top: 9px;
+  }
+
+  .secret-icons-row {
+    gap: 7px;
+    flex-wrap: wrap;
+  }
+
+  .secret-icon-button,
+  .secret-add-button {
+    flex: 0 0 42px;
+    width: 42px;
+    min-width: 42px;
+    height: 42px;
+    border-radius: 10px;
+    font-size: 1.3rem;
+  }
+
+  .secret-popover {
+    max-width: calc(100vw - 20px);
+    max-height: 70dvh;
+    overflow-y: auto;
+  }
+
+  .secret-popover-actions .btn {
+    min-height: 42px;
+    font-size: .85rem;
+    padding: 8px 11px;
+  }
+
+  /* Добавить дело из любой недели: кнопка только для дат не в прошлом. */
+  .mobile-quick-add {
+    position: fixed;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    bottom: calc(14px + env(safe-area-inset-bottom));
+    right: calc(14px + env(safe-area-inset-right));
+    z-index: 85;
+    min-width: 148px;
+    min-height: 54px;
+    padding: 11px 20px;
+    border: 1px solid #1d4ed8;
+    border-radius: 18px;
+    background: linear-gradient(160deg, #2563eb, #1d4ed8);
+    color: #fff;
+    box-shadow: 0 10px 28px rgba(18, 48, 93, .42);
+    font: 800 1rem/1.2 -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    cursor: pointer;
+    touch-action: manipulation;
+  }
+
+  .mobile-quick-add[hidden] {
+    display: none !important;
+  }
+
+  .toast-notification {
+    bottom: calc(87px + env(safe-area-inset-bottom));
+    max-width: calc(100vw - 24px);
+    left: 12px;
+    right: 12px;
+    width: auto;
+    z-index: 190;
+  }
+
+  /* Модальные окна становятся прокручиваемыми и доступны с клавиатурой. */
+  .modal-overlay {
+    padding: max(10px, env(safe-area-inset-top)) 8px max(10px, env(safe-area-inset-bottom));
+    align-items: center;
+  }
+
+  .modal-card,
+  .modal-card.onboarding-card {
+    box-sizing: border-box;
+    width: 100%;
+    max-width: none;
+    max-height: calc(100dvh - 25px);
+    padding: 17px 15px;
+    border-radius: 16px;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+  }
+
+  .modal-card.onboarding-card .onboarding-body-grid {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 14px;
+  }
+
+  .onboarding-top {
+    gap: 8px;
+    padding-bottom: 10px;
+    margin-bottom: 12px;
+    align-items: flex-start;
+  }
+
+  .onboarding-nails-header {
+    gap: 4px;
+    padding: 4px 5px;
+  }
+
+  .onboarding-title {
+    font-size: clamp(1rem, 4.7vw, 1.28rem);
+    line-height: 1.25;
+  }
+
+  .onboarding-slogan {
+    margin-left: 0;
+    font-size: .67rem;
+    letter-spacing: .08em;
+    line-height: 1.25;
+  }
+
+  .onboarding-col {
+    gap: 10px;
+  }
+
+  .onboarding-p {
+    text-align: left;
+    font-size: .94rem;
+    line-height: 1.52;
+  }
+
+  .onboarding-list li,
+  .devil-question {
+    font-size: .9rem;
+    line-height: 1.4;
+  }
+
+  .onboarding-list li {
+    padding: 9px 8px;
+  }
+
+  .onboarding-footer {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 13px;
+  }
+
+  .summary-highlight {
+    font-size: 1rem;
+  }
+
+  .onboarding-actions {
+    width: 100%;
+    gap: 9px;
+  }
+
+  .onboarding-actions .btn-urban-volumetric {
+    width: 100%;
+    min-height: 48px;
+    white-space: normal;
+    font-size: .94rem;
+  }
+
+  .modal-actions {
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .modal-actions .btn {
+    min-height: 44px;
+    padding: 9px 13px;
+    font-size: .92rem;
+    flex: 1 1 110px;
+  }
+
+  .modal-head {
+    gap: 10px;
+    margin-bottom: 15px;
+  }
+
+  .modal-close {
+    flex: 0 0 42px;
+    width: 42px;
+    height: 42px;
+    font-size: 1.6rem;
+  }
+
+  .form-row {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 10px;
+  }
+
+  .form-group input,
+  .form-group textarea {
+    min-width: 0;
+    width: 100%;
+    min-height: 44px;
+  }
+
+  .priority-opt {
+    min-height: 38px;
+    font-size: .95rem;
+  }
+
+  .completion-checkbox-label {
+    min-height: 42px;
+  }
+
+  /* Годовой календарь: полноэкранная панель с читаемыми датами */
+  .year-drawer {
+    box-sizing: border-box;
+    width: 100vw;
+    min-width: 0;
+    max-width: none;
+    height: 100vh;
+    height: 100dvh;
+    padding: max(14px, env(safe-area-inset-top)) 12px max(14px, env(safe-area-inset-bottom));
+    overflow-y: auto;
+  }
+
+  .drawer-header {
+    flex-wrap: wrap;
+    gap: 10px;
+    justify-content: space-between;
+  }
+
+  .year-navigation {
+    gap: 7px;
+  }
+
+  .drawer-btn,
+  .drawer-close-btn {
+    min-width: 40px;
+    min-height: 42px;
+    font-size: .9rem;
+  }
+
+  .drawer-legend {
+    flex-wrap: wrap;
+    gap: 6px 12px;
+    line-height: 1.4;
+  }
+
+  .year-months-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+  }
+
+  .year-month {
+    min-width: 0;
+    padding: 10px 7px;
+  }
+
+  .year-date-button {
+    font-size: .78rem;
+  }
+
+  .archive-list,
+  .history-entries-list {
+    max-height: 52dvh;
+  }
+
+  .archive-record-info {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  /* Печатный предпросмотр: прокрутка листов, но формат A4 не меняется. */
+  #plannerPrintInterface {
+    padding: 7px;
+  }
+
+  #plannerPrintInterface .pp-panel {
+    padding: 11px 8px;
+    width: 100%;
+    max-height: 96dvh;
+  }
+
+  #plannerPrintInterface .pp-titlebar h2 {
+    font-size: 1rem;
+  }
+
+  #plannerPrintInterface .pp-input-row,
+  #plannerPrintInterface .pp-buttons {
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  #plannerPrintInterface .pp-buttons button {
+    min-height: 44px;
+  }
+
+  #plannerPrintInterface .pp-pages {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+}
+
+@media screen and (max-width: 479px) {
+  .year-months-grid {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 12px;
+  }
+
+  .year-date-button {
+    font-size: .85rem;
+  }
+
+  .year-month-days {
+    gap: 4px;
+  }
+
+  .modal-card.onboarding-card {
+    padding: 14px 12px;
+  }
+}
+
+@media screen and (max-width: 359px) {
+  .app-header {
+    padding: 8px;
+  }
+
+  .header-right {
+    gap: 4px;
+  }
+
+  .header-right > .btn-header-action,
+  .header-right > .data-menu-wrapper > .btn-header-action {
+    padding-left: 6px;
+    padding-right: 6px;
+    font-size: .73rem;
+  }
+
+  .week-nav {
+    grid-template-columns: 40px minmax(0, 1fr) 40px 59px;
+    gap: 3px;
+  }
+
+  .mobile-day-chip {
+    min-width: 42px;
+  }
+}
+
+@media screen and (prefers-reduced-motion: reduce) {
+  .mobile-day-jump,
+  .main-workspace {
+    scroll-behavior: auto;
+  }
+}

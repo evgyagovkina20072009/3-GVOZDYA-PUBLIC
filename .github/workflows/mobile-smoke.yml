@@ -1,0 +1,100 @@
+name: Check mobile planner layout
+
+on:
+  push:
+    branches: [feature/mobile-responsive]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  mobile-smoke:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Install browser testing dependencies
+        run: |
+          npm install --no-save playwright@1.56.1
+          npx playwright install --with-deps chromium
+      - name: Run phone and desktop checks
+        run: |
+          python3 -m http.server 8765 >/tmp/three-nails-site.log 2>&1 &
+          sleep 2
+          node --input-type=module <<'NODE'
+          import assert from 'node:assert/strict';
+          import { chromium } from 'playwright';
+
+          const browser = await chromium.launch({ headless: true });
+          try {
+            for (const width of [320, 375, 390, 430, 767, 1280]) {
+              const context = await browser.newContext({ viewport: { width, height: 800 }, isMobile: width < 768, hasTouch: width < 768 });
+              const page = await context.newPage();
+              const errors = [];
+              page.on('pageerror', error => errors.push(error.message));
+              await page.goto('http://127.0.0.1:8765/index.html', { waitUntil: 'domcontentloaded' });
+              await page.waitForTimeout(350);
+
+              assert.equal(await page.locator('#onboardingModal').isVisible(), true, 'first-run welcome is visible');
+              if (width < 768) {
+                const welcome = await page.locator('.onboarding-card').boundingBox();
+                assert.ok(welcome.width <= width + 2, 'welcome fits viewport at ' + width);
+              }
+              await page.locator('#startAppBtn').click();
+              await page.waitForTimeout(1450);
+
+              assert.equal(await page.locator('.day-column').count(), 7, 'seven days rendered');
+              if (width < 768) {
+                assert.equal(await page.locator('.mobile-day-chip:visible').count(), 7, 'seven day tabs rendered at ' + width);
+                assert.equal(await page.locator('#mobileQuickAdd').isVisible(), true, 'add task button at ' + width);
+                const dims = await page.evaluate(() => ({
+                  scrollWidth: document.documentElement.scrollWidth,
+                  bodyWidth: document.body.scrollWidth,
+                  innerWidth: window.innerWidth,
+                  gridWidth: document.querySelector('.week-grid').getBoundingClientRect().width,
+                  cardWidth: document.querySelector('.day-column').getBoundingClientRect().width
+                }));
+                console.log('Mobile ' + width + ': ' + JSON.stringify(dims));
+                assert.ok(dims.scrollWidth <= width + 2, 'no page horizontal overflow at ' + width);
+                assert.ok(dims.cardWidth <= width + 2, 'day fits at ' + width);
+
+                if (width === 390) {
+                  await page.locator('#mobileQuickAdd').click();
+                  assert.equal(await page.locator('#taskModal').isVisible(), true, 'mobile quick task opens modal');
+                  await page.locator('#taskInputTitle').fill('Мобильная проверка');
+                  await page.locator('#taskForm button[type=submit]').click();
+                  await page.waitForTimeout(150);
+                  const saved = await page.evaluate(() => window.StorageAPI.getTasks().some(t => t.title === 'Мобильная проверка'));
+                  assert.ok(saved, 'task saved in localStorage');
+                  await page.reload({ waitUntil: 'domcontentloaded' });
+                  await page.waitForTimeout(400);
+                  const savedAfter = await page.evaluate(() => window.StorageAPI.getTasks().some(t => t.title === 'Мобильная проверка'));
+                  assert.ok(savedAfter, 'task persists on reload');
+                  await page.locator('#openYearDrawerBtn').click();
+                  assert.equal(await page.locator('#yearDrawer').getAttribute('aria-hidden'), 'false', 'mobile calendar opens');
+                  await page.locator('#closeYearDrawerBtn').click();
+                  await page.locator('#aboutPlannerBtn').click();
+                  await page.locator('#openDetailedHelpBtn').click();
+                  assert.equal(await page.locator('#tgHelpModal details').count(), 5, 'five help sections');
+                  await page.locator('#tgHelpModal details').last().locator('summary').click();
+                  assert.equal(await page.locator('#tgHelpModal details').last().getAttribute('open'), '', 'help accordion opens');
+                }
+              } else {
+                assert.equal(await page.locator('#mobileDayJump').isVisible(), false, 'day tabs hidden on desktop');
+                assert.equal(await page.locator('#mobileQuickAdd').isVisible(), false, 'mobile action hidden on desktop');
+                assert.equal(await page.locator('.mobile-add-day:visible').count(), 0, 'mobile day buttons hidden on desktop');
+                const columns = await page.locator('.week-grid').evaluate(el => getComputedStyle(el).gridTemplateColumns.split(' ').length);
+                assert.equal(columns, 7, 'desktop remains seven columns');
+              }
+              assert.deepEqual(errors, [], 'no JavaScript runtime errors at ' + width);
+              await context.close();
+            }
+            console.log('PASS: mobile and desktop UI smoke checks');
+          } finally {
+            await browser.close();
+          }
+          NODE
