@@ -24,6 +24,12 @@ jobs:
         uses: actions/checkout@v4
       - name: Configure GitHub Pages
         uses: actions/configure-pages@v5
+      - name: Prepare local city backgrounds
+        run: |
+          mkdir -p assets
+          curl --fail --location --retry 3 --silent --show-error 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=2000&q=80' --output assets/city-day.jpg
+          curl --fail --location --retry 3 --silent --show-error 'https://images.unsplash.com/photo-1514565131-fce0801e5785?auto=format&fit=crop&w=2000&q=80' --output assets/city-night.jpg
+          test -s assets/city-day.jpg && test -s assets/city-night.jpg
       - name: Upload website files
         uses: actions/upload-pages-artifact@v3
         with:
