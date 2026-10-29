@@ -75,6 +75,16 @@ body {
   transition: background-image var(--transition-speed) ease, color var(--transition-speed) ease;
 }
 
+/* Public Pages: explicit scenic backgrounds, independent of CSS variable caching. */
+body.theme-day {
+  background-image: linear-gradient(rgba(241, 245, 249, 0.35), rgba(226, 232, 240, 0.40)), url("./assets/city-day.jpg?v=20261029b");
+  background-color: #ccd7e3;
+}
+body.theme-night {
+  background-image: linear-gradient(rgba(15, 23, 42, 0.45), rgba(2, 6, 23, 0.56)), url("./assets/city-night.jpg?v=20261029b");
+  background-color: #102139;
+}
+
 .background-overlay {
   position: fixed;
   inset: 0;
