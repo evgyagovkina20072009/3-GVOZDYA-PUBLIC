@@ -37,3 +37,20 @@ jobs:
       - name: Deploy website
         id: deployment
         uses: actions/deploy-pages@v4
+      - name: Verify live cityscape image files
+        shell: bash
+        run: |
+          site="https://evgyagovkina20072009.github.io/3-GVOZDYA-PUBLIC"
+          for file in assets/city-day.jpg assets/city-night.jpg style.css index.html; do
+            success=0
+            for attempt in 1 2 3 4 5; do
+              status=$(curl -L -s -o /dev/null -w '%{http_code}' --max-time 15 "$site/$file?verify=${GITHUB_SHA}" || true)
+              echo "$file: HTTP $status (attempt $attempt)"
+              if [ "$status" = "200" ]; then success=1; break; fi
+              sleep 5
+            done
+            if [ "$success" != "1" ]; then
+              echo "::error::$file isn't reachable at the published site"
+              exit 1
+            fi
+          done
