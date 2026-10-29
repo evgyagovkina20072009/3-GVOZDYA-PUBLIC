@@ -1,0 +1,119 @@
+/* Шаг 8 — отдельная печатная форма, не затрагивающая экранные колонки */
+#plannerPrintInterface[hidden], #plannerPrintInterface [hidden] { display: none !important; }
+#plannerPrintInterface {
+  position: fixed; inset: 0; z-index: 999999; padding: 16px;
+  background: rgba(12,24,38,.8); color: #24354a;
+  display: flex; justify-content: center; align-items: center;
+  font-family: Arial, sans-serif;
+}
+#plannerPrintInterface * { box-sizing: border-box; }
+#plannerPrintInterface .pp-panel {
+  width: min(1240px,100%); max-height: 96%; min-height: 180px; overflow: auto;
+  background: #fff; border-radius: 12px; padding: 14px;
+}
+#plannerPrintInterface .pp-titlebar { display:flex; justify-content:space-between; align-items:center; padding:4px 8px 8px; border-bottom:1px solid #cbd5e1; }
+#plannerPrintInterface .pp-titlebar h2 { margin:0; font-size:20px; color:#22364b; }
+#plannerPrintInterface button { min-height:42px; padding:8px 16px; border:1px solid #b7c8d8; border-radius:6px; cursor:pointer; font-size:15px; background:#edf1f5; color:#22364b; }
+#plannerPrintInterface button:hover { background:#dde8f3; }
+#plannerPrintInterface button:disabled { opacity:.5; cursor:not-allowed; }
+#plannerPrintInterface #ppPreviewButton, #plannerPrintInterface #ppPrint { background:#253d55; color:white; }
+#plannerPrintInterface .pp-input-row, #plannerPrintInterface .pp-buttons { display:flex; flex-wrap:wrap; gap:12px; align-items:center; }
+#plannerPrintInterface .pp-buttons { justify-content:flex-end; margin:12px 8px; }
+#plannerPrintInterface #ppForm { padding:12px 8px; }
+#plannerPrintInterface #ppForm p { margin:0 0 12px; }
+#plannerPrintInterface .pp-input-row label { display:flex; flex-direction:column; gap:5px; font-size:14px; font-weight:600; }
+#plannerPrintInterface .pp-input-row input { font:inherit; min-height:42px; padding:7px; border:1px solid #98a8b9; border-radius:5px; }
+#plannerPrintInterface .pp-preview { background:#e9edf3; border-radius:6px; padding:8px 0; }
+#plannerPrintInterface .pp-pages { padding:10px 8px; min-width:0; }
+#plannerPrintInterface .pp-message { margin:8px; font-size:14px; }
+#plannerPrintInterface .pp-message.pp-error { color:#b42318; font-weight:600; }
+#plannerPrintInterface .pp-scale-wrap { margin:0 auto 20px; position:relative; }
+#plannerPrintInterface .pp-sheet {
+  width:297mm; height:210mm; padding:10mm 11mm 7mm; background:white; color:#24354a;
+  display:flex; flex-direction:column; overflow:hidden;
+  box-shadow:0 6px 20px rgba(27,46,66,.22); transform-origin:top left;
+}
+#plannerPrintInterface .pp-sheet-header {
+  height:25mm; flex-shrink:0; display:flex; align-items:flex-start; justify-content:space-between;
+  gap:10mm; border-bottom:1px solid #cbd5e1; padding:2mm 0 0;
+}
+#plannerPrintInterface .pp-brand { font-size:20pt; font-weight:800; line-height:1.05; white-space:nowrap; }
+#plannerPrintInterface .pp-month { font-size:25pt; font-weight:900; line-height:1.05; letter-spacing:.025em; white-space:nowrap; display:flex; flex-direction:row; align-items:baseline; justify-content:flex-end; gap:6mm; }
+#plannerPrintInterface .pp-page-range { order:-1; font-size:12pt; font-weight:700; color:#475569; letter-spacing:.01em; }
+#plannerPrintInterface .pp-weeks {
+  flex:1; min-height:0; display:flex; flex-direction:column; gap:2mm;
+  padding-top:3mm; padding-bottom:2mm;
+}
+#plannerPrintInterface .pp-print-date {
+  flex:0 0 auto; align-self:flex-end; text-align:right;
+  font-size:6pt; line-height:1; font-weight:400; color:#788392;
+  padding-top:1mm;
+}
+#plannerPrintInterface .pp-week { display:flex; flex-direction:column; flex:0 0 auto; min-height:0; break-inside:avoid; }
+#plannerPrintInterface .pp-week h3 { margin:0; height:6mm; flex-shrink:0; font-size:9pt; display:flex; align-items:center; font-weight:700; }
+#plannerPrintInterface .pp-week.pp-active { flex:0 0 auto; }
+#plannerPrintInterface .pp-week.pp-empty { flex:0 0 14mm; }
+#plannerPrintInterface .pp-no-plans {
+  flex:1; display:flex; justify-content:center; align-items:center; font-weight:600; font-size:11px;
+  border:1px solid #cbd5e1; border-radius:4px; background:#eef0f2; color:#738195;
+}
+#plannerPrintInterface .pp-days { display:grid; grid-template-columns:repeat(7,minmax(0,1fr)); gap:1mm; min-height:0; flex:none; }
+#plannerPrintInterface .pp-day { background:#fff; border:1px solid #cbd5e1; min-width:0; overflow:visible; display:flex; flex-direction:column; }
+#plannerPrintInterface .pp-day:nth-child(2), #plannerPrintInterface .pp-day:nth-child(4) { background:#edf1f5; }
+#plannerPrintInterface .pp-day:nth-child(6) { background:#e0f3e8; }
+#plannerPrintInterface .pp-day:nth-child(7) { background:#c7e6d3; }
+#plannerPrintInterface .pp-day.pp-outside { background:#f6f7f8; color:#a0a9b5; }
+#plannerPrintInterface .pp-day b {
+  display:block; text-align:center; border-bottom:1px solid #cbd5e1;
+  font-size:8pt; line-height:1.3; padding:1.2mm 0; font-weight:700;
+}
+#plannerPrintInterface .pp-day-content { padding:2mm 1.4mm; overflow-wrap:anywhere; font-size:var(--pp-task-size,10px); line-height:1.2; display:flex; flex-direction:column; flex:1 1 auto; min-height:0; }
+#plannerPrintInterface .pp-task { margin-bottom:1.7mm; break-inside:avoid; }
+#plannerPrintInterface .pp-task strong { display:block; margin-bottom:1mm; color:#3d536a; }
+#plannerPrintInterface .pp-priority-icon { display:inline-block; font-size:11px; line-height:1; vertical-align:baseline; }
+#plannerPrintInterface .pp-secrets { display:flex; flex-wrap:wrap; align-items:center; justify-content:flex-start; gap:1.5mm; margin-top:auto; padding:1.5mm; min-height:8mm; background:#e8eef7; border:1px solid #adbfda; border-radius:2mm; break-inside:avoid; flex-shrink:0; }
+#plannerPrintInterface .pp-secrets .pp-icon-box { display:inline-flex; align-items:center; margin:0; }
+#plannerPrintInterface .pp-secrets .pp-icon { font-size:13pt; }
+#plannerPrintInterface .pp-secrets .pp-cross { width:17px; height:17px; }
+#plannerPrintInterface .pp-icon-box { display:inline-block; vertical-align:middle; margin:1mm 1mm 0 0; }
+#plannerPrintInterface .pp-icon { font-size:17pt; }
+#plannerPrintInterface .pp-cross { width:22px; height:22px; vertical-align:middle; }
+#plannerPrintInterface .pp-other-label { color:#a0a9b5; }
+@media print {
+  @page { size:A4 landscape; margin:0; }
+  html, body { margin:0 !important; padding:0 !important; background:#fff !important; overflow:visible !important; }
+  body > :not(#plannerPrintInterface) { display:none !important; }
+  #plannerPrintInterface:not([hidden]) {
+    position:static !important; inset:auto !important; padding:0 !important;
+    margin:0 !important; background:none !important; display:block !important;
+    width:auto !important; height:auto !important; overflow:visible !important;
+  }
+  #plannerPrintInterface:not([hidden]) .pp-panel {
+    width:auto !important; height:auto !important; max-height:none !important;
+    margin:0 !important; padding:0 !important; border:0 !important;
+    border-radius:0 !important; overflow:visible !important;
+  }
+  #plannerPrintInterface:not([hidden]) .pp-titlebar,
+  #plannerPrintInterface:not([hidden]) #ppForm,
+  #plannerPrintInterface:not([hidden]) .pp-buttons,
+  #plannerPrintInterface:not([hidden]) .pp-message { display:none !important; }
+  #plannerPrintInterface:not([hidden]) .pp-preview,
+  #plannerPrintInterface:not([hidden]) .pp-pages {
+    display:block !important; padding:0 !important; margin:0 !important;
+    background:none !important; overflow:visible !important;
+  }
+  #plannerPrintInterface:not([hidden]) .pp-scale-wrap {
+    margin:0 !important; width:297mm !important; height:210mm !important;
+    break-after:page; page-break-after:always; overflow:hidden !important;
+  }
+  #plannerPrintInterface:not([hidden]) .pp-scale-wrap:last-child {
+    break-after:auto; page-break-after:auto;
+  }
+  #plannerPrintInterface:not([hidden]) .pp-sheet {
+    transform:none !important; box-shadow:none !important;
+    width:297mm !important; height:210mm !important;
+  }
+  #plannerPrintInterface:not([hidden]) * {
+    -webkit-print-color-adjust:exact !important; print-color-adjust:exact !important;
+  }
+}
