@@ -22,27 +22,6 @@
     const aboutButton = document.getElementById('aboutPlannerBtn');
     const todayButton = document.getElementById('todayBtn');
     const rangeLabel = document.getElementById('currentWeekRange');
-    const motivation = document.querySelector('.planner-motivation');
-    const fullMotivation = 'Ты молодец, всё сделал. План на сегодня есть — можешь выдохнуть.';
-    const partialMotivation = 'Ты молодец, первое дело сделано! Так держать.';
-
-    function updateMotivation() {
-      if (!motivation) return;
-      // Похвала относится только к выбранному дню. Пустой план не достижение.
-      const tasks = typeof StorageAPI !== 'undefined' && selectedDate
-        ? StorageAPI.getTasksByDate(selectedDate)
-        : [];
-      const completed = tasks.filter(task => task.completed === true && task.failed !== true);
-      motivation.hidden = completed.length === 0;
-      if (completed.length) {
-        const allDone = tasks.length > 0 && tasks.every(task => task.completed === true && task.failed !== true);
-        motivation.textContent = allDone ? fullMotivation : partialMotivation;
-        motivation.setAttribute('aria-label', 'Результат за ' + selectedDate.split('-').reverse().join('.'));
-      } else {
-        motivation.removeAttribute('aria-label');
-      }
-    }
-
     const headerRight = document.querySelector('.header-right');
     const centerRow = document.querySelector('.header-center');
     const weekNav = document.querySelector('.week-nav');
@@ -187,7 +166,6 @@
 
     function setSelected(dateISO, scrollToDay) {
       selectedDate = dateISO;
-      updateMotivation();
       nav.querySelectorAll('.mobile-day-chip').forEach(button => {
         const active = button.dataset.date === selectedDate;
         button.classList.toggle('is-current', active);
@@ -219,6 +197,24 @@
         if (header && !header.dataset.motivationDayBound) {
           header.dataset.motivationDayBound = 'true';
           header.addEventListener('click', () => setSelected(day.dataset.date, false));
+        }
+      }
+
+      // Поощрение принадлежит только полностью завершённому дню.
+      // Не показываем его при пустом или частично выполненном плане.
+      if (mobileQuery.matches && typeof StorageAPI !== 'undefined') {
+        for (const day of days) {
+          const tasks = StorageAPI.getTasksByDate(day.dataset.date);
+          const allDone = tasks.length > 0 &&
+            tasks.every(task => task.completed === true && task.failed !== true);
+          if (allDone && !day.querySelector('.day-completion-note')) {
+            const note = document.createElement('div');
+            note.className = 'day-completion-note';
+            note.textContent = 'Ты супер! План выполнен 💪';
+            note.setAttribute('aria-label', 'План на день выполнен');
+            const header = day.querySelector('.day-header');
+            if (header) header.insertAdjacentElement('afterend', note);
+          }
         }
       }
 
