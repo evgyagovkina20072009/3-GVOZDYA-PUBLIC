@@ -1357,3 +1357,118 @@
     display: none !important;
   }
 }
+
+/* Порядок мобильной шапки: логотип → неделя → действия. */
+@media screen and (max-width: 767px) {
+  .app-header {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    align-items: stretch;
+  }
+
+  .app-header > .header-left {
+    order: 1;
+    flex: 0 0 auto;
+  }
+
+  /* Перелистывание недель всегда между логотипом и панелью действий. */
+  .app-header > .header-center {
+    order: 2;
+    display: block;
+    flex: 0 0 auto;
+    min-width: 0;
+    width: 100%;
+    visibility: visible;
+  }
+
+  .app-header > .header-center .week-nav {
+    display: grid;
+    grid-template-columns: 32px minmax(0, 1fr) 32px 34px;
+    align-items: center;
+    gap: 4px;
+    width: 100%;
+    min-width: 0;
+    min-height: 34px;
+    visibility: visible;
+    opacity: 1;
+  }
+
+  .app-header > .header-center .week-range-label {
+    display: block;
+    min-width: 0;
+    width: 100%;
+    overflow: hidden;
+    white-space: nowrap;
+    text-align: center;
+    text-overflow: clip;
+    font-size: clamp(.69rem, 2.95vw, .84rem);
+    line-height: 1.2;
+    font-weight: 800;
+    font-variant-numeric: tabular-nums;
+    color: var(--text-main);
+  }
+
+  .app-header > .header-center #prevWeekBtn,
+  .app-header > .header-center #nextWeekBtn,
+  .app-header > .header-center #todayBtn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    min-width: 0;
+    height: 34px;
+    min-height: 34px;
+    padding: 0;
+    border-radius: 8px;
+  }
+
+  .app-header > .header-center #prevWeekBtn,
+  .app-header > .header-center #nextWeekBtn {
+    font-size: 1rem;
+    font-weight: 900;
+  }
+
+  .app-header > .header-right {
+    order: 3;
+    display: flex;
+    flex: 0 0 auto;
+    flex-wrap: nowrap;
+    justify-content: space-between;
+    align-items: center;
+    gap: 3px;
+    width: 100%;
+    min-width: 0;
+  }
+
+  .app-header > .header-right > #printBtn,
+  .app-header > .header-right > .data-menu-wrapper {
+    flex: 0 0 auto;
+  }
+
+  .app-header > .header-right > #printBtn,
+  .app-header > .header-right > .data-menu-wrapper > #dataMenuBtn {
+    min-height: 34px;
+    height: 34px;
+    padding: 4px 6px;
+    font-size: clamp(.66rem, 2.5vw, .76rem);
+    border-radius: 8px;
+  }
+
+  .app-header > .header-right > .header-end-controls {
+    flex: 0 0 auto;
+    margin: 0;
+    gap: 3px;
+  }
+}
+@media screen and (max-width: 359px) {
+  .app-header > .header-center .week-nav {
+    grid-template-columns: 30px minmax(0, 1fr) 30px 32px;
+    gap: 2px;
+  }
+  .app-header > .header-right > #printBtn,
+  .app-header > .header-right > .data-menu-wrapper > #dataMenuBtn {
+    padding: 4px 3px;
+    font-size: .65rem;
+  }
+}
