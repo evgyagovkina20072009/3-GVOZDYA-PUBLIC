@@ -186,10 +186,48 @@
       }
     }
 
+    // Прошедшие даты — только чтение. Никаких секреток или кнопок,
+    // в том числе через клавиатуру. На десктопе сохраняем прежний интерфейс.
+    function lockPastDay(day) {
+      const past = mobileQuery.matches && day.dataset.date < todayISO();
+      if (!day.dataset.pastDayGuard) {
+        day.dataset.pastDayGuard = '1';
+        const stopInteraction = event => {
+          if (!mobileQuery.matches || day.dataset.date >= todayISO()) return;
+          event.preventDefault();
+          event.stopImmediatePropagation();
+        };
+        day.addEventListener('click', stopInteraction, true);
+        day.addEventListener('keydown', stopInteraction, true);
+        day.addEventListener('contextmenu', stopInteraction, true);
+      }
+      if (past) day.setAttribute('aria-disabled', 'true');
+      else day.removeAttribute('aria-disabled');
+      day.querySelectorAll('button, a, input, select, textarea, [role="button"], [tabindex]').forEach(control => {
+        if (past) {
+          if (!control.hasAttribute('data-original-mobile-tabindex')) {
+            control.setAttribute('data-original-mobile-tabindex',
+              control.hasAttribute('tabindex') ? control.getAttribute('tabindex') : '_none_');
+          }
+          control.setAttribute('tabindex', '-1');
+          control.setAttribute('aria-disabled', 'true');
+        } else if (control.hasAttribute('data-original-mobile-tabindex')) {
+          const old = control.getAttribute('data-original-mobile-tabindex');
+          if (old === '_none_') control.removeAttribute('tabindex');
+          else control.setAttribute('tabindex', old);
+          control.removeAttribute('data-original-mobile-tabindex');
+          control.removeAttribute('aria-disabled');
+        }
+      });
+    }
+
     function decorate() {
       formatMobileWeek();
       const days = Array.from(grid.children).filter(col => col.classList.contains('day-column'));
       if (!days.length) return;
+
+      // Глушим все взаимодействия с прошедшими днями.
+      for (const day of days) lockPastDay(day);
 
       // При выборе дня показываем мотивацию только за этот день.
       for (const day of days) {
