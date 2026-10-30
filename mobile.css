@@ -1337,3 +1337,23 @@
     text-overflow: ellipsis;
   }
 }
+
+/* Прошедшие дни мобильной недели полностью неактивны. */
+@media screen and (max-width: 767px) {
+  /* Оставляем дату и старые записи видимыми, но запрещаем любые нажатия. */
+  .week-grid .day-column.past-day,
+  .week-grid .day-column.past-day * {
+    pointer-events: none !important;
+    cursor: default !important;
+    touch-action: auto;
+  }
+  /* В прошлом больше не показываем ни секретки, ни кнопки действий. */
+  .week-grid .day-column.past-day .day-secret-container,
+  .week-grid .day-column.past-day .btn-toggle-col,
+  .week-grid .day-column.past-day .mobile-add-day,
+  .week-grid .day-column.past-day .btn-add-task-quick,
+  .week-grid .day-column.past-day .task-card-actions,
+  .week-grid .day-column.past-day .task-transfer-actions {
+    display: none !important;
+  }
+}
