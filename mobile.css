@@ -781,3 +781,176 @@
     scroll-behavior: auto;
   }
 }
+
+/* 2026-10-31: компактная мобильная шапка — десктоп остаётся прежним. */
+.mobile-briefcase-icon,
+.mobile-today-icon { display: none; }
+
+@media screen and (max-width: 767px) {
+  .app-layout { gap: 5px; }
+  .app-header {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 4px;
+    padding: 6px 8px;
+    border-radius: 12px;
+  }
+  /* 1: три гвоздя и годовой календарь. */
+  .header-left {
+    order: 1;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    min-height: 37px;
+    padding-right: 43px;
+  }
+  .brand-badge { gap: 7px; }
+  .brand-mark .forged-nails-emblem { width: 24px; height: 32px; }
+  .brand-title { font-size: 1.12rem; letter-spacing: .07em; }
+  .brand-slogan { font-size: .52rem; letter-spacing: .08em; white-space: nowrap; }
+  .header-left > #openYearDrawerBtn {
+    position: absolute;
+    right: 8px;
+    top: 6px;
+    width: 36px;
+    height: 36px;
+    min-height: 36px;
+    padding: 6px;
+    border-radius: 9px;
+  }
+  .header-left > #openYearDrawerBtn svg { width: 20px; height: 20px; }
+  /* Поиск сохранён в верхнем ряду как компактное поле-лупа. */
+  .search-container {
+    position: absolute;
+    top: 6px;
+    right: 48px;
+    z-index: 180;
+    width: 34px;
+    height: 36px;
+    transition: width .15s ease;
+  }
+  .search-container::before {
+    content: "⌕";
+    position: absolute;
+    left: 10px;
+    top: 3px;
+    font-size: 24px;
+    line-height: 28px;
+    color: var(--text-main);
+    pointer-events: none;
+    z-index: 1;
+  }
+  .search-container:focus-within {
+    width: calc(100% - 58px);
+  }
+  .search-input {
+    box-sizing: border-box;
+    width: 100%;
+    height: 36px;
+    min-height: 36px;
+    border-radius: 9px;
+    padding: 5px 6px 5px 34px;
+    font-size: 16px;
+    color: transparent;
+  }
+  .search-input::placeholder { color: transparent; }
+  .search-container:focus-within .search-input { color: var(--text-main); }
+  .search-container:focus-within .search-input::placeholder { color: var(--text-muted); }
+  /* 2: портфель, Печать, Данные и обе кнопки архивов без переноса. */
+  .header-right {
+    order: 2;
+    display: flex;
+    flex-wrap: nowrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 3px;
+    min-width: 0;
+  }
+  .header-right > .btn-header-action,
+  .header-right > .data-menu-wrapper > .btn-header-action {
+    min-width: 0;
+    min-height: 34px;
+    height: 34px;
+    padding: 4px 7px;
+    font-size: .72rem;
+    line-height: 1.1;
+    border-radius: 8px;
+  }
+  .header-right #aboutPlannerBtn {
+    width: 36px;
+    min-width: 36px;
+    padding: 6px;
+    font-size: 0;
+  }
+  .mobile-briefcase-icon { display: inline-block; width: 22px; height: 22px; vertical-align: middle; }
+  .header-end-controls {
+    display: flex;
+    align-items: center;
+    flex: 0 0 auto;
+    margin: 0;
+    gap: 3px;
+  }
+  .header-end-controls #archiveCompletedBtn,
+  .header-end-controls #archiveFailedBtn {
+    flex: 0 0 34px;
+    width: 34px;
+    height: 34px;
+    min-height: 34px;
+    border-radius: 8px;
+    padding: 4px;
+    font-size: 1rem;
+  }
+  /* 3: дата недели строго в одну строку, стрелки и знак «Сегодня». */
+  .header-center {
+    order: 3;
+    display: block;
+    width: 100%;
+    max-width: none;
+  }
+  .week-nav {
+    display: grid;
+    grid-template-columns: 32px minmax(0, 1fr) 32px 34px;
+    gap: 3px;
+    width: 100%;
+    align-items: center;
+  }
+  .week-range-label {
+    white-space: nowrap;
+    overflow: hidden;
+    overflow-wrap: normal;
+    text-overflow: clip;
+    min-width: 0;
+    line-height: 1.1;
+    font-size: clamp(.68rem, 3.15vw, .82rem);
+    letter-spacing: -.025em;
+    text-align: center;
+  }
+  #prevWeekBtn, #nextWeekBtn, #todayBtn {
+    width: 100%;
+    min-width: 0;
+    height: 32px;
+    min-height: 32px;
+    padding: 2px;
+    border-radius: 8px;
+  }
+  #todayBtn { font-size: 0; }
+  .mobile-today-icon { display: block; width: 20px; height: 28px; margin: auto; }
+  /* Под шапкой сразу доступны дни недели и задачи. */
+  .mobile-day-jump { padding: 0 0 2px; gap: 3px; }
+  .mobile-day-chip {
+    min-height: 43px;
+    min-width: 39px;
+    flex-basis: 39px;
+    padding: 3px 1px;
+    border-radius: 9px;
+  }
+  .mobile-day-chip .mobile-chip-date { font-size: .98rem; }
+}
+@media screen and (max-width: 359px) {
+  .header-right { gap: 2px; }
+  .header-right > .btn-header-action,
+  .header-right > .data-menu-wrapper > .btn-header-action { padding-left: 5px; padding-right: 5px; font-size: .68rem; }
+  .week-nav { grid-template-columns: 30px minmax(0,1fr) 30px 32px; gap: 2px; }
+  .brand-slogan { font-size: .47rem; }
+}
