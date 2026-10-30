@@ -255,12 +255,31 @@
       window.WeekGridManager.openTaskModal(selectedDate);
     });
 
+    // Все семь заголовков остаются видимыми. Высоту для раскрытых дней
+    // рассчитываем по фактически доступной области, а не по высоте экрана.
+    function fitSevenDays() {
+      if (!mobileQuery.matches) {
+        grid.style.removeProperty('--mobile-day-max-height');
+        return;
+      }
+      const gap = 4;
+      const available = Math.max(0, workspace.clientHeight);
+      const maxHeight = Math.max(34, Math.floor((available - 6 * gap - 2) / 7));
+      grid.style.setProperty('--mobile-day-max-height', maxHeight + 'px');
+    }
+
+    if (typeof ResizeObserver === 'function') {
+      const sizeObserver = new ResizeObserver(fitSevenDays);
+      sizeObserver.observe(workspace);
+    }
+
     const observer = new MutationObserver(decorate);
     observer.observe(grid, { childList: true });
     decorate();
 
     function syncForViewport() {
       syncMobileHeader();
+      fitSevenDays();
       if (mobileQuery.matches && !initializedToday) {
         initializedToday = true;
         const today = findDay(todayISO());
@@ -280,6 +299,7 @@
     syncForViewport();
     window.addEventListener('resize', () => {
       if (mobileQuery.matches) formatMobileWeek();
+      fitSevenDays();
     }, { passive: true });
   }
 
