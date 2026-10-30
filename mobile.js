@@ -38,9 +38,19 @@
       const monday = new Date(window.WeekGridManager.currentMonday);
       const sunday = new Date(monday.getFullYear(), monday.getMonth(), monday.getDate() + 6);
       const shortMonth = date => new Intl.DateTimeFormat('ru-RU', {month: 'short'}).format(date);
-      rangeLabel.textContent = mobileQuery.matches
-        ? monday.getDate() + ' ' + shortMonth(monday) + ' — ' + sunday.getDate() + ' ' + shortMonth(sunday) + ' ' + sunday.getFullYear()
-        : window.DateUtils.formatRange(monday);
+      const verbose = monday.getDate() + ' ' + shortMonth(monday) + ' — ' + sunday.getDate() + ' ' + shortMonth(sunday) + ' ' + sunday.getFullYear();
+      rangeLabel.textContent = mobileQuery.matches ? verbose : window.DateUtils.formatRange(monday);
+      if (mobileQuery.matches) {
+        rangeLabel.setAttribute('aria-label', verbose);
+        // На узких экранах сокращаем дату, но никогда не обрезаем год.
+        if (rangeLabel.scrollWidth > rangeLabel.clientWidth + 1) {
+          const num = d => String(d).padStart(2, '0');
+          rangeLabel.textContent = num(monday.getDate()) + '.' + num(monday.getMonth() + 1) + '–' +
+            num(sunday.getDate()) + '.' + num(sunday.getMonth() + 1) + '.' + sunday.getFullYear();
+        }
+      } else {
+        rangeLabel.removeAttribute('aria-label');
+      }
     }
 
     function syncMobileHeader() {
@@ -185,6 +195,9 @@
       mobileQuery.addListener(syncForViewport);
     }
     syncForViewport();
+    window.addEventListener('resize', () => {
+      if (mobileQuery.matches) formatMobileWeek();
+    }, { passive: true });
   }
 
   if (document.readyState === 'loading') {
