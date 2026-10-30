@@ -23,6 +23,59 @@
     const todayButton = document.getElementById('todayBtn');
     const rangeLabel = document.getElementById('currentWeekRange');
 
+    const headerRight = document.querySelector('.header-right');
+    const centerRow = document.querySelector('.header-center');
+    const weekNav = document.querySelector('.week-nav');
+    const searchContainer = document.querySelector('.search-container');
+    const searchInput = document.getElementById('searchInput');
+    const searchResults = document.getElementById('searchResults');
+    const brandTools = document.createElement('div');
+    brandTools.className = 'mobile-brand-tools';
+    if (brandRow) brandRow.appendChild(brandTools);
+    let searchToggle = null;
+
+    if (searchContainer && searchInput) {
+      searchToggle = document.createElement('button');
+      searchToggle.type = 'button';
+      searchToggle.className = 'mobile-search-toggle';
+      searchToggle.title = 'Поиск по задачам';
+      searchToggle.setAttribute('aria-label', 'Поиск по задачам');
+      searchToggle.setAttribute('aria-expanded', 'false');
+      searchToggle.setAttribute('aria-controls', 'searchInput');
+      searchToggle.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m15.5 15.5 5 5"/></svg>';
+      searchContainer.prepend(searchToggle);
+
+      const closeSearch = () => {
+        searchContainer.classList.remove('is-open');
+        searchToggle.setAttribute('aria-expanded', 'false');
+        searchInput.value = '';
+        searchInput.dispatchEvent(new Event('input', {bubbles:true}));
+      };
+      searchToggle.addEventListener('click', () => {
+        if (searchContainer.classList.contains('is-open')) {
+          closeSearch();
+        } else {
+          searchContainer.classList.add('is-open');
+          searchToggle.setAttribute('aria-expanded', 'true');
+          searchInput.focus();
+        }
+      });
+      searchInput.addEventListener('keydown', event => {
+        if (event.key === 'Escape' && mobileQuery.matches) {
+          closeSearch();
+          searchToggle.focus();
+        }
+      });
+      if (searchResults) searchResults.addEventListener('click', event => {
+        if (mobileQuery.matches && event.target.closest('.search-result-item')) closeSearch();
+      });
+      document.addEventListener('pointerdown', event => {
+        if (mobileQuery.matches && searchContainer.classList.contains('is-open') &&
+            !searchContainer.contains(event.target)) closeSearch();
+      });
+    }
+
+
     // Мобильные пиктограммы добавляются без замены работающих обработчиков кнопок.
     if (aboutButton && !aboutButton.querySelector('.mobile-briefcase-icon')) {
       aboutButton.setAttribute('aria-label', 'О планировщике');
@@ -54,9 +107,24 @@
     }
 
     function syncMobileHeader() {
-      if (brandRow && endControls && yearButton) {
-        const destination = mobileQuery.matches ? brandRow : endControls;
-        if (yearButton.parentElement !== destination) destination.appendChild(yearButton);
+      if (brandRow && headerRight && endControls && yearButton && aboutButton) {
+        if (mobileQuery.matches) {
+          if (aboutButton.parentElement !== brandTools) brandTools.appendChild(aboutButton);
+          if (yearButton.parentElement !== brandTools) brandTools.appendChild(yearButton);
+          if (searchContainer && searchContainer.parentElement !== headerRight) {
+            headerRight.insertBefore(searchContainer, headerRight.firstElementChild);
+          }
+        } else {
+          if (aboutButton.parentElement !== headerRight) {
+            headerRight.insertBefore(aboutButton, headerRight.firstElementChild);
+          }
+          if (yearButton.parentElement !== endControls) endControls.appendChild(yearButton);
+          if (searchContainer && centerRow && weekNav && searchContainer.parentElement !== centerRow) {
+            centerRow.insertBefore(searchContainer, weekNav);
+          }
+          if (searchContainer) searchContainer.classList.remove('is-open');
+          if (searchToggle) searchToggle.setAttribute('aria-expanded', 'false');
+        }
       }
       formatMobileWeek();
     }
