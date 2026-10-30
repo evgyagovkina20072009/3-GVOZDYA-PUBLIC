@@ -1092,3 +1092,46 @@
     z-index: 210;
   }
 }
+
+/* Портфель переносится к календарю, лупа остаётся во втором ряду. */
+.mobile-brand-tools { display: none; }
+@media screen and (max-width: 767px) {
+  .header-left {
+    padding-right: 0;
+    gap: 5px;
+    justify-content: space-between;
+    min-width: 0;
+  }
+  .header-left > .brand-badge { min-width: 0; flex: 0 1 auto; }
+  .mobile-brand-tools {
+    display: flex;
+    flex: 0 0 auto;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 4px;
+    margin-left: auto;
+  }
+  .mobile-brand-tools #aboutPlannerBtn,
+  .mobile-brand-tools #openYearDrawerBtn {
+    box-sizing: border-box;
+    position: static;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex: 0 0 36px;
+    width: 36px;
+    min-width: 36px;
+    height: 36px;
+    min-height: 36px;
+    padding: 6px;
+    border-radius: 9px;
+  }
+  .mobile-brand-tools #aboutPlannerBtn { font-size: 0; }
+  .mobile-brand-tools #openYearDrawerBtn svg { width: 20px; height: 20px; }
+  .header-right > .search-container { order: -1; }
+}
+@media screen and (max-width: 359px) {
+  .mobile-brand-tools { gap: 3px; }
+  .mobile-brand-tools #aboutPlannerBtn,
+  .mobile-brand-tools #openYearDrawerBtn { flex-basis: 33px; width: 33px; min-width: 33px; }
+}
