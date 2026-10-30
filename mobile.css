@@ -1337,3 +1337,5 @@
     flex-shrink: 0;
   }
 }
+/* Мотивация скрыта до первого выполненного дела за выбранный день. */
+.planner-motivation[hidden] { display: none !important; }
