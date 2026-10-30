@@ -995,3 +995,28 @@
   }
   .week-nav { min-width: 0; }
 }
+
+/* Приветствие на мобильном: компактнее только три строки с гвоздями.
+   Остальной текст и логика приветственного окна сохраняются. */
+@media screen and (max-width: 767px) {
+  .modal-card.onboarding-card .onboarding-list {
+    gap: 3px;
+  }
+
+  .modal-card.onboarding-card .onboarding-list li {
+    gap: 6px;
+    padding: 4px 7px;
+    min-height: 0;
+    line-height: 1.28;
+  }
+
+  .modal-card.onboarding-card .onboarding-list li > svg {
+    width: 39px;
+    height: 25px;
+    flex: 0 0 39px !important; /* Переопределяет встроенный flex у SVG */
+  }
+
+  .modal-card.onboarding-card .onboarding-col {
+    gap: 7px;
+  }
+}
