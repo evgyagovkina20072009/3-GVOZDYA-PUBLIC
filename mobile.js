@@ -16,6 +16,41 @@
     if (!layout || !workspace || !grid || !window.WeekGridManager || !window.DateUtils) return;
     if (document.getElementById('mobileDayJump')) return;
 
+    const brandRow = document.querySelector('.header-left');
+    const endControls = document.querySelector('.header-end-controls');
+    const yearButton = document.getElementById('openYearDrawerBtn');
+    const aboutButton = document.getElementById('aboutPlannerBtn');
+    const todayButton = document.getElementById('todayBtn');
+    const rangeLabel = document.getElementById('currentWeekRange');
+
+    // Мобильные пиктограммы добавляются без замены работающих обработчиков кнопок.
+    if (aboutButton && !aboutButton.querySelector('.mobile-briefcase-icon')) {
+      aboutButton.setAttribute('aria-label', 'О планировщике');
+      aboutButton.insertAdjacentHTML('afterbegin', '<svg class="mobile-briefcase-icon" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="7" width="18" height="14" rx="2"/><path d="M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2M3 12h18M11 12v2h2v-2"/></svg>');
+    }
+    if (todayButton && !todayButton.querySelector('.mobile-today-icon')) {
+      todayButton.setAttribute('aria-label', 'Перейти к сегодняшнему дню');
+      todayButton.insertAdjacentHTML('afterbegin', '<svg class="mobile-today-icon" aria-hidden="true" viewBox="0 0 24 36"><circle cx="12" cy="4" r="3" fill="#1558ed"/><rect x="10" y="10" width="4" height="5" rx="2" fill="#ef202e"/><rect x="5" y="17" width="14" height="3.6" rx="1.8" fill="#1558ed"/><rect x="10" y="22.5" width="4" height="5" rx="2" fill="#ef202e"/><circle cx="12" cy="33" r="3" fill="#1558ed"/></svg>');
+    }
+
+    function formatMobileWeek() {
+      if (!rangeLabel || !window.WeekGridManager.currentMonday) return;
+      const monday = new Date(window.WeekGridManager.currentMonday);
+      const sunday = new Date(monday.getFullYear(), monday.getMonth(), monday.getDate() + 6);
+      const shortMonth = date => new Intl.DateTimeFormat('ru-RU', {month: 'short'}).format(date);
+      rangeLabel.textContent = mobileQuery.matches
+        ? monday.getDate() + ' ' + shortMonth(monday) + ' — ' + sunday.getDate() + ' ' + shortMonth(sunday) + ' ' + sunday.getFullYear()
+        : window.DateUtils.formatRange(monday);
+    }
+
+    function syncMobileHeader() {
+      if (brandRow && endControls && yearButton) {
+        const destination = mobileQuery.matches ? brandRow : endControls;
+        if (yearButton.parentElement !== destination) destination.appendChild(yearButton);
+      }
+      formatMobileWeek();
+    }
+
     const nav = document.createElement('nav');
     nav.id = 'mobileDayJump';
     nav.className = 'mobile-day-jump';
@@ -75,6 +110,7 @@
     }
 
     function decorate() {
+      formatMobileWeek();
       const days = Array.from(grid.children).filter(col => col.classList.contains('day-column'));
       if (!days.length) return;
 
@@ -131,6 +167,7 @@
     decorate();
 
     function syncForViewport() {
+      syncMobileHeader();
       if (mobileQuery.matches && !initializedToday) {
         initializedToday = true;
         const today = findDay(todayISO());
