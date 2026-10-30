@@ -192,6 +192,19 @@
       const days = Array.from(grid.children).filter(col => col.classList.contains('day-column'));
       if (!days.length) return;
 
+      // Всегда показываем полные даты рядом с названиями всех семи дней.
+      for (const day of days) {
+        const label = day.querySelector('.day-date');
+        if (!label) continue;
+        if (!label.dataset.originalDesktopDate) label.dataset.originalDesktopDate = label.textContent;
+        const iso = day.dataset.date || '';
+        const pieces = iso.split('-');
+        label.textContent = mobileQuery.matches && pieces.length === 3
+          ? pieces[2] + '.' + pieces[1] + '.' + pieces[0]
+          : label.dataset.originalDesktopDate;
+      }
+
+
       for (const day of days) {
         if (day.dataset.date < todayISO()) continue;
         const header = day.querySelector('.day-header');
@@ -210,6 +223,8 @@
           window.WeekGridManager.openTaskModal(day.dataset.date);
         });
         header.appendChild(button);
+        // Выбор даты для действий в выбранном дне — без переходов по странице.
+        header.addEventListener('click', () => setSelected(day.dataset.date, false));
       }
 
       selectedDate = pickDate(days);
