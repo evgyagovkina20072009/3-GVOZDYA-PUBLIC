@@ -22,6 +22,26 @@
     const aboutButton = document.getElementById('aboutPlannerBtn');
     const todayButton = document.getElementById('todayBtn');
     const rangeLabel = document.getElementById('currentWeekRange');
+    const motivation = document.querySelector('.planner-motivation');
+    const fullMotivation = 'Ты молодец, всё сделал. План на сегодня есть — можешь выдохнуть.';
+    const partialMotivation = 'Ты молодец, первое дело сделано! Так держать.';
+
+    function updateMotivation() {
+      if (!motivation) return;
+      // Похвала относится только к выбранному дню. Пустой план не достижение.
+      const tasks = typeof StorageAPI !== 'undefined' && selectedDate
+        ? StorageAPI.getTasksByDate(selectedDate)
+        : [];
+      const completed = tasks.filter(task => task.completed === true && task.failed !== true);
+      motivation.hidden = completed.length === 0;
+      if (completed.length) {
+        const allDone = tasks.length > 0 && tasks.every(task => task.completed === true && task.failed !== true);
+        motivation.textContent = allDone ? fullMotivation : partialMotivation;
+        motivation.setAttribute('aria-label', 'Результат за ' + selectedDate.split('-').reverse().join('.'));
+      } else {
+        motivation.removeAttribute('aria-label');
+      }
+    }
 
     const headerRight = document.querySelector('.header-right');
     const centerRow = document.querySelector('.header-center');
@@ -167,6 +187,7 @@
 
     function setSelected(dateISO, scrollToDay) {
       selectedDate = dateISO;
+      updateMotivation();
       nav.querySelectorAll('.mobile-day-chip').forEach(button => {
         const active = button.dataset.date === selectedDate;
         button.classList.toggle('is-current', active);
@@ -191,6 +212,15 @@
       formatMobileWeek();
       const days = Array.from(grid.children).filter(col => col.classList.contains('day-column'));
       if (!days.length) return;
+
+      // При выборе дня показываем мотивацию только за этот день.
+      for (const day of days) {
+        const header = day.querySelector('.day-header');
+        if (header && !header.dataset.motivationDayBound) {
+          header.dataset.motivationDayBound = 'true';
+          header.addEventListener('click', () => setSelected(day.dataset.date, false));
+        }
+      }
 
       // Всегда показываем полные даты рядом с названиями всех семи дней.
       for (const day of days) {
@@ -223,8 +253,6 @@
           window.WeekGridManager.openTaskModal(day.dataset.date);
         });
         header.appendChild(button);
-        // Выбор даты для действий в выбранном дне — без переходов по странице.
-        header.addEventListener('click', () => setSelected(day.dataset.date, false));
       }
 
       selectedDate = pickDate(days);
