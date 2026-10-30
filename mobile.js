@@ -22,6 +22,8 @@
     const aboutButton = document.getElementById('aboutPlannerBtn');
     const todayButton = document.getElementById('todayBtn');
     const rangeLabel = document.getElementById('currentWeekRange');
+    const prevWeekBtn = document.getElementById('prevWeekBtn');
+    const nextWeekBtn = document.getElementById('nextWeekBtn');
     const headerRight = document.querySelector('.header-right');
     const centerRow = document.querySelector('.header-center');
     const weekNav = document.querySelector('.week-nav');
@@ -106,6 +108,14 @@
     }
 
     function syncMobileHeader() {
+      // Те же работающие кнопки перелистывания; мобильные стрелки более заметны.
+      if (prevWeekBtn && nextWeekBtn) {
+        prevWeekBtn.textContent = mobileQuery.matches ? '❮' : '←';
+        nextWeekBtn.textContent = mobileQuery.matches ? '❯' : '→';
+        prevWeekBtn.setAttribute('aria-label', 'Предыдущая неделя');
+        nextWeekBtn.setAttribute('aria-label', 'Следующая неделя');
+      }
+      if (weekNav) weekNav.setAttribute('aria-label', 'Перелистывание недель');
       if (brandRow && headerRight && endControls && yearButton && aboutButton) {
         if (mobileQuery.matches) {
           if (aboutButton.parentElement !== brandTools) brandTools.appendChild(aboutButton);
