@@ -1472,3 +1472,37 @@
     font-size: .65rem;
   }
 }
+/* Нажатие на значок «Сегодня»: видимый отклик даже на текущей неделе. */
+@media screen and (max-width: 767px) {
+  .app-header #todayBtn {
+    position: relative;
+    z-index: 1;
+    cursor: pointer;
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: rgba(37, 99, 235, .2);
+  }
+  .app-header #todayBtn .mobile-today-icon {
+    pointer-events: none;
+  }
+  .app-header #todayBtn.mobile-today-pressed {
+    background: rgba(37, 99, 235, .22);
+    border-color: #2563eb;
+    animation: nails-today-button-tap .7s ease-out;
+  }
+  .week-grid .day-column.mobile-today-focus {
+    animation: nails-today-day-highlight 1.25s ease-out;
+  }
+  @keyframes nails-today-button-tap {
+    0% { box-shadow: 0 0 0 0 rgba(37, 99, 235, .42); }
+    65% { box-shadow: 0 0 0 6px rgba(37, 99, 235, .08); }
+    100% { box-shadow: 0 0 0 0 rgba(37, 99, 235, 0); }
+  }
+  @keyframes nails-today-day-highlight {
+    0%, 60% { outline: 2px solid #2563eb; outline-offset: -2px; }
+    100% { outline: 2px solid transparent; outline-offset: -2px; }
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .app-header #todayBtn.mobile-today-pressed,
+  .week-grid .day-column.mobile-today-focus { animation: none; }
+}
