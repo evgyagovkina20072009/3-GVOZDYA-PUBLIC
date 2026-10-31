@@ -107,6 +107,40 @@
       }
     }
 
+    // Отдельное надёжное действие для мобильного значка «Сегодня».
+    // Срабатывает и при нажатии по SVG, и когда текущая неделя уже открыта.
+    function goToTodayFromMobile(event) {
+      if (!mobileQuery.matches) return;
+      event.preventDefault();
+      event.stopImmediatePropagation();
+      const manager = window.WeekGridManager;
+      if (!manager || typeof manager.goToToday !== 'function') return;
+      manager.goToToday();
+      const today = window.DateUtils.getTodayISO();
+      setSelected(today, false);
+      if (todayButton) {
+        todayButton.classList.remove('mobile-today-pressed');
+        void todayButton.offsetWidth;
+        todayButton.classList.add('mobile-today-pressed');
+      }
+      const day = findDay(today);
+      if (day) {
+        day.classList.remove('mobile-today-focus');
+        void day.offsetWidth;
+        day.classList.add('mobile-today-focus');
+      }
+    }
+    if (todayButton) {
+      todayButton.type = 'button';
+      todayButton.title = 'Вернуться к текущей неделе и сегодняшнему дню';
+      todayButton.setAttribute('aria-label', 'Сегодня — вернуться к текущей неделе');
+      // Capture prevents the original app.js click handler from firing twice.
+      todayButton.addEventListener('click', goToTodayFromMobile, true);
+      todayButton.addEventListener('animationend', () => {
+        todayButton.classList.remove('mobile-today-pressed');
+      });
+    }
+
     function syncMobileHeader() {
       // Те же работающие кнопки перелистывания; мобильные стрелки более заметны.
       if (prevWeekBtn && nextWeekBtn) {
