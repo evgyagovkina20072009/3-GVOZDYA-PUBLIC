@@ -1507,45 +1507,44 @@
   .week-grid .day-column.mobile-today-focus { animation: none; }
 }
 
-/* Секретные напоминания внизу списка задач на телефоне. */
+/* Секретные напоминания: всегда под делами и всегда доступны. */
 @media screen and (max-width: 767px) {
-  /* Задачи видны первыми, секретки перемещаются в конец их скролла. */
-  .day-column .day-tasks-container {
-    display: flex;
-    flex-direction: column;
+  .week-grid .day-column.expanded .day-tasks-container {
+    flex: 1 1 auto;
     min-height: 0;
     overflow-y: auto;
+    overscroll-behavior: contain;
   }
-  .day-column .day-tasks-container > .day-secret-container {
-    order: 100;
+  .week-grid .day-column.expanded > .day-secret-container {
     display: flex;
-    flex: 0 0 auto;
     flex-direction: column;
-    position: static;
+    flex: 0 0 auto;
+    position: relative;
     box-sizing: border-box;
+    min-height: 29px;
     width: 100%;
-    margin-top: 7px;
-    margin-bottom: 1px;
-    padding-top: 6px;
+    margin: 3px 0 0;
+    padding: 2px 0 0;
     border-top: 1px dashed var(--header-border);
+    overflow: visible;
   }
-  .day-column .day-tasks-container > .day-secret-container .secret-icons-row {
+  .week-grid .day-column.expanded > .day-secret-container .secret-icons-row {
     display: flex;
     flex-wrap: nowrap;
     align-items: center;
     gap: 4px;
+    min-height: 27px;
   }
-  .day-column .day-tasks-container > .day-secret-container .secret-icon-button,
-  .day-column .day-tasks-container > .day-secret-container .secret-add-button {
-    flex: 0 0 27px;
-    width: 27px;
-    min-width: 27px;
+  .week-grid .day-column.expanded > .day-secret-container .secret-icon-button,
+  .week-grid .day-column.expanded > .day-secret-container .secret-add-button {
+    flex: 0 0 30px;
+    box-sizing: border-box;
+    width: 30px;
+    min-width: 30px;
     height: 27px;
     min-height: 27px;
     padding: 1px;
   }
-  /* Старые дни остаются полностью неактивными. */
-  .week-grid .day-column.past-day .day-tasks-container > .day-secret-container {
-    display: none !important;
-  }
+  /* Секретные напоминания прошлых дней не интерактивны и скрыты. */
+  .week-grid .day-column.past-day > .day-secret-container { display: none !important; }
 }
