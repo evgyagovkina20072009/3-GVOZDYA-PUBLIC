@@ -63,7 +63,16 @@ try {
       return !!(list && secrets && secrets.parentElement === day && list.nextElementSibling !== null &&
         Array.from(day.children).indexOf(secrets) > Array.from(day.children).indexOf(list));
     }));
+    ok(width + 'px: secret row is clearly labeled', await future.locator('.mobile-secret-caption').textContent() === 'Секретки');
     ok(width + 'px: secret add is visible and clickable', await future.locator('.secret-add-button').isVisible());
+    ok(width + 'px: secret add fully fits within its day', await future.evaluate(day => {
+      const btn = day.querySelector('.secret-add-button');
+      if (!btn) return false;
+      const rect = btn.getBoundingClientRect();
+      const bounds = day.getBoundingClientRect();
+      return rect.width >= 30 && rect.height >= 26 &&
+        rect.bottom <= bounds.bottom + 1 && rect.top >= bounds.top - 1;
+    }));
     await future.locator('.secret-add-button').click();
     ok(width + 'px: secret editor opens', await page.locator('#secretEditorModal').isVisible());
     await page.locator('#cancelSecretEditorBtn').click();
