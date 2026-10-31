@@ -1091,14 +1091,28 @@ const Step7 = {
       const btn = document.createElement('button');
       btn.type = 'button';
       btn.className = 'secret-icon-button';
-      btn.title = 'Посмотреть секретное напоминание';
-      btn.setAttribute('aria-label', 'Секретное напоминание');
+      const hasComment = typeof secret.text === 'string' && secret.text.trim().length > 0;
+      btn.title = hasComment ? 'Показать комментарий к секретке' : 'Секретка без комментария';
+      btn.setAttribute('aria-label', hasComment ? 'Показать комментарий к секретке' : 'Секретка без комментария');
+      btn.dataset.hasComment = String(hasComment);
       btn.appendChild(this.iconNode(secret.icon));
       btn.addEventListener('click', e => {
         e.stopPropagation();
+        // Пустой комментарий — не показываем ни окно, ни «Без пояснения».
+        if (!hasComment) {
+          this.closePopover();
+          return;
+        }
         if (this.activeSecret && String(this.activeSecret.id) === String(secret.id) &&
             this.activeSecret.date === date) this.closePopover();
         else this.openPopover(btn, date, secret);
+      });
+      // Секретку без текста можно позднее дополнить: долгое нажатие
+      // (или правый клик на компьютере) открывает редактор.
+      btn.addEventListener('contextmenu', e => {
+        e.preventDefault();
+        e.stopPropagation();
+        this.openEditor(date, secret);
       });
       row.appendChild(btn);
     });
@@ -1132,10 +1146,17 @@ const Step7 = {
   },
 
   openPopover(anchor, date, secret) {
+    const comment = typeof secret?.text === 'string' ? secret.text.trim() : '';
+    // Иконка без комментария ничего не открывает.
+    if (!comment) {
+      this.closePopover();
+      return;
+    }
     const popup = document.getElementById('secretPopover');
     if (!popup) return;
     this.activeSecret = {date, id: secret.id};
-    document.getElementById('secretPopoverText').textContent = secret.text || 'Без пояснения';
+    // Показываем именно сохранённую заметку, не интерпретируя её как HTML.
+    document.getElementById('secretPopoverText').textContent = comment;
     document.getElementById('secretPopoverEdit').onclick = () => {
       this.closePopover();
       this.openEditor(date, secret);
