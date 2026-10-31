@@ -75,7 +75,25 @@ try {
     }));
     await future.locator('.secret-add-button').click();
     ok(width + 'px: secret editor opens', await page.locator('#secretEditorModal').isVisible());
-    await page.locator('#cancelSecretEditorBtn').click();
+    await page.locator('#secretEditorText').fill('Мой секретный комментарий к этому дню');
+    await page.locator('#secretEditorForm button[type=submit]').click();
+    ok(width + 'px: saved secret icon appears', await future.locator('.secret-icon-button').count() === 1);
+    await future.locator('.secret-icon-button').first().click();
+    ok(width + 'px: tapping secret shows saved comment', await page.locator('#secretPopoverText').textContent() === 'Мой секретный комментарий к этому дню');
+    ok(width + 'px: populated comment popover visible', await page.locator('#secretPopover').isVisible());
+    await future.locator('.secret-icon-button').first().click();
+    ok(width + 'px: second tap closes comment', !(await page.locator('#secretPopover').isVisible()));
+    await future.locator('.secret-add-button').click();
+    await page.locator('#secretEditorText').fill('   ');
+    await page.locator('#secretEditorForm button[type=submit]').click();
+    ok(width + 'px: blank comment secret icon saved', await future.locator('.secret-icon-button').count() === 2);
+    await future.locator('.secret-icon-button').nth(1).click();
+    ok(width + 'px: blank comment does not open popup', !(await page.locator('#secretPopover').isVisible()));
+    ok(width + 'px: blank comment stays empty in storage', await page.evaluate(() => StorageAPI.getSecretsByDate('2026-11-01').some(s => s.text === '')));
+    await future.locator('.secret-icon-button').first().click();
+    ok(width + 'px: populated secret still opens normally', await page.locator('#secretPopover').isVisible());
+    await future.locator('.secret-icon-button').nth(1).click();
+    ok(width + 'px: tapping empty icon closes prior comment', !(await page.locator('#secretPopover').isVisible()));
 
     await future.locator('.btn-task-done').first().click();
     ok(width + 'px: future task completed', await page.evaluate(() => StorageAPI.getTasksByDate('2026-11-01').every(t => t.completed)));
