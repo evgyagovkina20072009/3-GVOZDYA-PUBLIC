@@ -75,15 +75,10 @@ body {
   transition: background-image var(--transition-speed) ease, color var(--transition-speed) ease;
 }
 
-/* Public Pages: explicit scenic backgrounds, independent of CSS variable caching. */
-body.theme-day {
-  background-image: linear-gradient(rgba(241, 245, 249, 0.35), rgba(226, 232, 240, 0.40)), url("https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=2000&q=80");
-  background-color: #ccd7e3;
-}
-body.theme-night {
-  background-image: linear-gradient(rgba(15, 23, 42, 0.45), rgba(2, 6, 23, 0.56)), url("https://images.unsplash.com/photo-1514565131-fce0801e5785?auto=format&fit=crop&w=2000&q=80");
-  background-color: #102139;
-}
+/* City imagery is defined once in --bg-city for each theme (Step 8).
+   Solid colors are fallbacks if the remote photographs cannot load. */
+body.theme-day { background-color: #ccd7e3; }
+body.theme-night { background-color: #102139; }
 
 .background-overlay {
   position: fixed;
