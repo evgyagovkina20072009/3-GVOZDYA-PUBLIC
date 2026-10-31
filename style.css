@@ -14,7 +14,7 @@
 /* Дневная тема: максимальная прозрачность стекла и глубокий контрастный шрифт */
 body.theme-day {
   --bg-city: linear-gradient(rgba(241, 245, 249, 0.45), rgba(226, 232, 240, 0.52)),
-             url("assets/city-day.jpg");
+             url("https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=2000&q=80");
   --text-main: #020617; /* Глубокий контрастный цвет для чтения */
   --text-muted: #1e293b;
   --card-bg: rgba(255, 255, 255, 0.55);
@@ -35,7 +35,7 @@ body.theme-day {
 /* Ночная тема: максимальная прозрачность и яркий контрастный белый шрифт */
 body.theme-night {
   --bg-city: linear-gradient(rgba(15, 23, 42, 0.52), rgba(2, 6, 23, 0.62)),
-             url("assets/city-night.jpg");
+             url("https://images.unsplash.com/photo-1514565131-fce0801e5785?auto=format&fit=crop&w=2000&q=80");
   --text-main: #ffffff; /* Абсолютно белый контрастный текст */
   --text-muted: #cbd5e1;
   --card-bg: rgba(30, 41, 59, 0.55);
@@ -77,11 +77,11 @@ body {
 
 /* Public Pages: explicit scenic backgrounds, independent of CSS variable caching. */
 body.theme-day {
-  background-image: linear-gradient(rgba(241, 245, 249, 0.35), rgba(226, 232, 240, 0.40)), url("./assets/city-day.jpg?v=20261029b");
+  background-image: linear-gradient(rgba(241, 245, 249, 0.35), rgba(226, 232, 240, 0.40)), url("https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=2000&q=80");
   background-color: #ccd7e3;
 }
 body.theme-night {
-  background-image: linear-gradient(rgba(15, 23, 42, 0.45), rgba(2, 6, 23, 0.56)), url("./assets/city-night.jpg?v=20261029b");
+  background-image: linear-gradient(rgba(15, 23, 42, 0.45), rgba(2, 6, 23, 0.56)), url("https://images.unsplash.com/photo-1514565131-fce0801e5785?auto=format&fit=crop&w=2000&q=80");
   background-color: #102139;
 }
 
