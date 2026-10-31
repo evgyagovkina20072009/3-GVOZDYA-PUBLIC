@@ -282,6 +282,25 @@
         if (secretContainer.parentElement !== day) {
           day.appendChild(secretContainer);
         }
+        // Видимый заголовок нижней строки, не добавляем второй обработчик
+        // создания секретки: используем настоящую кнопку из app.js.
+        let caption = secretContainer.querySelector('.mobile-secret-caption');
+        if (mobileQuery.matches && !day.classList.contains('past-day')) {
+          if (!caption) {
+            caption = document.createElement('span');
+            caption.className = 'mobile-secret-caption';
+            caption.textContent = 'Секретки';
+            secretContainer.insertBefore(caption, secretContainer.firstChild);
+          }
+          const add = secretContainer.querySelector('.secret-add-button');
+          if (add) {
+            const readable = day.dataset.date.split('-').reverse().join('.');
+            add.setAttribute('title', 'Добавить секрет на ' + readable);
+            add.setAttribute('aria-label', 'Добавить секрет на ' + readable);
+          }
+        } else if (caption) {
+          caption.remove();
+        }
       }
 
 
@@ -404,7 +423,13 @@
         const grant = wanted > pool && wanted > 0
           ? Math.floor(extras[index] * pool / wanted)
           : extras[index];
-        day.style.setProperty('--mobile-day-max-height', (base + grant) + 'px');
+        const activeExpanded = day.dataset.date >= todayISO() &&
+          day.classList.contains('expanded');
+        // В раскрытом активном дне обязательно резервируем место:
+        // заголовок + одна задача + кнопка секретки. При тесном экране
+        // неделя прокручивается, но кнопка не исчезает.
+        const minHeight = activeExpanded ? 100 : base;
+        day.style.setProperty('--mobile-day-max-height', Math.max(minHeight, base + grant) + 'px');
       });
     }
 
