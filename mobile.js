@@ -273,18 +273,13 @@
       // Глушим все взаимодействия с прошедшими днями.
       for (const day of days) lockPastDay(day);
 
-      // На телефоне секретки — последняя строка внутри прокручиваемого
-      // списка дел. Это оставляет место задачам, даже в компактном дне.
-      // На широком экране возвращаем исходный порядок после списка задач.
+      // Секретки закреплены под списком дел, вне его внутренней прокрутки.
+      // Это гарантирует, что кнопка «+ 🔑» не прячется за задачами.
       for (const day of days) {
         const tasksContainer = day.querySelector('.day-tasks-container');
         const secretContainer = day.querySelector('.day-secret-container');
         if (!tasksContainer || !secretContainer) continue;
-        if (mobileQuery.matches) {
-          if (secretContainer.parentElement !== tasksContainer) {
-            tasksContainer.appendChild(secretContainer);
-          }
-        } else if (secretContainer.parentElement !== day) {
+        if (secretContainer.parentElement !== day) {
           day.appendChild(secretContainer);
         }
       }
@@ -372,6 +367,7 @@
         nav.appendChild(button);
       });
       setSelected(selectedDate, false);
+      fitSevenDays();
     }
 
     quickAdd.addEventListener('click', () => {
@@ -382,14 +378,34 @@
     // Все семь заголовков остаются видимыми. Высоту для раскрытых дней
     // рассчитываем по фактически доступной области, а не по высоте экрана.
     function fitSevenDays() {
+      const days = Array.from(grid.children).filter(el => el.classList.contains('day-column'));
       if (!mobileQuery.matches) {
         grid.style.removeProperty('--mobile-day-max-height');
+        days.forEach(day => day.style.removeProperty('--mobile-day-max-height'));
         return;
       }
-      const gap = 4;
-      const available = Math.max(0, workspace.clientHeight);
-      const maxHeight = Math.max(34, Math.floor((available - 6 * gap - 2) / 7));
-      grid.style.setProperty('--mobile-day-max-height', maxHeight + 'px');
+      if (!days.length) return;
+      // Пустые дни остаются компактными. День с делами получает больше
+      // пространства, чтобы список дел и ряд «+ 🔑» были видны одновременно.
+      const gap = parseFloat(getComputedStyle(grid).rowGap) || 4;
+      const available = Math.max(0, workspace.clientHeight - (days.length - 1) * gap - 2);
+      const base = Math.min(34, Math.max(27, Math.floor(available / days.length)));
+      const extras = days.map(day => {
+        if (day.classList.contains('collapsed')) return 0;
+        const tasks = day.querySelectorAll('.task-card').length;
+        const active = day.dataset.date >= todayISO();
+        if (!active) return tasks ? 36 : 0;
+        if (tasks) return 118;
+        return 44; // Раскрытый день без дел: место для секретки.
+      });
+      const pool = Math.max(0, available - base * days.length);
+      const wanted = extras.reduce((total, value) => total + value, 0);
+      days.forEach((day, index) => {
+        const grant = wanted > pool && wanted > 0
+          ? Math.floor(extras[index] * pool / wanted)
+          : extras[index];
+        day.style.setProperty('--mobile-day-max-height', (base + grant) + 'px');
+      });
     }
 
     if (typeof ResizeObserver === 'function') {
