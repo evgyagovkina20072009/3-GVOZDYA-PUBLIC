@@ -781,3 +781,850 @@
     scroll-behavior: auto;
   }
 }
+
+/* 2026-10-31: компактная мобильная шапка — десктоп остаётся прежним. */
+.mobile-briefcase-icon,
+.mobile-today-icon { display: none; }
+
+@media screen and (max-width: 767px) {
+  .app-layout { gap: 5px; }
+  .app-header {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 4px;
+    padding: 6px 8px;
+    border-radius: 12px;
+  }
+  /* 1: три гвоздя и годовой календарь. */
+  .header-left {
+    order: 1;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    min-height: 37px;
+    padding-right: 43px;
+  }
+  .brand-badge { gap: 7px; }
+  .brand-mark .forged-nails-emblem { width: 24px; height: 32px; }
+  .brand-title { font-size: 1.12rem; letter-spacing: .07em; }
+  .brand-slogan { font-size: .52rem; letter-spacing: .08em; white-space: nowrap; }
+  .header-left > #openYearDrawerBtn {
+    position: absolute;
+    right: 8px;
+    top: 6px;
+    width: 36px;
+    height: 36px;
+    min-height: 36px;
+    padding: 6px;
+    border-radius: 9px;
+  }
+  .header-left > #openYearDrawerBtn svg { width: 20px; height: 20px; }
+  /* Поиск сохранён в верхнем ряду как компактное поле-лупа. */
+  .search-container {
+    position: absolute;
+    top: 6px;
+    right: 48px;
+    z-index: 180;
+    width: 34px;
+    height: 36px;
+    transition: width .15s ease;
+  }
+  .search-container::before {
+    content: "⌕";
+    position: absolute;
+    left: 10px;
+    top: 3px;
+    font-size: 24px;
+    line-height: 28px;
+    color: var(--text-main);
+    pointer-events: none;
+    z-index: 1;
+  }
+  .search-container:focus-within {
+    width: calc(100% - 58px);
+  }
+  .search-input {
+    box-sizing: border-box;
+    width: 100%;
+    height: 36px;
+    min-height: 36px;
+    border-radius: 9px;
+    padding: 5px 6px 5px 34px;
+    font-size: 16px;
+    color: transparent;
+  }
+  .search-input::placeholder { color: transparent; }
+  .search-container:focus-within .search-input { color: var(--text-main); }
+  .search-container:focus-within .search-input::placeholder { color: var(--text-muted); }
+  /* 2: портфель, Печать, Данные и обе кнопки архивов без переноса. */
+  .header-right {
+    order: 2;
+    display: flex;
+    flex-wrap: nowrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 3px;
+    min-width: 0;
+  }
+  .header-right > .btn-header-action,
+  .header-right > .data-menu-wrapper > .btn-header-action {
+    min-width: 0;
+    min-height: 34px;
+    height: 34px;
+    padding: 4px 7px;
+    font-size: .72rem;
+    line-height: 1.1;
+    border-radius: 8px;
+  }
+  .header-right #aboutPlannerBtn {
+    width: 36px;
+    min-width: 36px;
+    padding: 6px;
+    font-size: 0;
+  }
+  .mobile-briefcase-icon { display: inline-block; width: 22px; height: 22px; vertical-align: middle; }
+  .header-end-controls {
+    display: flex;
+    align-items: center;
+    flex: 0 0 auto;
+    margin: 0;
+    gap: 3px;
+  }
+  .header-end-controls #archiveCompletedBtn,
+  .header-end-controls #archiveFailedBtn {
+    flex: 0 0 34px;
+    width: 34px;
+    height: 34px;
+    min-height: 34px;
+    border-radius: 8px;
+    padding: 4px;
+    font-size: 1rem;
+  }
+  /* 3: дата недели строго в одну строку, стрелки и знак «Сегодня». */
+  .header-center {
+    order: 3;
+    display: block;
+    width: 100%;
+    max-width: none;
+  }
+  .week-nav {
+    display: grid;
+    grid-template-columns: 32px minmax(0, 1fr) 32px 34px;
+    gap: 3px;
+    width: 100%;
+    align-items: center;
+  }
+  .week-range-label {
+    white-space: nowrap;
+    overflow: hidden;
+    overflow-wrap: normal;
+    text-overflow: clip;
+    min-width: 0;
+    line-height: 1.1;
+    font-size: clamp(.68rem, 3.15vw, .82rem);
+    letter-spacing: -.025em;
+    text-align: center;
+  }
+  #prevWeekBtn, #nextWeekBtn, #todayBtn {
+    width: 100%;
+    min-width: 0;
+    height: 32px;
+    min-height: 32px;
+    padding: 2px;
+    border-radius: 8px;
+  }
+  #todayBtn { font-size: 0; }
+  .mobile-today-icon { display: block; width: 20px; height: 28px; margin: auto; }
+  /* Под шапкой сразу доступны дни недели и задачи. */
+  .mobile-day-jump { padding: 0 0 2px; gap: 3px; }
+  .mobile-day-chip {
+    min-height: 43px;
+    min-width: 39px;
+    flex-basis: 39px;
+    padding: 3px 1px;
+    border-radius: 9px;
+  }
+  .mobile-day-chip .mobile-chip-date { font-size: .98rem; }
+}
+@media screen and (max-width: 359px) {
+  .header-right { gap: 2px; }
+  .header-right > .btn-header-action,
+  .header-right > .data-menu-wrapper > .btn-header-action { padding-left: 5px; padding-right: 5px; font-size: .68rem; }
+  .week-nav { grid-template-columns: 30px minmax(0,1fr) 30px 32px; gap: 2px; }
+  .brand-slogan { font-size: .47rem; }
+}
+
+
+/* Все 7 дат недели помещаются по ширине телефона без горизонтального свайпа. */
+@media screen and (max-width: 767px) {
+  .mobile-day-jump {
+    display: grid;
+    grid-template-columns: repeat(7, minmax(0, 1fr));
+    gap: 3px;
+    min-width: 0;
+    width: 100%;
+    overflow-x: hidden;
+    overflow-y: visible;
+    padding: 0 0 2px;
+  }
+  .mobile-day-chip {
+    box-sizing: border-box;
+    display: flex;
+    flex: initial;
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    min-height: 44px;
+    padding: 4px 0;
+    border-radius: 8px;
+  }
+  .mobile-day-chip .mobile-chip-name {
+    font-size: clamp(.57rem, 2.35vw, .70rem);
+    white-space: nowrap;
+  }
+  .mobile-day-chip .mobile-chip-date {
+    font-size: clamp(.84rem, 3.4vw, 1.02rem);
+    white-space: nowrap;
+  }
+  .week-range-label {
+    white-space: nowrap;
+    overflow: visible;
+    text-overflow: clip;
+    font-size: clamp(.67rem, 2.8vw, .8rem);
+  }
+  .week-nav { min-width: 0; }
+}
+
+/* Приветствие на мобильном: компактнее только три строки с гвоздями.
+   Остальной текст и логика приветственного окна сохраняются. */
+@media screen and (max-width: 767px) {
+  .modal-card.onboarding-card .onboarding-list {
+    gap: 3px;
+  }
+
+  .modal-card.onboarding-card .onboarding-list li {
+    gap: 6px;
+    padding: 4px 7px;
+    min-height: 0;
+    line-height: 1.28;
+  }
+
+  .modal-card.onboarding-card .onboarding-list li > svg {
+    width: 39px;
+    height: 25px;
+    flex: 0 0 39px !important; /* Переопределяет встроенный flex у SVG */
+  }
+
+  .modal-card.onboarding-card .onboarding-col {
+    gap: 7px;
+  }
+}
+
+/* Мобильный поиск: лупа строго между портфелем и Печатью. */
+.mobile-search-toggle { display: none; }
+@media screen and (max-width: 767px) {
+  /* Сама кнопка занимает место в ряду, поле появляется только по нажатию. */
+  .header-right { position: relative; z-index: 200; }
+  .header-right > .search-container {
+    position: static;
+    display: flex;
+    flex: 0 0 34px;
+    width: 34px;
+    height: 34px;
+    min-width: 34px;
+    z-index: auto;
+    transition: none;
+  }
+  .header-right > .search-container:focus-within { width: 34px; }
+  .header-right > .search-container::before { content: none; }
+  .mobile-search-toggle {
+    box-sizing: border-box;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 34px;
+    height: 34px;
+    padding: 5px;
+    border: 1px solid var(--header-border);
+    border-radius: 8px;
+    background: var(--btn-secondary-bg);
+    color: var(--btn-secondary-text);
+    cursor: pointer;
+  }
+  .mobile-search-toggle svg { display: block; width: 20px; height: 20px; }
+  .mobile-search-toggle:focus-visible {
+    outline: 2px solid #2563eb;
+    outline-offset: 2px;
+  }
+  .header-right > .search-container .search-input {
+    display: none;
+    box-sizing: border-box;
+    position: absolute;
+    top: calc(100% + 5px);
+    left: 0;
+    right: 0;
+    width: 100%;
+    height: 42px;
+    min-height: 42px;
+    padding: 7px 12px;
+    z-index: 205;
+    font-size: 16px;
+    color: var(--text-main);
+    border-radius: 10px;
+    box-shadow: 0 6px 18px rgba(0,0,0,.17);
+  }
+  .header-right > .search-container.is-open .search-input {
+    display: block;
+  }
+  .header-right > .search-container.is-open .search-input::placeholder {
+    color: var(--text-muted);
+  }
+  .header-right > .search-container #searchResults {
+    position: absolute;
+    top: calc(100% + 49px);
+    left: 0 !important;
+    right: 0;
+    width: 100%;
+    max-width: 100%;
+    max-height: min(48dvh, 300px);
+    transform: none !important;
+    z-index: 210;
+  }
+}
+
+/* Портфель переносится к календарю, лупа остаётся во втором ряду. */
+.mobile-brand-tools { display: none; }
+@media screen and (max-width: 767px) {
+  .header-left {
+    padding-right: 0;
+    gap: 5px;
+    justify-content: space-between;
+    min-width: 0;
+  }
+  .header-left > .brand-badge { min-width: 0; flex: 0 1 auto; }
+  .mobile-brand-tools {
+    display: flex;
+    flex: 0 0 auto;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 4px;
+    margin-left: auto;
+  }
+  .mobile-brand-tools #aboutPlannerBtn,
+  .mobile-brand-tools #openYearDrawerBtn {
+    box-sizing: border-box;
+    position: static;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex: 0 0 36px;
+    width: 36px;
+    min-width: 36px;
+    height: 36px;
+    min-height: 36px;
+    padding: 6px;
+    border-radius: 9px;
+  }
+  .mobile-brand-tools #aboutPlannerBtn { font-size: 0; }
+  .mobile-brand-tools #openYearDrawerBtn svg { width: 20px; height: 20px; }
+  .header-right > .search-container { order: -1; }
+}
+@media screen and (max-width: 359px) {
+  .mobile-brand-tools { gap: 3px; }
+  .mobile-brand-tools #aboutPlannerBtn,
+  .mobile-brand-tools #openYearDrawerBtn { flex-basis: 33px; width: 33px; min-width: 33px; }
+}
+
+/* Неделя целиком на одном экране: семь строк, даты ДД.ММ.ГГГГ. */
+@media screen and (max-width: 767px) {
+  /* Дополнительные семь маленьких вкладок не нужны: все дни видны ниже. */
+  .mobile-day-jump { display: none !important; }
+  .mobile-quick-add { display: none !important; }
+
+  /* Ни неделя, ни вся страница не прокручиваются по вертикали. */
+  .main-workspace {
+    display: flex;
+    flex: 1 1 0;
+    min-height: 0;
+    height: 100%;
+    overflow-x: hidden;
+    overflow-y: hidden;
+    padding: 0;
+  }
+  .week-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: repeat(7, minmax(0, 1fr));
+    align-items: stretch;
+    justify-items: stretch;
+    flex: 1 1 auto;
+    height: 100%;
+    min-height: 0;
+    gap: 4px;
+    padding: 0;
+  }
+  .day-column,
+  .day-column.expanded,
+  .day-column.collapsed {
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    align-self: stretch;
+    width: 100%;
+    min-width: 0;
+    height: 100%;
+    min-height: 0;
+    max-height: 100%;
+    padding: 3px 7px;
+    overflow: hidden;
+    border-radius: 9px;
+    box-shadow: 0 2px 6px rgba(0,0,0,.08);
+  }
+  .day-column .day-header,
+  .day-column.collapsed .day-header {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    flex: 0 0 auto;
+    min-height: 27px;
+    height: 27px;
+    gap: 4px;
+    margin: 0;
+    padding: 0;
+  }
+  .day-column .day-header-info {
+    display: flex;
+    flex: 1 1 auto;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-start;
+    flex-wrap: nowrap;
+    min-width: 0;
+    overflow: hidden;
+    gap: 6px;
+    white-space: nowrap;
+  }
+  .day-column .day-name,
+  .day-column.today .day-name {
+    flex: 0 0 auto;
+    font-size: clamp(.66rem, 2.5vw, .80rem);
+    line-height: 1.15;
+    letter-spacing: 0;
+    white-space: nowrap;
+  }
+  .day-column .day-date,
+  .day-column.today .day-date {
+    flex: 0 0 auto;
+    font-size: clamp(.72rem, 2.8vw, .87rem);
+    line-height: 1.15;
+    letter-spacing: 0;
+    margin: 0;
+    white-space: nowrap;
+    font-variant-numeric: tabular-nums;
+  }
+  .day-column .btn-toggle-col,
+  .day-column .mobile-add-day {
+    flex: 0 0 27px;
+    box-sizing: border-box;
+    width: 27px;
+    height: 27px;
+    min-width: 27px;
+    min-height: 27px;
+    padding: 0;
+    font-size: .88rem;
+    border-radius: 7px;
+  }
+  .day-column .day-tasks-container {
+    display: flex;
+    flex-direction: column;
+    flex: 1 1 auto;
+    min-height: 0;
+    max-height: none;
+    overflow-x: hidden;
+    overflow-y: auto;
+    gap: 4px;
+    padding: 0 1px 0 0;
+    margin-top: 2px;
+    overscroll-behavior: contain;
+    -webkit-overflow-scrolling: touch;
+  }
+  .day-column.collapsed .day-tasks-container,
+  .day-column.collapsed .day-secret-container {
+    display: none !important;
+  }
+  .day-column .task-card {
+    flex: 0 0 auto;
+    font-size: .80rem;
+    line-height: 1.25;
+    border-radius: 7px;
+    padding: 5px 7px;
+    gap: 3px;
+  }
+  .day-column .task-card-title { font-size: .81rem; line-height: 1.25; }
+  .day-column .task-card-time { font-size: .72rem; padding: 2px 4px; }
+  .day-column .btn-add-task-quick { min-height: 29px; margin-top: 3px; font-size: .76rem; }
+  .day-column .day-secret-container { flex: 0 0 auto; margin-top: 2px; padding-top: 2px; }
+}
+/* Когда высоты особенно мало, убираем декоративные отступы, а не воскресенье. */
+@media screen and (max-width: 767px) and (max-height: 570px) {
+  .app-layout { padding-top: 4px; padding-bottom: 4px; gap: 3px; }
+  .app-header { padding-top: 3px; padding-bottom: 3px; gap: 3px; }
+  .day-column,
+  .day-column.expanded,
+  .day-column.collapsed { padding-top: 1px; padding-bottom: 1px; }
+  .week-grid { gap: 2px; }
+  .day-column .day-header,
+  .day-column.collapsed .day-header { height: 24px; min-height: 24px; }
+  .day-column .btn-toggle-col,
+  .day-column .mobile-add-day { width: 24px; height: 24px; min-height: 24px; flex-basis: 24px; }
+}
+
+
+/* 2026-10-31. Не растягивать семь дней на весь экран:
+   пустой день занимает только компактный заголовок, а содержимое
+   непустого дня растёт по необходимости, но не заслоняет воскресенье. */
+@media screen and (max-width: 767px) {
+  .main-workspace {
+    align-items: flex-start;
+  }
+  .week-grid {
+    grid-template-rows: repeat(7, max-content);
+    align-content: start;
+    align-items: start;
+    flex: 0 0 auto;
+    height: auto;
+  }
+  .day-column,
+  .day-column.expanded,
+  .day-column.collapsed {
+    align-self: start;
+    height: auto;
+    min-height: 0;
+    max-height: var(--mobile-day-max-height, 72px);
+  }
+  .day-column.collapsed {
+    min-height: 0;
+  }
+  .day-column .day-tasks-container {
+    flex: 1 1 auto;
+    min-height: 0;
+    overflow-y: auto;
+  }
+}
+
+
+/* Поощрение только под конкретным завершённым днём, строго в одну строку. */
+.day-completion-note { display: none; }
+@media screen and (max-width: 767px) {
+  /* Прошедшие дни: стрелка не нужна, история по нажатию на дату доступна. */
+  .day-column.past-day .btn-toggle-col { display: none !important; }
+
+  .day-column .day-completion-note {
+    box-sizing: border-box;
+    display: block;
+    flex: 0 0 auto;
+    width: 100%;
+    min-width: 0;
+    margin: 1px 0 2px;
+    font-size: clamp(.67rem, 2.5vw, .78rem);
+    font-weight: 750;
+    line-height: 1.22;
+    color: var(--text-main);
+    text-align: left;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+}
+
+/* Прошедшие дни мобильной недели полностью неактивны. */
+@media screen and (max-width: 767px) {
+  /* Оставляем дату и старые записи видимыми, но запрещаем любые нажатия. */
+  .week-grid .day-column.past-day,
+  .week-grid .day-column.past-day * {
+    pointer-events: none !important;
+    cursor: default !important;
+    touch-action: auto;
+  }
+  /* В прошлом больше не показываем ни секретки, ни кнопки действий. */
+  .week-grid .day-column.past-day .day-secret-container,
+  .week-grid .day-column.past-day .btn-toggle-col,
+  .week-grid .day-column.past-day .mobile-add-day,
+  .week-grid .day-column.past-day .btn-add-task-quick,
+  .week-grid .day-column.past-day .task-card-actions,
+  .week-grid .day-column.past-day .task-transfer-actions {
+    display: none !important;
+  }
+}
+
+/* Порядок мобильной шапки: логотип → неделя → действия. */
+@media screen and (max-width: 767px) {
+  .app-header {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    align-items: stretch;
+  }
+
+  .app-header > .header-left {
+    order: 1;
+    flex: 0 0 auto;
+  }
+
+  /* Перелистывание недель всегда между логотипом и панелью действий. */
+  .app-header > .header-center {
+    order: 2;
+    display: block;
+    flex: 0 0 auto;
+    min-width: 0;
+    width: 100%;
+    visibility: visible;
+  }
+
+  .app-header > .header-center .week-nav {
+    display: grid;
+    grid-template-columns: 32px minmax(0, 1fr) 32px 34px;
+    align-items: center;
+    gap: 4px;
+    width: 100%;
+    min-width: 0;
+    min-height: 34px;
+    visibility: visible;
+    opacity: 1;
+  }
+
+  .app-header > .header-center .week-range-label {
+    display: block;
+    min-width: 0;
+    width: 100%;
+    overflow: hidden;
+    white-space: nowrap;
+    text-align: center;
+    text-overflow: clip;
+    font-size: clamp(.69rem, 2.95vw, .84rem);
+    line-height: 1.2;
+    font-weight: 800;
+    font-variant-numeric: tabular-nums;
+    color: var(--text-main);
+  }
+
+  .app-header > .header-center #prevWeekBtn,
+  .app-header > .header-center #nextWeekBtn,
+  .app-header > .header-center #todayBtn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    min-width: 0;
+    height: 34px;
+    min-height: 34px;
+    padding: 0;
+    border-radius: 8px;
+  }
+
+  .app-header > .header-center #prevWeekBtn,
+  .app-header > .header-center #nextWeekBtn {
+    font-size: 1rem;
+    font-weight: 900;
+  }
+
+  .app-header > .header-right {
+    order: 3;
+    display: flex;
+    flex: 0 0 auto;
+    flex-wrap: nowrap;
+    justify-content: space-between;
+    align-items: center;
+    gap: 3px;
+    width: 100%;
+    min-width: 0;
+  }
+
+  .app-header > .header-right > #printBtn,
+  .app-header > .header-right > .data-menu-wrapper {
+    flex: 0 0 auto;
+  }
+
+  .app-header > .header-right > #printBtn,
+  .app-header > .header-right > .data-menu-wrapper > #dataMenuBtn {
+    min-height: 34px;
+    height: 34px;
+    padding: 4px 6px;
+    font-size: clamp(.66rem, 2.5vw, .76rem);
+    border-radius: 8px;
+  }
+
+  .app-header > .header-right > .header-end-controls {
+    flex: 0 0 auto;
+    margin: 0;
+    gap: 3px;
+  }
+}
+@media screen and (max-width: 359px) {
+  .app-header > .header-center .week-nav {
+    grid-template-columns: 30px minmax(0, 1fr) 30px 32px;
+    gap: 2px;
+  }
+  .app-header > .header-right > #printBtn,
+  .app-header > .header-right > .data-menu-wrapper > #dataMenuBtn {
+    padding: 4px 3px;
+    font-size: .65rem;
+  }
+}
+/* Нажатие на значок «Сегодня»: видимый отклик даже на текущей неделе. */
+@media screen and (max-width: 767px) {
+  .app-header #todayBtn {
+    position: relative;
+    z-index: 1;
+    cursor: pointer;
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: rgba(37, 99, 235, .2);
+  }
+  .app-header #todayBtn .mobile-today-icon {
+    pointer-events: none;
+  }
+  .app-header #todayBtn.mobile-today-pressed {
+    background: rgba(37, 99, 235, .22);
+    border-color: #2563eb;
+    animation: nails-today-button-tap .7s ease-out;
+  }
+  .week-grid .day-column.mobile-today-focus {
+    animation: nails-today-day-highlight 1.25s ease-out;
+  }
+  @keyframes nails-today-button-tap {
+    0% { box-shadow: 0 0 0 0 rgba(37, 99, 235, .42); }
+    65% { box-shadow: 0 0 0 6px rgba(37, 99, 235, .08); }
+    100% { box-shadow: 0 0 0 0 rgba(37, 99, 235, 0); }
+  }
+  @keyframes nails-today-day-highlight {
+    0%, 60% { outline: 2px solid #2563eb; outline-offset: -2px; }
+    100% { outline: 2px solid transparent; outline-offset: -2px; }
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .app-header #todayBtn.mobile-today-pressed,
+  .week-grid .day-column.mobile-today-focus { animation: none; }
+}
+
+/* Секретные напоминания: всегда под делами и всегда доступны. */
+@media screen and (max-width: 767px) {
+  .week-grid .day-column.expanded .day-tasks-container {
+    flex: 1 1 auto;
+    min-height: 0;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+  }
+  .week-grid .day-column.expanded > .day-secret-container {
+    display: flex;
+    flex-direction: column;
+    flex: 0 0 auto;
+    position: relative;
+    box-sizing: border-box;
+    min-height: 29px;
+    width: 100%;
+    margin: 3px 0 0;
+    padding: 2px 0 0;
+    border-top: 1px dashed var(--header-border);
+    overflow: visible;
+  }
+  .week-grid .day-column.expanded > .day-secret-container .secret-icons-row {
+    display: flex;
+    flex-wrap: nowrap;
+    align-items: center;
+    gap: 4px;
+    min-height: 27px;
+  }
+  .week-grid .day-column.expanded > .day-secret-container .secret-icon-button,
+  .week-grid .day-column.expanded > .day-secret-container .secret-add-button {
+    flex: 0 0 30px;
+    box-sizing: border-box;
+    width: 30px;
+    min-width: 30px;
+    height: 27px;
+    min-height: 27px;
+    padding: 1px;
+  }
+  /* Секретные напоминания прошлых дней не интерактивны и скрыты. */
+  .week-grid .day-column.past-day > .day-secret-container { display: none !important; }
+}
+
+/* Кнопка добавления секретки должна оставаться видимой после создания дела. */
+.mobile-secret-caption { display: none; }
+@media screen and (max-width: 767px) {
+  /* Все семь дней остаются в недельной ленте; при нехватке высоты
+     допускаем прокрутку вместо обрезания нижней кнопки. */
+  .main-workspace {
+    overflow-x: hidden;
+    overflow-y: auto;
+    overscroll-behavior-y: contain;
+  }
+
+  .week-grid .day-column.expanded:not(.past-day) {
+    min-height: 100px;
+    max-height: max(100px, var(--mobile-day-max-height, 100px));
+  }
+
+  .week-grid .day-column.expanded:not(.past-day) > .day-tasks-container {
+    flex: 1 1 auto;
+    min-height: 0;
+    overflow-y: auto;
+  }
+
+  .week-grid .day-column.expanded:not(.past-day) > .day-secret-container {
+    display: flex !important;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 8px;
+    width: 100%;
+    min-height: 35px;
+    height: 35px;
+    flex: 0 0 35px;
+    padding: 3px 0 1px;
+    margin: 2px 0 0;
+    border-top: 1px dashed var(--header-border);
+    background: var(--weekday-bg);
+    overflow: visible;
+  }
+
+  .week-grid .day-column.expanded:not(.past-day) > .day-secret-container .mobile-secret-caption {
+    display: inline;
+    flex: 0 0 auto;
+    white-space: nowrap;
+    color: var(--text-main);
+    font-size: 11px;
+    font-weight: 700;
+  }
+
+  .week-grid .day-column.expanded:not(.past-day) > .day-secret-container .secret-icons-row {
+    display: flex;
+    align-items: center;
+    flex: 1 1 auto;
+    width: auto;
+    min-width: 0;
+    gap: 5px;
+    overflow-x: auto;
+  }
+
+  .week-grid .day-column.expanded:not(.past-day) > .day-secret-container .secret-add-button {
+    flex: 0 0 44px;
+    width: 44px;
+    min-width: 44px;
+    height: 31px;
+    min-height: 31px;
+    border: 1px solid #2563eb;
+    background: rgba(37, 99, 235, .14);
+    color: var(--text-main);
+    font-size: 17px;
+    touch-action: manipulation;
+  }
+  .week-grid .day-column.expanded:not(.past-day) > .day-secret-container .secret-add-button:focus-visible {
+    outline: 2px solid #2563eb;
+    outline-offset: -2px;
+  }
+
+  .week-grid .day-column.past-day > .day-secret-container {
+    display: none !important;
+  }
+}

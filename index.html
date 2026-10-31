@@ -4,10 +4,17 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Три гвоздя - Планировщик</title>
+  <meta name="theme-color" content="#0b1830">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="Три гвоздя">
+  <meta name="description" content="Планировщик «Три гвоздя». Прибей хаос к плану.">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="apple-touch-icon" href="icons/icon-192.png">
   <link rel="stylesheet" href="style.css?v=20261029b">
   <link rel="stylesheet" href="print.css">
   <link rel="stylesheet" href="help.css">
-  <link rel="stylesheet" href="mobile.css?v=1">
+  <link rel="stylesheet" href="mobile.css?v=10">
 </head>
 <body class="theme-day">
   <div class="background-overlay"></div>
@@ -425,9 +432,19 @@
     </div>
   </div>
 
-  <script src="app.js?v=onboarding-public-v1"></script>
+  <script src="app.js?v=secret-comments-20261031"></script>
   <script src="print.js"></script>
   <script src="help.js"></script>
-  <script src="mobile.js?v=1"></script>
+  <script src="mobile.js?v=11"></script>
+  <script>
+    // PWA регистрируется на HTTPS, при этом задачи в кэш не копируются.
+    if ('serviceWorker' in navigator && (location.protocol === 'https:' || location.hostname === 'localhost')) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('./sw.js').catch(err => {
+          console.warn('Офлайн-режим недоступен:', err);
+        });
+      });
+    }
+  </script>
 </body>
 </html>

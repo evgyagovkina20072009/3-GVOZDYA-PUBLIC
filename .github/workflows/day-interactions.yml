@@ -1,0 +1,26 @@
+name: Проверка прошедших и будущих дней
+on:
+  push:
+    branches:
+      - feature/mobile-compact-header-20261031
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  day-regression:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Install Chromium for mobile tests
+        run: |
+          npm install --no-save playwright@1.56.1
+          npx playwright install --with-deps chromium
+      - name: Check real planner on 390 and 430 pixel phones
+        run: |
+          python3 -m http.server 8765 >/tmp/three-nails-tests.log 2>&1 &
+          sleep 2
+          node tests/day-interactions.mjs
