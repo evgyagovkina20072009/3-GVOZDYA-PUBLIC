@@ -47,13 +47,8 @@ try {
     ok(width + 'px: past click cannot toggle', JSON.stringify(before) === JSON.stringify(after));
     ok(width + 'px: no past modal', await page.locator('#taskModal').getAttribute('class').then(c => c.includes('hidden')));
 
-    // Секретки в мобильной карточке идут после всех дел, а не перед ними.
+    // Кнопка секретки должна оставаться под делами, вне их прокрутки.
     const future = page.locator('.day-column[data-date="2026-11-01"]');
-    ok(width + 'px: secrets are last in task scroller', await future.evaluate(day => {
-      const list = day.querySelector('.day-tasks-container');
-      const secrets = day.querySelector('.day-secret-container');
-      return list && secrets && secrets.parentElement === list && list.lastElementChild === secrets;
-    }));
 
     ok(width + 'px: future enabled', await future.getAttribute('aria-disabled') !== 'true');
     await future.locator('.mobile-add-day').click();
@@ -62,6 +57,17 @@ try {
     await page.locator('#taskInputTitle').fill('ТЕСТ — проверка будущего дня');
     await page.locator('#taskForm button[type=submit]').click();
     ok(width + 'px: task created', await page.evaluate(() => StorageAPI.getTasksByDate('2026-11-01').some(t => t.title === 'ТЕСТ — проверка будущего дня')));
+    ok(width + 'px: secret add is under tasks, not inside scroller', await future.evaluate(day => {
+      const list = day.querySelector('.day-tasks-container');
+      const secrets = day.querySelector('.day-secret-container');
+      return !!(list && secrets && secrets.parentElement === day && list.nextElementSibling !== null &&
+        Array.from(day.children).indexOf(secrets) > Array.from(day.children).indexOf(list));
+    }));
+    ok(width + 'px: secret add is visible and clickable', await future.locator('.secret-add-button').isVisible());
+    await future.locator('.secret-add-button').click();
+    ok(width + 'px: secret editor opens', await page.locator('#secretEditorModal').isVisible());
+    await page.locator('#cancelSecretEditorBtn').click();
+
     await future.locator('.btn-task-done').first().click();
     ok(width + 'px: future task completed', await page.evaluate(() => StorageAPI.getTasksByDate('2026-11-01').every(t => t.completed)));
     ok(width + 'px: motivation under completed day', await future.locator('.day-completion-note').count() === 1);
