@@ -1506,3 +1506,46 @@
   .app-header #todayBtn.mobile-today-pressed,
   .week-grid .day-column.mobile-today-focus { animation: none; }
 }
+
+/* Секретные напоминания внизу списка задач на телефоне. */
+@media screen and (max-width: 767px) {
+  /* Задачи видны первыми, секретки перемещаются в конец их скролла. */
+  .day-column .day-tasks-container {
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+    overflow-y: auto;
+  }
+  .day-column .day-tasks-container > .day-secret-container {
+    order: 100;
+    display: flex;
+    flex: 0 0 auto;
+    flex-direction: column;
+    position: static;
+    box-sizing: border-box;
+    width: 100%;
+    margin-top: 7px;
+    margin-bottom: 1px;
+    padding-top: 6px;
+    border-top: 1px dashed var(--header-border);
+  }
+  .day-column .day-tasks-container > .day-secret-container .secret-icons-row {
+    display: flex;
+    flex-wrap: nowrap;
+    align-items: center;
+    gap: 4px;
+  }
+  .day-column .day-tasks-container > .day-secret-container .secret-icon-button,
+  .day-column .day-tasks-container > .day-secret-container .secret-add-button {
+    flex: 0 0 27px;
+    width: 27px;
+    min-width: 27px;
+    height: 27px;
+    min-height: 27px;
+    padding: 1px;
+  }
+  /* Старые дни остаются полностью неактивными. */
+  .week-grid .day-column.past-day .day-tasks-container > .day-secret-container {
+    display: none !important;
+  }
+}
