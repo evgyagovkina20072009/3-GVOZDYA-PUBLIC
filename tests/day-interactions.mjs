@@ -28,6 +28,15 @@ try {
       '2026-10-26','2026-10-27','2026-10-28','2026-10-29','2026-10-30','2026-10-31','2026-11-01'
     ]));
 
+    // «Сегодня» возвращает дату и подсвечивает текущий день, даже при повторном нажатии.
+    await page.locator('#nextWeekBtn').click();
+    ok(width + 'px: next week opens', await page.locator('.day-column[data-date="2026-11-02"]').count() === 1);
+    await page.locator('#todayBtn').click();
+    ok(width + 'px: today button returns to 31.10 week', await page.locator('.day-column[data-date="2026-10-31"]').count() === 1);
+    ok(width + 'px: today button visually highlights today', await page.locator('.day-column[data-date="2026-10-31"].mobile-today-focus').count() === 1);
+    await page.locator('#todayBtn').click();
+    ok(width + 'px: today button gives repeat-click feedback', await page.locator('#todayBtn.mobile-today-pressed').count() === 1);
+
     const past = page.locator('.day-column[data-date="2026-10-28"]');
     ok(width + 'px: past disabled', await past.getAttribute('aria-disabled') === 'true');
     ok(width + 'px: past secret controls hidden', await past.locator('.day-secret-container').evaluate(el => getComputedStyle(el).display === 'none'));
