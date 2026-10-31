@@ -47,7 +47,14 @@ try {
     ok(width + 'px: past click cannot toggle', JSON.stringify(before) === JSON.stringify(after));
     ok(width + 'px: no past modal', await page.locator('#taskModal').getAttribute('class').then(c => c.includes('hidden')));
 
+    // Секретки в мобильной карточке идут после всех дел, а не перед ними.
     const future = page.locator('.day-column[data-date="2026-11-01"]');
+    ok(width + 'px: secrets are last in task scroller', await future.evaluate(day => {
+      const list = day.querySelector('.day-tasks-container');
+      const secrets = day.querySelector('.day-secret-container');
+      return list && secrets && secrets.parentElement === list && list.lastElementChild === secrets;
+    }));
+
     ok(width + 'px: future enabled', await future.getAttribute('aria-disabled') !== 'true');
     await future.locator('.mobile-add-day').click();
     await page.locator('#taskModal:not(.hidden)').waitFor();
