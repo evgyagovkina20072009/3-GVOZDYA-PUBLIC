@@ -273,6 +273,24 @@
       // Глушим все взаимодействия с прошедшими днями.
       for (const day of days) lockPastDay(day);
 
+      // На телефоне секретки — последняя строка внутри прокручиваемого
+      // списка дел. Это оставляет место задачам, даже в компактном дне.
+      // На широком экране возвращаем исходный порядок после списка задач.
+      for (const day of days) {
+        const tasksContainer = day.querySelector('.day-tasks-container');
+        const secretContainer = day.querySelector('.day-secret-container');
+        if (!tasksContainer || !secretContainer) continue;
+        if (mobileQuery.matches) {
+          if (secretContainer.parentElement !== tasksContainer) {
+            tasksContainer.appendChild(secretContainer);
+          }
+        } else if (secretContainer.parentElement !== day) {
+          day.appendChild(secretContainer);
+        }
+      }
+
+
+
       // При выборе дня показываем мотивацию только за этот день.
       for (const day of days) {
         const header = day.querySelector('.day-header');
