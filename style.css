@@ -1897,6 +1897,25 @@ body.theme-night .metal-nail { filter: drop-shadow(0 0 3px rgba(255,255,255,.45)
   padding: 8px 5px 10px;
 }
 .year-month-title { text-align: center; font-size: .88rem; font-weight: 750; color: #fff; margin: 0 0 8px; }
+/* Desktop only: the actual current month is visibly marked, independent of the
+   week previously selected. Mobile styling remains unchanged. */
+@media screen and (min-width: 768px) {
+  .year-month.year-month-current {
+    border: 2px solid #facc15;
+    background: rgba(250, 204, 21, .15);
+    box-shadow: 0 0 0 2px rgba(250, 204, 21, .12), 0 0 18px rgba(250, 204, 21, .21);
+  }
+  .year-month.year-month-current .year-month-title {
+    color: #fff4c8;
+    font-weight: 900;
+  }
+  .year-month.year-month-current .year-month-title::after {
+    content: " · СЕЙЧАС";
+    color: #facc15;
+    font-size: .7rem;
+    white-space: nowrap;
+  }
+}
 .year-month-days { display: grid; grid-template-columns: repeat(7,minmax(0,1fr)); gap: 2px; }
 .year-weekday-label { color: #cbd5e1; font-size: .65rem; font-weight: 700; text-align: center; }
 .year-date-button, .year-day-blank {
