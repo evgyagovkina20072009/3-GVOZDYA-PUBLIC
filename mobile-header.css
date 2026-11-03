@@ -383,3 +383,124 @@
     white-space: normal;
   }
 }
+
+
+/* 2026-11-04: fit the existing welcome/onboarding message on phone and 9-inch screens. */
+/* All existing welcome text, controls and detailed-help navigation are preserved.
+   Only spacing and type are tightened; very small screens retain scrolling. */
+@media screen and (max-width: 900px) {
+  #onboardingModal {
+    padding: max(6px, env(safe-area-inset-top))
+             7px
+             max(6px, env(safe-area-inset-bottom));
+  }
+  #onboardingModal .modal-card.onboarding-card {
+    box-sizing: border-box;
+    width: min(96vw, 900px);
+    max-width: 900px;
+    max-height: calc(100dvh - 16px);
+    padding: 13px 16px 12px;
+    overflow-y: auto;
+    overscroll-behavior-y: contain;
+    -webkit-overflow-scrolling: touch;
+  }
+  #onboardingModal .onboarding-top {
+    gap: 9px;
+    padding-bottom: 7px;
+    margin-bottom: 8px;
+  }
+  #onboardingModal .onboarding-nails-header {
+    gap: 5px;
+    padding: 3px 6px;
+  }
+  #onboardingModal .onboarding-title {
+    font-size: 1.14rem;
+    line-height: 1.18;
+  }
+  #onboardingModal .onboarding-slogan {
+    font-size: .66rem;
+    line-height: 1.18;
+    letter-spacing: .08em;
+  }
+  #onboardingModal .onboarding-body-grid {
+    gap: 12px;
+    margin-bottom: 8px;
+  }
+  #onboardingModal .onboarding-col {
+    gap: 6px;
+  }
+  #onboardingModal .onboarding-p {
+    font-size: .82rem;
+    line-height: 1.38;
+  }
+  #onboardingModal .onboarding-list { gap: 3px; }
+  #onboardingModal .onboarding-list li {
+    font-size: .79rem;
+    line-height: 1.26;
+    gap: 6px;
+    padding: 4px 7px;
+  }
+  #onboardingModal .onboarding-devil-block {
+    gap: 6px;
+    padding: 5px 8px;
+  }
+  #onboardingModal .devil-question {
+    font-size: .8rem;
+    line-height: 1.28;
+  }
+  #onboardingModal .onboarding-footer {
+    gap: 8px;
+    padding-top: 7px;
+  }
+  #onboardingModal .summary-highlight {
+    font-size: .91rem;
+    line-height: 1.22;
+  }
+  #onboardingModal .summary-sub {
+    font-size: .72rem;
+    line-height: 1.28;
+  }
+  #onboardingModal .onboarding-actions { gap: 5px; }
+  #onboardingModal .onboarding-actions .btn-urban-volumetric {
+    min-height: 39px;
+    padding: 6px 8px;
+    font-size: .80rem;
+    line-height: 1.2;
+  }
+}
+
+@media screen and (max-width: 767px) {
+  #onboardingModal .modal-card.onboarding-card {
+    width: 100%;
+    max-width: none;
+    padding: 11px 11px 10px;
+  }
+  #onboardingModal .onboarding-top { gap: 7px; }
+  #onboardingModal .onboarding-nails-header { padding: 3px 4px; }
+  #onboardingModal .onboarding-title {
+    font-size: clamp(.95rem, 4.3vw, 1.13rem);
+  }
+  #onboardingModal .onboarding-body-grid {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 8px;
+  }
+  #onboardingModal .onboarding-p {
+    font-size: .87rem;
+    line-height: 1.38;
+  }
+  #onboardingModal .onboarding-list li {
+    font-size: .82rem;
+    padding: 3px 6px;
+  }
+  #onboardingModal .onboarding-footer {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 7px;
+  }
+  #onboardingModal .onboarding-actions { width: 100%; }
+  #onboardingModal .onboarding-actions .btn-urban-volumetric {
+    width: 100%;
+    min-height: 39px;
+    font-size: .86rem;
+  }
+}
