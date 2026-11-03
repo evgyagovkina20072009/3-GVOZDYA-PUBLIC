@@ -1197,14 +1197,31 @@ const Step7 = {
     const close = document.getElementById('closeYearDrawerBtn');
     if (!drawer || !backdrop || !open || !close) return;
     open.addEventListener('click', () => {
-      this.calendarYear = (this.selectedDate ? Number(this.selectedDate.slice(0,4)) :
-        WeekGridManager.currentMonday.getFullYear());
+      // Desktop: always start the yearly calendar at the actual current month.
+      // Keep the existing mobile opening behavior unchanged.
+      const isDesktop = window.matchMedia('(min-width: 768px)').matches;
+      const now = new Date();
+      this.calendarYear = isDesktop ? now.getFullYear() :
+        (this.selectedDate ? Number(this.selectedDate.slice(0,4)) :
+          WeekGridManager.currentMonday.getFullYear());
       this.renderCalendar();
       drawer.classList.remove('closed');
       drawer.scrollTop = 0;
       drawer.setAttribute('aria-hidden','false');
       backdrop.classList.remove('hidden');
       open.setAttribute('aria-expanded', 'true');
+
+      if (isDesktop) {
+        requestAnimationFrame(() => {
+          if (drawer.classList.contains('closed')) return;
+          const currentMonth = drawer.querySelector('.year-month-current');
+          if (!currentMonth) return;
+          const offset = currentMonth.getBoundingClientRect().top -
+            drawer.getBoundingClientRect().top;
+          // Leave enough room for the year controls above the highlighted month.
+          drawer.scrollTop = Math.max(0, drawer.scrollTop + offset - 110);
+        });
+      }
     });
     close.addEventListener('click', () => this.closeCalendar());
     backdrop.addEventListener('click', () => this.closeCalendar());
@@ -1256,6 +1273,12 @@ const Step7 = {
     for (let month = 0; month < 12; month++) {
       const container = document.createElement('section');
       container.className = 'year-month';
+      const now = new Date();
+      if (window.matchMedia('(min-width: 768px)').matches &&
+          this.calendarYear === now.getFullYear() && month === now.getMonth()) {
+        container.classList.add('year-month-current');
+        container.setAttribute('aria-label', 'Текущий месяц');
+      }
       const heading = document.createElement('h3');
       heading.className = 'year-month-title';
       heading.textContent = this.MONTHS[month];
