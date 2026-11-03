@@ -66,6 +66,8 @@ function createWindow() {
       webSecurity: true
     }
   });
+  // Hide Electron's technical File/Edit/View/Window menu in the user-facing app.
+  win.removeMenu();
   win.once('ready-to-show', () => win.show());
   win.webContents.setWindowOpenHandler(({url}) => {
     // External links open in the normal browser, not the privileged app window.
