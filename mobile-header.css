@@ -1,0 +1,255 @@
+/* Mobile header — approved original: silver-white nails on the left,
+   separate week row, and compact controls. Desktop styles untouched. */
+.nails-mobile-search-toggle { display: none; }
+
+@media screen and (max-width: 767px) {
+  .app-header.nails-mobile-header-ready {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 5px;
+    padding: 7px 9px 8px;
+    overflow: visible;
+    background: rgba(15, 31, 55, .77);
+    border: 1px solid rgba(151, 181, 213, .36);
+  }
+  .nails-mobile-header-ready > .header-left {
+    order: 1;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    min-width: 0;
+    min-height: 43px;
+    padding: 0 !important;
+    gap: 6px;
+  }
+  .nails-mobile-header-ready .brand-badge {
+    flex: 1 1 auto;
+    min-width: 0;
+    justify-content: flex-start;
+    gap: 7px;
+  }
+  .nails-mobile-header-ready .brand-mark .forged-nails-emblem {
+    width: 27px; height: 41px;
+  }
+  .nails-mobile-header-ready .nail-head,
+  .nails-mobile-header-ready .nail-shaft {
+    fill: url(#nightNailGrad) !important;
+    stroke: rgba(255,255,255,.35) !important;
+    stroke-width: .3px;
+  }
+  .nails-mobile-header-ready .nail-ridge {
+    stroke: #fff !important;
+    stroke-width: .8px;
+  }
+  .nails-mobile-header-ready .brand-title {
+    color: #fff !important;
+    font-size: clamp(1rem, 4.7vw, 1.2rem);
+    font-weight: 800;
+    letter-spacing: .09em;
+    text-shadow: 0 1px 4px rgba(0,0,0,.55) !important;
+    white-space: nowrap;
+  }
+  .nails-mobile-header-ready .brand-slogan {
+    color: #e7ebf4 !important;
+    font-size: clamp(.46rem, 1.9vw, .58rem);
+    letter-spacing: .09em;
+    opacity: 1;
+    white-space: nowrap;
+    text-shadow: none !important;
+  }
+  .nails-mobile-header-ready > .header-left > .search-container {
+    position: relative !important;
+    inset: auto !important;
+    flex: 0 0 38px !important;
+    width: 38px !important;
+    min-width: 38px;
+    height: 38px !important;
+    z-index: 210;
+    padding: 0;
+  }
+  .nails-mobile-header-ready > .header-left > .search-container::before {
+    content: none !important;
+    display: none !important;
+  }
+  .nails-mobile-header-ready .nails-mobile-search-toggle {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 38px;
+    height: 38px;
+    padding: 6px;
+    background: rgba(13, 31, 57, .68);
+    color: #fff;
+    border: 1px solid rgba(182, 210, 236, .45);
+    border-radius: 9px;
+    cursor: pointer;
+  }
+  .nails-mobile-header-ready .nails-mobile-search-toggle:focus-visible {
+    outline: 2px solid white; outline-offset: 2px;
+  }
+  .nails-mobile-header-ready > .header-left > .search-container #searchInput {
+    display: none;
+    position: fixed !important;
+    top: calc(env(safe-area-inset-top) + 73px) !important;
+    left: 12px !important;
+    right: 12px !important;
+    width: calc(100vw - 24px) !important;
+    min-width: 0;
+    height: 44px !important;
+    min-height: 44px !important;
+    padding: 8px 12px !important;
+    background: rgba(13,29,52,.98);
+    border: 1px solid #a5bad5;
+    color: #fff !important;
+    border-radius: 10px;
+    font-size: 16px;
+    z-index: 550;
+  }
+  .nails-mobile-header-ready > .header-left > .search-container.nails-search-open #searchInput {
+    display: block;
+  }
+  .nails-mobile-header-ready > .header-left #searchInput::placeholder { color: #d8e4f0 !important; }
+  .nails-mobile-header-ready > .header-left .search-results {
+    position: fixed !important;
+    top: calc(env(safe-area-inset-top) + 122px) !important;
+    left: 12px !important;
+    right: 12px !important;
+    width: calc(100vw - 24px) !important;
+    max-width: none;
+    max-height: min(45dvh, 340px);
+    transform: none !important;
+    z-index: 560;
+  }
+
+  .nails-mobile-header-ready > .header-center {
+    order: 2;
+    display: block;
+    width: 100%;
+    min-width: 0;
+    flex: 0 0 auto;
+  }
+  .nails-mobile-header-ready > .header-center .week-nav {
+    display: grid;
+    grid-template-columns: 33px minmax(0, 1fr) 33px !important;
+    width: 100%;
+    min-width: 0;
+    gap: 5px;
+    align-items: center;
+  }
+  .nails-mobile-header-ready #prevWeekBtn,
+  .nails-mobile-header-ready #nextWeekBtn {
+    color: #fff;
+    background: rgba(13, 31, 57, .65);
+    border: 1px solid rgba(182,210,236,.42);
+  }
+  .nails-mobile-header-ready .week-range-label {
+    color: #fff !important;
+    font-size: clamp(.74rem, 3.15vw, .96rem);
+    font-weight: 800;
+    text-align: center;
+    white-space: nowrap;
+  }
+  .nails-mobile-header-ready > .header-right {
+    order: 3;
+    display: flex;
+    flex-wrap: nowrap;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    min-width: 0;
+    gap: 3px;
+    margin: 0;
+    position: relative;
+  }
+  .nails-mobile-header-ready > .header-right > #printBtn,
+  .nails-mobile-header-ready > .header-right > .data-menu-wrapper > #dataMenuBtn {
+    height: 34px;
+    min-height: 34px;
+    padding: 4px 5px;
+    font-size: clamp(.67rem, 2.65vw, .8rem);
+    font-weight: 750;
+    color: #fff;
+    background: rgba(13,31,57,.62);
+    border: 1px solid rgba(182,210,236,.4);
+    border-radius: 8px;
+    white-space: nowrap;
+  }
+  .nails-mobile-header-ready > .header-right > .data-menu-wrapper {
+    flex: 0 0 auto;
+  }
+  .nails-mobile-header-ready > .header-right > .header-end-controls {
+    display: flex;
+    flex: 1 1 auto;
+    min-width: 0;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 3px;
+    margin: 0;
+  }
+  .nails-mobile-header-ready #archiveFailedBtn { order: 1; }
+  .nails-mobile-header-ready #archiveCompletedBtn { order: 2; }
+  .nails-mobile-header-ready #openYearDrawerBtn { order: 3; }
+  .nails-mobile-header-ready #todayBtn {
+    order: 4;
+    display: inline-flex;
+    flex: 0 0 34px;
+    justify-content: center;
+    align-items: center;
+    width: 34px;
+    min-width: 34px;
+    height: 34px;
+    min-height: 34px;
+    padding: 4px;
+    color: #fff !important;
+    background: rgba(13,31,57,.7);
+    border: 1px solid rgba(182,210,236,.4);
+    border-radius: 8px;
+    font-size: 0 !important;
+  }
+  .nails-mobile-header-ready #todayBtn svg { width: 22px; height: 22px; pointer-events: none; }
+  .nails-mobile-header-ready #archiveFailedBtn,
+  .nails-mobile-header-ready #archiveCompletedBtn,
+  .nails-mobile-header-ready #openYearDrawerBtn {
+    flex: 0 0 34px;
+    width: 34px; min-width: 34px;
+    height: 34px; min-height: 34px;
+    padding: 4px;
+    font-size: 1rem;
+  }
+  .nails-mobile-header-ready .data-dropdown { z-index: 600; }
+  .nails-mobile-header-ready .data-dropdown #aboutPlannerBtn {
+    display: block;
+    width: 100%;
+    font-size: .85rem !important;
+    background: transparent;
+    height: auto;
+    min-height: 38px;
+    color: var(--text-main);
+    padding: 10px 12px;
+    text-align: left;
+    border: none;
+  }
+
+  /* Keep the original translucent day cards, never replace with white. */
+  .week-grid .day-column:not(.today):not(.weekend) {
+    background: var(--weekday-bg);
+  }
+  .week-grid .day-column.weekend:not(.today) {
+    background: var(--weekend-bg);
+  }
+  .week-grid .day-column.today {
+    background: var(--today-bg);
+  }
+}
+@media screen and (max-width: 359px) {
+  .nails-mobile-header-ready > .header-right { gap: 2px; }
+  .nails-mobile-header-ready > .header-right > #printBtn,
+  .nails-mobile-header-ready > .header-right > .data-menu-wrapper > #dataMenuBtn { padding-inline: 3px; font-size: .66rem; }
+  .nails-mobile-header-ready #archiveFailedBtn,
+  .nails-mobile-header-ready #archiveCompletedBtn,
+  .nails-mobile-header-ready #openYearDrawerBtn,
+  .nails-mobile-header-ready #todayBtn { width: 31px; min-width: 31px; flex-basis: 31px; }
+}
