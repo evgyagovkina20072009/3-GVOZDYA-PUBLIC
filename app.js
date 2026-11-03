@@ -1197,13 +1197,10 @@ const Step7 = {
     const close = document.getElementById('closeYearDrawerBtn');
     if (!drawer || !backdrop || !open || !close) return;
     open.addEventListener('click', () => {
-      // Desktop: always start the yearly calendar at the actual current month.
-      // Keep the existing mobile opening behavior unchanged.
-      const isDesktop = window.matchMedia('(min-width: 768px)').matches;
+      // Both desktop and mobile start at the actual current month,
+      // regardless of the previously selected week/date.
       const now = new Date();
-      this.calendarYear = isDesktop ? now.getFullYear() :
-        (this.selectedDate ? Number(this.selectedDate.slice(0,4)) :
-          WeekGridManager.currentMonday.getFullYear());
+      this.calendarYear = now.getFullYear();
       this.renderCalendar();
       drawer.classList.remove('closed');
       drawer.scrollTop = 0;
@@ -1211,17 +1208,16 @@ const Step7 = {
       backdrop.classList.remove('hidden');
       open.setAttribute('aria-expanded', 'true');
 
-      if (isDesktop) {
-        requestAnimationFrame(() => {
-          if (drawer.classList.contains('closed')) return;
-          const currentMonth = drawer.querySelector('.year-month-current');
-          if (!currentMonth) return;
-          const offset = currentMonth.getBoundingClientRect().top -
-            drawer.getBoundingClientRect().top;
-          // Leave enough room for the year controls above the highlighted month.
-          drawer.scrollTop = Math.max(0, drawer.scrollTop + offset - 110);
-        });
-      }
+      requestAnimationFrame(() => {
+        if (drawer.classList.contains('closed')) return;
+        const currentMonth = drawer.querySelector('.year-month-current');
+        if (!currentMonth) return;
+        const offset = currentMonth.getBoundingClientRect().top -
+          drawer.getBoundingClientRect().top;
+        // The current month is immediately visible; users can scroll to other months.
+        drawer.scrollTop = Math.max(0, drawer.scrollTop + offset -
+          (window.matchMedia('(max-width: 767px)').matches ? 76 : 110));
+      });
     });
     close.addEventListener('click', () => this.closeCalendar());
     backdrop.addEventListener('click', () => this.closeCalendar());
@@ -1274,8 +1270,7 @@ const Step7 = {
       const container = document.createElement('section');
       container.className = 'year-month';
       const now = new Date();
-      if (window.matchMedia('(min-width: 768px)').matches &&
-          this.calendarYear === now.getFullYear() && month === now.getMonth()) {
+      if (this.calendarYear === now.getFullYear() && month === now.getMonth()) {
         container.classList.add('year-month-current');
         container.setAttribute('aria-label', 'Текущий месяц');
       }
