@@ -10,7 +10,7 @@
   <meta name="apple-mobile-web-app-title" content="Три гвоздя">
   <meta name="description" content="Планировщик «Три гвоздя». Прибей хаос к плану.">
   <link rel="manifest" href="manifest.webmanifest">
-  <link rel="apple-touch-icon" href="icons/icon-192.png">
+  <link rel="apple-touch-icon" sizes="192x192" href="icons/icon-192.png">
   <link rel="stylesheet" href="style.css?v=20261031-cityfix">
   <link rel="stylesheet" href="print.css">
   <link rel="stylesheet" href="help.css">
@@ -98,6 +98,7 @@
       <div class="header-right">
         <!-- Кнопка «О планировщике» -->
         <button id="aboutPlannerBtn" class="btn btn-header-action" title="История и философия планировщика">О планировщике</button>
+        <button id="installPlannerBtn" type="button" class="btn btn-header-action" title="Установить планировщик на устройство">📲 Установить</button>
         <!-- Шаг 6: архив выполненных и окончательно невыполненных задач -->
         <button type="button" id="printBtn" class="btn btn-header-action" title="Выбрать период и распечатать план">Печать</button>
         <!-- Шаг 6: управление данными в одном раскрывающемся меню -->
@@ -464,6 +465,7 @@
       dialog?.addEventListener('close', () => { document.getElementById('syncPreviewPhone').value = ''; });
     })();
   </script>
+  <script src="install.js?v=1"></script>
   <script src="app.js?v=onboarding-public-v1"></script>
   <script src="print.js"></script>
   <script src="help.js"></script>

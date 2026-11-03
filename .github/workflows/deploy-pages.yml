@@ -30,6 +30,13 @@ jobs:
           curl --fail --location --retry 3 --silent --show-error 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=2000&q=80' --output assets/city-day.jpg
           curl --fail --location --retry 3 --silent --show-error 'https://images.unsplash.com/photo-1514565131-fce0801e5785?auto=format&fit=crop&w=2000&q=80' --output assets/city-night.jpg
           test -s assets/city-day.jpg && test -s assets/city-night.jpg
+      - name: Generate app icons from approved golden design
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq librsvg2-bin
+          rsvg-convert -w 192 -h 192 -o icons/icon-192.png icons/icon.svg
+          rsvg-convert -w 512 -h 512 -o icons/icon-512.png icons/icon.svg
+          test -s icons/icon-192.png && test -s icons/icon-512.png
       - name: Upload website files
         uses: actions/upload-pages-artifact@v3
         with:
