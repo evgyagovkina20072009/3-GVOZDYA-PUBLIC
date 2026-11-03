@@ -1,0 +1,89 @@
+name: Build Windows desktop installer
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/build-windows.yml"
+      - "desktop/**"
+      - "package.json"
+      - "index.html"
+      - "app.js"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    name: Build EXE and publish download
+    runs-on: windows-latest
+    timeout-minutes: 40
+    steps:
+      - name: Checkout source
+        uses: actions/checkout@v4
+      - name: Use Node.js 24
+        uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+      - name: Install packager
+        run: npm install --no-audit --no-fund
+      - name: Install icon rasterizer
+        run: |
+          npm install --no-save --no-audit --no-fund sharp@0.34.3
+          python -m pip install --disable-pip-version-check pillow
+      - name: Generate Windows icon from approved golden SVG
+        shell: pwsh
+        run: |
+          node -e "require('sharp')('icons/icon.svg').resize(512).png().toFile('icons/desktop.png').catch(e=>{console.error(e);process.exit(1)})"
+          if ($LASTEXITCODE -ne 0) { throw "Icon generation failed" }
+          python -c "from PIL import Image; Image.open('icons/desktop.png').save('icons/desktop.ico', format='ICO', sizes=[(256,256),(128,128),(64,64),(48,48),(32,32),(16,16)])"
+          if ($LASTEXITCODE -ne 0) { throw "ICO generation failed" }
+      - name: Include backgrounds in offline installation
+        shell: pwsh
+        run: |
+          New-Item -ItemType Directory -Force -Path assets | Out-Null
+          curl.exe --fail --location --retry 3 --max-time 90 --silent --show-error "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=2000&q=80" --output assets/city-day.jpg
+          if ($LASTEXITCODE -ne 0) { throw "Day image download failed" }
+          curl.exe --fail --location --retry 3 --max-time 90 --silent --show-error "https://images.unsplash.com/photo-1514565131-fce0801e5785?auto=format&fit=crop&w=2000&q=80" --output assets/city-night.jpg
+          if ($LASTEXITCODE -ne 0) { throw "Night image download failed" }
+          $css = Get-Content style.css -Raw
+          $css = $css.Replace('https://evgyagovkina20072009.github.io/3-GVOZDYA-PUBLIC/assets/', 'assets/')
+          Set-Content style.css -Value $css -Encoding utf8
+          if ((Get-Item assets/city-day.jpg).Length -lt 1000 -or (Get-Item assets/city-night.jpg).Length -lt 1000) { throw "Background file is empty" }
+      - name: Validate source syntax
+        shell: pwsh
+        run: |
+          node --check desktop/main.cjs
+          node --check desktop/preload.cjs
+          node --check desktop/preload-data.js
+          node --check desktop/save-data.js
+          node --check app.js
+      - name: Build executable installer for Windows 64-bit
+        shell: pwsh
+        env:
+          CSC_IDENTITY_AUTO_DISCOVERY: "false"
+        run: |
+          npm run build:win
+          if ($LASTEXITCODE -ne 0) { throw "Windows build failed" }
+          Get-ChildItem dist/*.exe
+      - name: Upload downloadable artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: Three-Nails-Windows-EXE
+          path: dist/*.exe
+          if-no-files-found: error
+      - name: Publish public release for easy download
+        shell: pwsh
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          $file = (Get-ChildItem dist/*.exe | Select-Object -First 1).FullName
+          $tag = "windows-v0.1.0"
+          gh release view $tag --repo "${{ github.repository }}" *> $null
+          if ($LASTEXITCODE -eq 0) {
+            gh release upload $tag $file --repo "${{ github.repository }}" --clobber
+          } else {
+            gh release create $tag $file --repo "${{ github.repository }}" --target "${{ github.sha }}" --title "Три гвоздя — Windows 0.1.0" --notes "Установщик Windows 64-bit. Задачи хранятся на компьютере в папке Документы/Три гвоздя и в локальном хранилище приложения. Не требуется аккаунт или интернет для работы. Тестовая версия без цифровой подписи."
+          }
+          if ($LASTEXITCODE -ne 0) { throw "Release publication failed" }
