@@ -52,7 +52,7 @@
     detailedHelp.setAttribute('role', 'menuitem');
     detailedHelp.textContent = 'Как работает планировщик';
     brandTools.append(brandToggle, brandMenu);
-    left.insertBefore(brandTools, search);
+    left.appendChild(brandTools);
 
     function closeBrandMenu() {
       brandMenu.classList.add('hidden');
@@ -131,7 +131,7 @@
     document.addEventListener('pointerdown', (event) => {
       if (!media.matches) return;
       if (!search.contains(event.target)) closeSearch();
-      if (!brandTools.contains(event.target)) closeBrandMenu();
+      if (!brandTools.contains(event.target) && !brandMenu.contains(event.target)) closeBrandMenu();
     });
     document.addEventListener('keydown', event => {
       if (event.key === 'Escape') closeBrandMenu();
@@ -145,6 +145,7 @@
         if (brandTools.parentElement !== left) left.insertBefore(brandTools, search);
         if (about.parentElement !== brandMenu) brandMenu.insertBefore(about, brandMenu.firstChild);
         if (detailedHelp.parentElement !== brandMenu) brandMenu.appendChild(detailedHelp);
+        if (brandMenu.parentElement !== document.body) document.body.appendChild(brandMenu);
         about.setAttribute('role', 'menuitem');
         about.textContent = 'Приветствие и идея';
         about.classList.remove('btn-header-action');
@@ -161,6 +162,7 @@
         closeSearch();
         closeBrandMenu();
         brandTools.hidden = true;
+        if (brandMenu.parentElement !== brandTools) brandTools.appendChild(brandMenu);
         searchToggle.hidden = true;
         if (menu.parentElement !== dataWrapper) dataWrapper.insertBefore(menu, dataWrapper.querySelector('#step6ImportInput'));
         menu.classList.remove('nails-data-dropdown-viewport');
