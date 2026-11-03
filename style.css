@@ -1971,3 +1971,62 @@ body.theme-night .task-card.search-task-highlight,
   color: #1f2937 !important;
   opacity: 1 !important;
 }
+
+/* Desktop: keep the planner toolbar in ONE row.
+   Mobile layout (<=767px) remains managed by mobile.css. */
+@media screen and (min-width: 768px) {
+  .app-header {
+    flex-wrap: nowrap;
+    gap: clamp(6px, .8vw, 14px);
+  }
+  .app-header > .header-left {
+    flex: 0 0 auto;
+    white-space: nowrap;
+  }
+  .app-header > .header-center {
+    order: initial;
+    flex: 1 1 auto;
+    min-width: 0;
+    width: auto;
+    max-width: none;
+    justify-content: center;
+    gap: clamp(4px, .65vw, 10px);
+  }
+  .app-header > .header-center .search-container {
+    flex: 0 1 190px;
+    min-width: 90px;
+    width: clamp(90px, 14vw, 190px);
+  }
+  .app-header > .header-center .week-nav {
+    flex: 0 0 auto;
+    white-space: nowrap;
+  }
+  .app-header > .header-right {
+    order: initial;
+    flex: 0 0 auto;
+    flex-wrap: nowrap;
+    min-width: 0;
+    margin-left: 0;
+    justify-content: flex-end;
+    gap: clamp(4px, .5vw, 10px);
+    white-space: nowrap;
+  }
+  .app-header .header-end-controls { margin-left: 0; gap: 5px; }
+  .app-header .btn-header-action { white-space: nowrap; }
+}
+@media screen and (min-width: 768px) and (max-width: 1200px) {
+  .app-header { padding-inline: 8px; gap: 6px; }
+  .app-header > .header-left .brand-badge { gap: 5px; }
+  .app-header > .header-center { gap: 5px; }
+  .app-header > .header-center .week-nav { gap: 3px; }
+  .app-header > .header-center .week-range-label { min-width: 116px; font-size: .78rem; }
+  .app-header > .header-right .btn-header-action { padding-inline: 6px; font-size: .76rem; }
+}
+@media screen and (min-width: 768px) and (max-width: 980px) {
+  .app-header > .header-left .brand-slogan { display: none; }
+  .app-header > .header-left .brand-title { font-size: 1rem; }
+  .app-header > .header-center .week-range-label { min-width: 108px; }
+  .app-header > .header-center .search-container { width: 100px; }
+  .app-header > .header-right { gap: 3px; }
+  .app-header > .header-right .btn-header-action { padding-inline: 4px; font-size: .72rem; }
+}
