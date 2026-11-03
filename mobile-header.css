@@ -253,3 +253,38 @@
   .nails-mobile-header-ready #openYearDrawerBtn,
   .nails-mobile-header-ready #todayBtn { width: 31px; min-width: 31px; flex-basis: 31px; }
 }
+
+
+/* Mobile calendar: open on the visibly highlighted real month. */
+@media screen and (max-width: 767px) {
+  #yearDrawer {
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior-y: contain;
+  }
+  #yearDrawer .year-month {
+    border: 1px solid rgba(255, 255, 255, .28);
+    background: rgba(255, 255, 255, .035);
+  }
+  #yearDrawer .year-month .year-month-title {
+    color: #ffffff;
+    font-weight: 750;
+  }
+  #yearDrawer .year-month.year-month-current {
+    border: 2px solid #facc15;
+    background: rgba(250, 204, 21, .13);
+    box-shadow: 0 0 0 1px rgba(250, 204, 21, .24),
+      0 0 18px rgba(250, 204, 21, .16);
+  }
+  #yearDrawer .year-month.year-month-current .year-month-title {
+    color: #facc15;
+    font-size: .98rem;
+    font-weight: 900;
+  }
+  #yearDrawer .year-month.year-month-current .year-month-title::after {
+    content: " · СЕЙЧАС";
+    font-size: .72rem;
+    color: #facc15;
+    white-space: nowrap;
+  }
+}
