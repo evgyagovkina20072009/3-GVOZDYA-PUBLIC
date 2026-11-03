@@ -25,19 +25,39 @@
       return result;
     };
   }
-  window.nailsDesktop.where().then(({program, data}) => {
-    const dialog = document.getElementById('appLocationDialog');
-    if (!dialog) return;
-    const block = document.createElement('p');
-    block.style.cssText = 'font-size:.89rem;line-height:1.6;overflow-wrap:anywhere;';
-    const strong1 = document.createElement('strong');
-    strong1.textContent = 'Программа установлена:';
-    const strong2 = document.createElement('strong');
-    strong2.textContent = 'Файл с задачами на этом компьютере:';
-    block.append(strong1, document.createElement('br'), document.createTextNode(program),
-      document.createElement('br'), strong2, document.createElement('br'),
-      document.createTextNode(data));
-    dialog.insertBefore(block, document.getElementById('appLocationClose'));
-  }).catch(console.warn);
+  // In the installed Windows app, show only the two LOCAL paths. Web links and
+  // PWA explanations are irrelevant and confusing once an EXE is installed.
+  const locationDialog = document.getElementById('appLocationDialog');
+  const locationTitle = document.getElementById('appLocationTitle');
+  const locationClose = document.getElementById('appLocationClose');
+  if (locationDialog && locationTitle && locationClose) {
+    locationTitle.textContent = '📂 Где хранятся программа и задачи';
+    for (const child of Array.from(locationDialog.children)) {
+      if (child !== locationTitle && child !== locationClose) child.classList.add('hidden');
+    }
+    const locations = document.createElement('div');
+    locations.style.cssText = 'font-size:.91rem;line-height:1.65;overflow-wrap:anywhere;margin:10px 0 18px';
+    const makeRow = (label, value) => {
+      const row = document.createElement('p');
+      row.style.margin = '0 0 16px';
+      const heading = document.createElement('strong');
+      heading.textContent = label;
+      const pathLine = document.createElement('span');
+      pathLine.style.cssText = 'display:block;overflow-wrap:anywhere;user-select:text;';
+      pathLine.textContent = value;
+      row.append(heading, pathLine);
+      return row;
+    };
+    locationDialog.insertBefore(locations, locationClose);
+    window.nailsDesktop.where().then(({program, data}) => {
+      locations.replaceChildren(
+        makeRow('Программа установлена:', program),
+        makeRow('Файл с задачами на этом компьютере:', data)
+      );
+    }).catch(error => {
+      console.warn('[Три гвоздя] Не удалось определить местоположение:', error);
+      locations.textContent = 'Не удалось определить расположение программы и файла задач.';
+    });
+  }
   save();
 })();
