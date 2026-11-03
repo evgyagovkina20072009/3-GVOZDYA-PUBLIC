@@ -106,6 +106,7 @@
           <button type="button" id="dataMenuBtn" class="btn btn-header-action" aria-haspopup="true" aria-expanded="false" aria-controls="dataDropdown">Данные ▾</button>
           <div id="dataDropdown" class="data-dropdown hidden" role="menu">
             <button type="button" role="menuitem" id="syncPreviewBtn">🔄 Подключить синхронизацию</button>
+            <button type="button" role="menuitem" id="appLocationBtn">🔗 Где находится приложение</button>
             <button type="button" role="menuitem" data-action="backup">💾 Сохранить копию (JSON)</button>
             <button type="button" role="menuitem" data-action="period">📄 Копировать план за период</button>
             <button type="button" role="menuitem" data-action="restore">📂 Восстановить из файла</button>
@@ -433,6 +434,46 @@
       <button id="secretPopoverDelete" type="button" class="btn btn-danger">Удалить</button>
     </div>
   </div>
+
+  <!-- Ссылки на приложение и пояснение о локальном хранении данных. -->
+  <dialog id="appLocationDialog" aria-labelledby="appLocationTitle" style="width:min(94vw,510px);max-height:88vh;overflow-y:auto;border:1px solid #cda55b;border-radius:16px;padding:22px;background:#101d35;color:#fff;box-shadow:0 15px 50px #0008;">
+    <h2 id="appLocationTitle" style="margin:0 0 16px;font-size:1.3rem">🔗 Где находится «Три гвоздя»</h2>
+    <p style="margin:10px 0 5px;line-height:1.45"><strong>Адрес планировщика:</strong></p>
+    <a href="https://evgyagovkina20072009.github.io/3-GVOZDYA-PUBLIC/" target="_blank" rel="noopener noreferrer" style="color:#ffdd89;overflow-wrap:anywhere">https://evgyagovkina20072009.github.io/3-GVOZDYA-PUBLIC/</a>
+    <button type="button" class="btn btn-secondary" data-copy-app-url="https://evgyagovkina20072009.github.io/3-GVOZDYA-PUBLIC/" style="display:block;margin:9px 0 18px">Копировать адрес</button>
+    <p style="margin:10px 0 5px;line-height:1.45"><strong>Ссылка для установки на другое устройство:</strong></p>
+    <a href="https://evgyagovkina20072009.github.io/3-GVOZDYA-PUBLIC/install.html" target="_blank" rel="noopener noreferrer" style="color:#ffdd89;overflow-wrap:anywhere">https://evgyagovkina20072009.github.io/3-GVOZDYA-PUBLIC/install.html</a>
+    <button type="button" class="btn btn-secondary" data-copy-app-url="https://evgyagovkina20072009.github.io/3-GVOZDYA-PUBLIC/install.html" style="display:block;margin:9px 0 18px">Копировать ссылку для установки</button>
+    <p style="line-height:1.55;font-size:.92rem"><strong>Где установлено на компьютере?</strong><br>Это веб-приложение (PWA). На Windows его можно найти через «Пуск» → «Установленные приложения» либо в списке приложений Chrome или Edge. Значок на рабочем столе — ярлык, а не отдельный установочный файл .exe.</p>
+    <p style="line-height:1.55;font-size:.92rem"><strong>Где мои задачи?</strong><br>Пока они сохраняются в локальном хранилище приложения на этом устройстве, а не в аккаунте. На другом телефоне без синхронизации задачи автоматически не появятся. Перед очисткой браузера или удалением приложения сделай резервную копию: «Данные» → «Сохранить копию (JSON)».</p>
+    <p id="appLocationCopyStatus" role="status" aria-live="polite" style="min-height:1.3em;color:#ffdd89;margin:9px 0"></p>
+    <button type="button" id="appLocationClose" class="btn btn-primary">Закрыть</button>
+  </dialog>
+  <script>
+    (() => {
+      const dialog = document.getElementById('appLocationDialog');
+      const status = document.getElementById('appLocationCopyStatus');
+      const closeMenu = () => {
+        document.getElementById('dataDropdown')?.classList.add('hidden');
+        document.getElementById('dataMenuBtn')?.setAttribute('aria-expanded', 'false');
+      };
+      document.getElementById('appLocationBtn')?.addEventListener('click', () => {
+        closeMenu();
+        status.textContent = '';
+        dialog.showModal();
+      });
+      document.getElementById('appLocationClose')?.addEventListener('click', () => dialog.close());
+      dialog.querySelectorAll('[data-copy-app-url]').forEach(button => button.addEventListener('click', async () => {
+        const address = button.getAttribute('data-copy-app-url');
+        try {
+          await navigator.clipboard.writeText(address);
+          status.textContent = 'Ссылка скопирована. Теперь её можно отправить другому человеку.';
+        } catch (_) {
+          status.textContent = 'Не удалось скопировать автоматически. Выдели адрес выше и скопируй вручную.';
+        }
+      }));
+    })();
+  </script>
 
   <!-- Пробный интерфейс синхронизации: номер не отправляется, аккаунт не создаётся. -->
   <dialog id="syncPreviewDialog" aria-labelledby="syncPreviewTitle" style="width:min(92vw,420px);max-width:420px;border:1px solid #cda55b;border-radius:16px;padding:24px;background:#101d35;color:#fff;box-shadow:0 15px 50px #0008;">
