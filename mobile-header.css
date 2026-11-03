@@ -288,3 +288,98 @@
     white-space: nowrap;
   }
 }
+
+
+/* The small chevron belongs to the original header logo, not to the action row. */
+.nails-brand-help { display: none; }
+.nails-brand-help-menu { display: none; }
+@media screen and (max-width: 767px) {
+  .nails-mobile-header-ready > .header-left > .nails-brand-help {
+    display: inline-flex;
+    flex: 0 0 27px;
+    align-items: center;
+    justify-content: center;
+    width: 27px;
+    min-width: 27px;
+    height: 34px;
+    margin: 0;
+  }
+  .nails-brand-help-toggle {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(13,31,57,.32);
+    border: 1px solid rgba(202,221,242,.40);
+    border-radius: 8px;
+    color: #fff;
+    width: 27px;
+    height: 32px;
+    padding: 0;
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .nails-brand-help-toggle[aria-expanded="true"] svg {
+    transform: rotate(180deg);
+  }
+  .nails-brand-help-toggle:focus-visible {
+    outline: 2px solid #fff;
+    outline-offset: 2px;
+  }
+  body > .nails-brand-help-menu:not(.hidden) {
+    position: fixed;
+    display: flex;
+    flex-direction: column;
+    box-sizing: border-box;
+    width: min(250px, calc(100vw - 20px));
+    max-width: calc(100vw - 20px);
+    z-index: 550;
+    gap: 3px;
+    padding: 6px;
+    border-radius: 11px;
+    border: 1px solid rgba(189,212,238,.5);
+    background: rgba(13,29,52,.98);
+    box-shadow: 0 12px 26px rgba(0,0,0,.33);
+  }
+  body > .nails-brand-help-menu button {
+    display: block;
+    box-sizing: border-box;
+    width: 100%;
+    min-height: 42px;
+    border: 0;
+    border-radius: 8px;
+    padding: 10px 12px;
+    text-align: left;
+    font-size: .85rem !important;
+    font-weight: 650;
+    color: #fff !important;
+    background: transparent;
+    cursor: pointer;
+    white-space: normal;
+  }
+  body > .nails-brand-help-menu button:hover,
+  body > .nails-brand-help-menu button:focus-visible {
+    background: rgba(96,165,250,.19);
+    outline: none;
+  }
+
+  /* iPhone: position under "Данные", grow rightward and clamp to the viewport. */
+  body > .data-dropdown.nails-data-dropdown-viewport {
+    position: fixed !important;
+    right: auto !important;
+    box-sizing: border-box;
+    min-width: 0 !important;
+    max-width: calc(100vw - 20px) !important;
+    overflow-x: hidden;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior: contain;
+    z-index: 540;
+    background: var(--card-bg);
+    border: 1px solid var(--header-border);
+  }
+  body > .data-dropdown.nails-data-dropdown-viewport button {
+    max-width: 100%;
+    overflow-wrap: anywhere;
+    white-space: normal;
+  }
+}
