@@ -1,0 +1,16 @@
+{
+  "name": "Три гвоздя",
+  "short_name": "Три гвоздя",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#0b1830",
+  "theme_color": "#0b1830",
+  "icons": [
+    {
+      "src": "icons/nails.svg",
+      "type": "image/svg+xml",
+      "sizes": "any"
+    }
+  ]
+}
