@@ -16,6 +16,7 @@
   <link rel="stylesheet" href="help.css">
   <link rel="stylesheet" href="mobile.css?v=tablet-scale-20261104">
   <link rel="stylesheet" href="mobile-header.css?v=aligned-day-titles-20261104">
+  <link rel="stylesheet" href="sync/client.css?v=20261105">
 </head>
 <body class="theme-day">
   <div class="background-overlay"></div>
@@ -105,9 +106,9 @@
         <div class="data-menu-wrapper">
           <button type="button" id="dataMenuBtn" class="btn btn-header-action" aria-haspopup="true" aria-expanded="false" aria-controls="dataDropdown">Данные ▾</button>
           <div id="dataDropdown" class="data-dropdown hidden" role="menu">
-            <button type="button" role="menuitem" id="syncPreviewBtn">🔄 Подключить синхронизацию</button>
+
             <button type="button" role="menuitem" id="appLocationBtn">🔗 Где находится приложение</button>
-            <button type="button" role="menuitem" id="installPlannerBtn">📲 Установить на другое устройство</button>
+
             <button type="button" role="menuitem" data-action="backup">💾 Сохранить копию (JSON)</button>
             <button type="button" role="menuitem" data-action="period">📄 Копировать план за период</button>
             <button type="button" role="menuitem" data-action="restore">📂 Восстановить из файла</button>
@@ -476,41 +477,13 @@
     })();
   </script>
 
-  <!-- Пробный интерфейс синхронизации: номер не отправляется, аккаунт не создаётся. -->
-  <dialog id="syncPreviewDialog" aria-labelledby="syncPreviewTitle" style="width:min(92vw,420px);max-width:420px;border:1px solid #cda55b;border-radius:16px;padding:24px;background:#101d35;color:#fff;box-shadow:0 15px 50px #0008;">
-    <h2 id="syncPreviewTitle" style="margin:0 0 14px;font-size:1.3rem">🔄 Синхронизация устройств</h2>
-    <p style="line-height:1.5;margin:0 0 14px">Здесь можно будет подключить телефон и компьютер к одному аккаунту по номеру телефона.</p>
-    <label for="syncPreviewPhone" style="display:block;margin-bottom:6px">Номер телефона (пример будущего входа)</label>
-    <input id="syncPreviewPhone" type="tel" inputmode="tel" autocomplete="off" placeholder="+7 999 123-45-67" style="box-sizing:border-box;width:100%;padding:12px;border:1px solid #aa936b;border-radius:8px;font-size:1rem">
-    <p style="font-size:.9rem;line-height:1.5;color:#ffd48a">Это демонстрация интерфейса. СМС пока не отправляется, номер никуда не передаётся, синхронизация ещё не работает. Твои текущие задачи останутся на этом устройстве.</p>
-    <div style="display:flex;justify-content:flex-end;gap:8px">
-      <button type="button" id="syncPreviewClose" class="btn btn-secondary">Закрыть</button>
-      <button type="button" id="syncPreviewContinue" class="btn btn-primary">Продолжить</button>
-    </div>
-    <p id="syncPreviewStatus" role="status" aria-live="polite" style="margin:10px 0 0"></p>
-  </dialog>
-  <script>
-    (() => {
-      const button = document.getElementById('syncPreviewBtn');
-      const dialog = document.getElementById('syncPreviewDialog');
-      const status = document.getElementById('syncPreviewStatus');
-      button?.addEventListener('click', () => {
-        document.getElementById('dataDropdown')?.classList.add('hidden');
-        document.getElementById('dataMenuBtn')?.setAttribute('aria-expanded', 'false');
-        status.textContent = '';
-        dialog.showModal();
-      });
-      document.getElementById('syncPreviewClose')?.addEventListener('click', () => dialog.close());
-      document.getElementById('syncPreviewContinue')?.addEventListener('click', () => {
-        status.textContent = 'Пробный экран работает. Подтверждение по СМС будет доступно после подключения сервера авторизации.';
-      });
-      dialog?.addEventListener('close', () => { document.getElementById('syncPreviewPhone').value = ''; });
-    })();
-  </script>
+
   <script src="install.js?v=1"></script>
   <script src="desktop/preload-data.js"></script>
   <script src="app.js?v=tablet-layout-20261104"></script>
   <script src="desktop/save-data.js"></script>
+  <script src="sync/merge.js?v=20261105"></script>
+  <script src="sync/client.js?v=20261105"></script>
   <script src="print.js"></script>
   <script src="help.js"></script>
   <script src="tablet-scale.js?v=1"></script>
