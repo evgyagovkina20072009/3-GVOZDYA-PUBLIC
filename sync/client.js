@@ -8,7 +8,7 @@
   const ACCOUNT_KEY = 'tg_sync_account_20261105';
   const BASE_KEY = 'tg_sync_baseline_20261105';
   const origin = window.location.origin;
-  const configured = String(window.TG_SYNC_API_URL || '').replace(/\\/$/, '');
+  const configured = String(window.TG_SYNC_API_URL || '').replace(/\/$/, '');
   const apiBase = configured || ((location.protocol === 'http:' || location.protocol === 'https:') &&
     !location.hostname.endsWith('github.io') ? origin : '');
   let session, inFlight = false, requested = false, timer, isApplying = false, authCover;
