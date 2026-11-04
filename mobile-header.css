@@ -599,3 +599,28 @@
     font-weight: 900 !important;
   }
 }
+
+/* 2026-11-04: soft background makes the boundaries of task days visible.
+   Only the header row of a day with tasks changes; no new padding/height,
+   and past day cards keep their existing muted grey styling. */
+@media screen and (max-width: 767px), screen and (min-width: 768px) and (min-height: 650px) and (pointer: coarse) {
+  body.theme-day #weekGrid > .day-column.has-tasks > .day-header {
+    background: rgba(69, 115, 161, .23);
+    border-radius: 7px;
+    box-shadow: inset 0 -2px 0 rgba(31, 78, 121, .56);
+  }
+  body.theme-night #weekGrid > .day-column.has-tasks > .day-header {
+    background: rgba(76, 128, 180, .32);
+    border-radius: 7px;
+    box-shadow: inset 0 -2px 0 rgba(162, 205, 243, .68);
+  }
+  /* Past dates are distinguishable but remain grey and inactive. */
+  body.theme-day #weekGrid > .day-column.past-day.has-tasks > .day-header {
+    background: rgba(120, 133, 151, .33);
+    box-shadow: inset 0 -2px 0 rgba(71, 85, 105, .59);
+  }
+  body.theme-night #weekGrid > .day-column.past-day.has-tasks > .day-header {
+    background: rgba(125, 139, 159, .29);
+    box-shadow: inset 0 -2px 0 rgba(176, 190, 207, .56);
+  }
+}
