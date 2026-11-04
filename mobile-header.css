@@ -548,3 +548,44 @@
     min-width: 31px !important;
   }
 }
+
+/* Match the mobile calendar button to the other third-row actions. */
+@media screen and (max-width: 767px) {
+  .nails-mobile-header-ready > .header-right #openYearDrawerBtn {
+    appearance: none;
+    display: inline-flex !important;
+    flex: 0 0 34px !important;
+    width: 34px !important;
+    min-width: 34px !important;
+    height: 34px !important;
+    min-height: 34px !important;
+    padding: 4px !important;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid rgba(182, 210, 236, .4) !important;
+    border-radius: 8px !important;
+    background: rgba(13, 31, 57, .7) !important;
+    color: #fff !important;
+    box-shadow: none !important;
+    cursor: pointer;
+  }
+  .nails-mobile-header-ready > .header-right #openYearDrawerBtn svg {
+    width: 20px;
+    height: 20px;
+    flex: none;
+    stroke: currentColor;
+  }
+  .nails-mobile-header-ready > .header-right #printBtn .nails-print-label {
+    display: none !important;
+  }
+  .nails-mobile-header-ready > .header-right #printBtn .nails-print-icon {
+    display: block !important;
+  }
+}
+@media screen and (max-width: 359px) {
+  .nails-mobile-header-ready > .header-right #openYearDrawerBtn {
+    flex-basis: 31px !important;
+    width: 31px !important;
+    min-width: 31px !important;
+  }
+}
