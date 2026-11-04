@@ -5,7 +5,7 @@
 (function () {
   'use strict';
 
-  const mobileQuery = window.matchMedia('(max-width: 767px)');
+  const mobileQuery = window.matchMedia('(max-width: 767px), (min-width: 768px) and (min-height: 650px) and (pointer: coarse)');
   const weekdays = ['Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб', 'Вс'];
 
   function init() {
