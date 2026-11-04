@@ -1,6 +1,6 @@
 {
   "name": "three-nails-planner",
-  "version": "0.1.3",
+  "version": "0.2.0",
   "private": true,
   "description": "Три гвоздя — автономный планировщик задач",
   "main": "desktop/main.cjs",
@@ -30,6 +30,9 @@
       "manifest.webmanifest",
       "icons/**",
       "assets/**",
+      "sync/client.js",
+      "sync/merge.js",
+      "sync/client.css",
       "desktop/**",
       "!desktop/README.md"
     ],
