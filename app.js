@@ -192,7 +192,9 @@ const StorageAPI = {
     };
 
     tasks.push(newTask);
-    this._write(STORAGE_KEYS.TASKS, tasks);
+    if (!this._write(STORAGE_KEYS.TASKS, tasks) || !this.getTaskById(newTask.id)) {
+      throw new Error('Не удалось сохранить дело в памяти устройства. Проверь доступное место и настройки Safari.');
+    }
     return newTask;
   },
 
@@ -274,7 +276,9 @@ const StorageAPI = {
     }
 
     tasks[index] = task;
-    this._write(STORAGE_KEYS.TASKS, tasks);
+    if (!this._write(STORAGE_KEYS.TASKS, tasks)) {
+      throw new Error('Не удалось сохранить изменения дела в памяти устройства.');
+    }
     return task;
   },
 
@@ -1618,33 +1622,40 @@ const WeekGridManager = {
 
         if (!title || typeof StorageAPI === 'undefined') return;
 
-        if (editingId) {
-          const existingTask = StorageAPI.getTaskById(editingId);
-          if (!DateUtils.isTaskEditable(existingTask)) {
-            showToast('Время дела уже наступило, изменения не сохранены.');
-            this.closeTaskModal();
-            return;
+        try {
+          if (editingId) {
+            const existingTask = StorageAPI.getTaskById(editingId);
+            if (!existingTask || !DateUtils.isTaskEditable(existingTask)) {
+              showToast('Время дела уже наступило, изменения не сохранены.');
+              return;
+            }
+            const updated = StorageAPI.updateTask(editingId, {
+              title: title.trim(),
+              time: time ? time.trim() : null,
+              priority,
+              completed: isCompleted
+            });
+            if (!updated) {
+              showToast('Не удалось обновить дело. Данные не изменены.');
+              return;
+            }
+          } else {
+            const newTask = StorageAPI.addTask({
+              title: title.trim(),
+              date: dateISO,
+              time: time ? time.trim() : null,
+              priority
+            });
+            if (isCompleted && newTask) {
+              StorageAPI.updateTask(newTask.id, { completed: true });
+            }
+            this.expandedDays.add(dateISO);
           }
-
-          StorageAPI.updateTask(editingId, {
-            title: title.trim(),
-            time: time ? time.trim() : null,
-            priority,
-            completed: isCompleted
-          });
-        } else {
-          const newTask = StorageAPI.addTask({
-            title: title.trim(),
-            date: dateISO,
-            time: time ? time.trim() : null,
-            priority
-          });
-          if (isCompleted && newTask) {
-            StorageAPI.updateTask(newTask.id, { completed: true });
-          }
-          this.expandedDays.add(dateISO);
+        } catch (error) {
+          console.error('[Три гвоздя] Ошибка сохранения дела:', error);
+          showToast(error.message || 'Ошибка сохранения. Дело не записано.');
+          return; // Keep the form and all entered fields open for retry.
         }
-
         this.closeTaskModal();
         this.render();
       });
