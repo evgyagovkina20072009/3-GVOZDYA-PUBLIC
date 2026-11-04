@@ -1220,7 +1220,7 @@ const Step7 = {
           drawer.getBoundingClientRect().top;
         // The current month is immediately visible; users can scroll to other months.
         drawer.scrollTop = Math.max(0, drawer.scrollTop + offset -
-          (window.matchMedia('(max-width: 767px)').matches ? 76 : 110));
+          (window.matchMedia('(max-width: 767px), (min-width: 768px) and (min-height: 650px) and (pointer: coarse)').matches ? 76 : 110));
       });
     });
     close.addEventListener('click', () => this.closeCalendar());
@@ -1674,7 +1674,7 @@ const WeekGridManager = {
         requestAnimationFrame(() => {
           const card = Array.from(document.querySelectorAll('#weekGrid .task-card'))
             .find(el => el.dataset.taskId === String(savedTaskId));
-          if (card && window.matchMedia('(max-width: 767px)').matches) {
+          if (card && window.matchMedia('(max-width: 767px), (min-width: 768px) and (min-height: 650px) and (pointer: coarse)').matches) {
             card.scrollIntoView({ block: 'nearest', inline: 'nearest' });
           }
         });
