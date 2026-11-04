@@ -1,0 +1,25 @@
+/* New login layer. Does not alter calendar, date header or task CSS. */
+.tg-auth-cover[hidden] { display: none !important; }
+.tg-auth-cover { position: fixed; inset: 0; z-index: 2147482000; box-sizing: border-box;
+  background: rgba(3, 15, 35, .86); display: flex; justify-content: center;
+  align-items: center; padding: 16px; backdrop-filter: blur(8px); }
+.tg-auth-panel { box-sizing: border-box; width: min(100%, 390px); max-height: 90dvh;
+  overflow-y: auto; background: #102441; color: #f5f8ff; border: 1px solid #cca45f;
+  border-radius: 18px; padding: 24px; box-shadow: 0 18px 45px rgba(0,0,0,.5);
+  font-family: system-ui, -apple-system, sans-serif; }
+.tg-auth-panel h2 { font-size: 1.25rem; line-height: 1.3; margin: 0 0 14px; text-align: center; }
+.tg-auth-tabs { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin: 0 0 18px; }
+.tg-auth-tabs button { min-height: 42px; background: #182f53; color: #fff;
+  border: 1px solid #647896; border-radius: 10px; cursor: pointer; font: inherit; }
+.tg-auth-tabs button[aria-pressed="true"] { background: #365b85; border-color: #e5be79; font-weight: 700; }
+.tg-auth-panel label { display: block; font-size: .96rem; margin-bottom: 12px; }
+.tg-auth-panel input { display: block; box-sizing: border-box; margin-top: 6px;
+  width: 100%; min-height: 42px; padding: 8px 12px; border: 1px solid #8b9bab;
+  background: #fff; color: #102037; border-radius: 9px; font-size: 16px; }
+.tg-auth-submit { display: block; width: 100%; min-height: 44px; cursor: pointer;
+  background: #d4a856; color: #15213a; border: none; border-radius: 10px;
+  font-size: 1rem; font-weight: 750; margin-top: 8px; }
+.tg-auth-submit:disabled { opacity: .65; cursor: wait; }
+.tg-auth-message { margin: 13px 0 0; min-height: 1.3em;
+  font-size: .9rem; color: #ffca95; line-height: 1.4; }
+.tg-auth-hint { margin: 14px 0 0; opacity: .84; font-size: .82rem; line-height: 1.5; }
