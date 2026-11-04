@@ -1628,18 +1628,18 @@
     align-content: start;
     overflow: visible;
   }
-  #weekGrid > .day-column.expanded:has(.task-card) {
+  #weekGrid > .day-column.expanded.has-tasks {
     height: auto;
     max-height: none !important;
     overflow: visible;
   }
-  #weekGrid > .day-column.expanded:has(.task-card) > .day-tasks-container {
+  #weekGrid > .day-column.expanded.has-tasks > .day-tasks-container {
     flex: 0 0 auto;
     height: auto;
     max-height: none !important;
     overflow: visible !important;
   }
-  #weekGrid > .day-column.expanded:has(.task-card) > .day-secret-container {
+  #weekGrid > .day-column.expanded.has-tasks > .day-secret-container {
     flex-shrink: 0;
   }
 }
