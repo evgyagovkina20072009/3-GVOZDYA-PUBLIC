@@ -1,0 +1,23 @@
+name: Sync backend and merge tests
+on:
+  push:
+    branches: ["FINAL-05.11.2026"]
+  workflow_dispatch:
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: JavaScript syntax checks
+        run: |
+          node --check sync/server.mjs
+          node --check sync/client.js
+          node --check sync/merge.js
+          node --check app.js
+      - name: Automated sync tests
+        run: node --test sync/sync.test.cjs
