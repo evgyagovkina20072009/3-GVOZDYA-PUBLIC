@@ -650,3 +650,13 @@
     min-height: 27px;
   }
 }
+
+/* 2026-11-04: uniform left inset for ALL seven day headings.
+   Keep day names aligned whether empty, busy, past or future. The 10px
+   inset clears the 3px accent rail and does not alter font weights,
+   buttons, header height, or the task list. */
+@media screen and (max-width: 767px), screen and (min-width: 768px) and (min-height: 650px) and (pointer: coarse) {
+  #weekGrid > .day-column > .day-header {
+    padding-inline-start: 10px;
+  }
+}
