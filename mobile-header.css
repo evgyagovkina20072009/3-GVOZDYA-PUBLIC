@@ -504,3 +504,47 @@
     font-size: .86rem;
   }
 }
+
+/* 2026-11-04 — printer shortcut in the approved third header row.
+   The original print.js preview and A4 pagination are reused unchanged. */
+.nails-print-icon { display: none; }
+@media screen and (max-width: 767px) {
+  .app-header > .header-right > #printBtn {
+    display: inline-flex !important;
+    visibility: visible !important;
+    flex: 0 0 34px !important;
+    width: 34px !important;
+    min-width: 34px !important;
+    height: 34px !important;
+    min-height: 34px !important;
+    padding: 4px !important;
+    align-items: center;
+    justify-content: center;
+    color: #fff !important;
+    background: rgba(13, 31, 57, .7);
+    border: 1px solid rgba(182, 210, 236, .4);
+    border-radius: 8px;
+    cursor: pointer;
+    touch-action: manipulation;
+  }
+  .app-header > .header-right > #printBtn .nails-print-label { display: none !important; }
+  .app-header > .header-right > #printBtn .nails-print-icon {
+    display: block !important;
+    width: 21px;
+    height: 21px;
+    flex: none;
+    color: #fff;
+    pointer-events: none;
+  }
+  .app-header > .header-right > #printBtn:focus-visible {
+    outline: 2px solid #fff;
+    outline-offset: 2px;
+  }
+}
+@media screen and (max-width: 359px) {
+  .app-header > .header-right > #printBtn {
+    flex-basis: 31px !important;
+    width: 31px !important;
+    min-width: 31px !important;
+  }
+}
