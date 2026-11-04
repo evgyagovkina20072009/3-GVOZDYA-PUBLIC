@@ -3,7 +3,7 @@
 (() => {
   'use strict';
 
-  const media = window.matchMedia('(max-width: 767px)');
+  const media = window.matchMedia('(max-width: 767px), (min-width: 768px) and (min-height: 650px) and (pointer: coarse)');
 
   function init() {
     const header = document.querySelector('.app-header');
@@ -67,10 +67,13 @@
       // There is room for the menu within the screen even on compact phones.
       if (opening) {
         const rect = brandToggle.getBoundingClientRect();
-        const width = Math.min(250, window.innerWidth - 20);
-        const leftEdge = Math.max(10, Math.min(rect.left, window.innerWidth - width - 10));
+        const scale = window.NailsTabletScale?.getScale() || 1;
+        const viewportWidth = window.innerWidth / scale;
+        const viewportHeight = window.innerHeight / scale;
+        const width = Math.min(250, viewportWidth - 20);
+        const leftEdge = Math.max(10, Math.min(rect.left / scale, viewportWidth - width - 10));
         brandMenu.style.left = leftEdge + 'px';
-        brandMenu.style.top = Math.min(rect.bottom + 6, window.innerHeight - 100) + 'px';
+        brandMenu.style.top = Math.min(rect.bottom / scale + 6, viewportHeight - 100) + 'px';
       }
     });
     brandMenu.addEventListener('click', event => event.stopPropagation());
@@ -85,11 +88,12 @@
     function positionDataMenu() {
       if (!media.matches || menu.classList.contains('hidden')) return;
       const rect = dataBtn.getBoundingClientRect();
-      const viewportWidth = document.documentElement.clientWidth || window.innerWidth;
-      const viewportHeight = window.innerHeight;
+      const scale = window.NailsTabletScale?.getScale() || 1;
+      const viewportWidth = (document.documentElement.clientWidth || window.innerWidth) / scale;
+      const viewportHeight = window.innerHeight / scale;
       const width = Math.min(290, Math.max(220, viewportWidth - 20));
-      const leftEdge = Math.max(10, Math.min(rect.left, viewportWidth - width - 10));
-      const top = rect.bottom + 7;
+      const leftEdge = Math.max(10, Math.min(rect.left / scale, viewportWidth - width - 10));
+      const top = rect.bottom / scale + 7;
       menu.style.width = width + 'px';
       menu.style.left = leftEdge + 'px';
       menu.style.top = top + 'px';
