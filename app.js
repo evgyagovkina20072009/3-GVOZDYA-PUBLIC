@@ -1153,11 +1153,14 @@ const Step7 = {
     popup.classList.remove('hidden');
     // Fixed positioning prevents clipping inside a narrow day's scroll container.
     const rect = anchor.getBoundingClientRect();
-    const width = Math.min(290, window.innerWidth - 20);
+    const scale = window.NailsTabletScale?.getScale() || 1;
+    const viewportWidth = window.innerWidth / scale;
+    const viewportHeight = window.innerHeight / scale;
+    const width = Math.min(290, viewportWidth - 20);
     popup.style.width = `${width}px`;
-    const left = Math.max(10, Math.min(rect.left, window.innerWidth - width - 10));
+    const left = Math.max(10, Math.min(rect.left / scale, viewportWidth - width - 10));
     popup.style.left = `${left}px`;
-    popup.style.top = `${Math.max(10, Math.min(rect.bottom + 7, window.innerHeight - popup.offsetHeight - 10))}px`;
+    popup.style.top = `${Math.max(10, Math.min(rect.bottom / scale + 7, viewportHeight - popup.offsetHeight - 10))}px`;
   },
 
   openEditor(date, secret = null) {
