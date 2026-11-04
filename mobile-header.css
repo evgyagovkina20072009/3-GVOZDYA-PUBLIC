@@ -2,7 +2,7 @@
    separate week row, and compact controls. Desktop styles untouched. */
 .nails-mobile-search-toggle { display: none; }
 
-@media screen and (max-width: 767px) {
+@media screen and (max-width: 767px), screen and (min-width: 768px) and (min-height: 650px) and (pointer: coarse) {
   .app-header.nails-mobile-header-ready {
     display: flex;
     flex-direction: column;
@@ -256,7 +256,7 @@
 
 
 /* Mobile calendar: open on the visibly highlighted real month. */
-@media screen and (max-width: 767px) {
+@media screen and (max-width: 767px), screen and (min-width: 768px) and (min-height: 650px) and (pointer: coarse) {
   #yearDrawer {
     overflow-y: auto;
     -webkit-overflow-scrolling: touch;
@@ -293,7 +293,7 @@
 /* The small chevron belongs to the original header logo, not to the action row. */
 .nails-brand-help { display: none; }
 .nails-brand-help-menu { display: none; }
-@media screen and (max-width: 767px) {
+@media screen and (max-width: 767px), screen and (min-width: 768px) and (min-height: 650px) and (pointer: coarse) {
   .nails-mobile-header-ready > .header-left > .nails-brand-help {
     display: inline-flex;
     flex: 0 0 27px;
@@ -388,7 +388,7 @@
 /* 2026-11-04: fit the existing welcome/onboarding message on phone and 9-inch screens. */
 /* All existing welcome text, controls and detailed-help navigation are preserved.
    Only spacing and type are tightened; very small screens retain scrolling. */
-@media screen and (max-width: 900px) {
+@media screen and (max-width: 900px), screen and (min-width: 768px) and (min-height: 650px) and (pointer: coarse) {
   #onboardingModal {
     padding: max(6px, env(safe-area-inset-top))
              7px
@@ -469,7 +469,7 @@
   }
 }
 
-@media screen and (max-width: 767px) {
+@media screen and (max-width: 767px), screen and (min-width: 768px) and (min-height: 650px) and (pointer: coarse) {
   #onboardingModal .modal-card.onboarding-card {
     width: 100%;
     max-width: none;
@@ -508,7 +508,7 @@
 /* 2026-11-04 — printer shortcut in the approved third header row.
    The original print.js preview and A4 pagination are reused unchanged. */
 .nails-print-icon { display: none; }
-@media screen and (max-width: 767px) {
+@media screen and (max-width: 767px), screen and (min-width: 768px) and (min-height: 650px) and (pointer: coarse) {
   .app-header > .header-right > #printBtn {
     display: inline-flex !important;
     visibility: visible !important;
@@ -550,7 +550,7 @@
 }
 
 /* Match the mobile calendar button to the other third-row actions. */
-@media screen and (max-width: 767px) {
+@media screen and (max-width: 767px), screen and (min-width: 768px) and (min-height: 650px) and (pointer: coarse) {
   .nails-mobile-header-ready > .header-right #openYearDrawerBtn {
     appearance: none;
     display: inline-flex !important;
