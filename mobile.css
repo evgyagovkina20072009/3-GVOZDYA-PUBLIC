@@ -1602,3 +1602,44 @@
     gap: 7px !important;
   }
 }
+
+
+/* Fix: keep the approved seven-day initial screen, but let days with tasks grow.
+   The scrolling region is the planner workspace (not seven tiny clipped task boxes). */
+@media screen and (max-width: 767px) {
+  .app-layout > .main-workspace {
+    display: block;
+    flex: 1 1 auto;
+    height: auto;
+    min-height: 0;
+    overflow-x: hidden;
+    overflow-y: auto;
+    overscroll-behavior-y: contain;
+    -webkit-overflow-scrolling: touch;
+    scroll-padding-top: 5px;
+    padding-bottom: max(6px, env(safe-area-inset-bottom));
+  }
+  .app-layout > .main-workspace > #weekGrid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: repeat(7, max-content);
+    height: auto;
+    min-height: 0;
+    align-content: start;
+    overflow: visible;
+  }
+  #weekGrid > .day-column.expanded:has(.task-card) {
+    height: auto;
+    max-height: none !important;
+    overflow: visible;
+  }
+  #weekGrid > .day-column.expanded:has(.task-card) > .day-tasks-container {
+    flex: 0 0 auto;
+    height: auto;
+    max-height: none !important;
+    overflow: visible !important;
+  }
+  #weekGrid > .day-column.expanded:has(.task-card) > .day-secret-container {
+    flex-shrink: 0;
+  }
+}
