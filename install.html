@@ -64,7 +64,8 @@ p{line-height:1.5}
    winNote.hidden = false;
    guide.innerHTML = '<ol><li>Нажми <strong>«Скачать установщик для Windows (.exe)»</strong>.</li><li>Открой скачанный файл в папке «Загрузки» и установи программу.</li><li>На рабочем столе появится иконка «Три гвоздя».</li><li>Задачи будут сохраняться на компьютере: «Документы» → «Три гвоздя».</li></ol>';
  } else if (apple) {
-   guide.innerHTML = '<ol><li>Открой эту страницу в <strong>Safari</strong>.</li><li>Нажми «Поделиться» — квадрат со стрелкой.</li><li>Выбери <strong>«На экран Домой»</strong>, затем «Добавить».</li><li>Запускай планировщик с золотой иконки на экране.</li></ol>';
+   guide.innerHTML = '<ol><li>Нажми выше <strong>«Открыть планировщик для установки»</strong>.</li><li>На открывшемся экране планировщика в Safari нажми «Поделиться» — квадрат со стрелкой.</li><li>Выбери <strong>«На экран Домой»</strong>, затем «Добавить».</li><li>Запускай планировщик с иконки на экране.</li></ol>';
+   btn.textContent = '📲 Открыть планировщик для установки';
  } else if (android) {
    guide.innerHTML = '<ol><li>Открой эту страницу в Chrome.</li><li>Нажми кнопку «Установить приложение» выше или открой меню ⋮.</li><li>Выбери «Установить приложение» / «Добавить на главный экран».</li></ol>';
  } else {
@@ -85,7 +86,7 @@ p{line-height:1.5}
      const ev = installPrompt; installPrompt = null;
      try { await ev.prompt(); } catch (e) { status.textContent = 'Установка не запустилась. Используй инструкцию ниже.'; }
    } else if (apple) {
-     status.textContent = 'На iPhone установка выполняется через меню Safari «Поделиться» → «На экран Домой».';
+     window.location.assign('./index.html');
    } else {
      status.textContent = 'Если запрос не появился, воспользуйся меню браузера по инструкции ниже.';
    }
