@@ -21,7 +21,7 @@ let store = { users: {} };
 let writes = Promise.resolve();
 
 function error(code, message) { const e = new Error(message); e.status = code; return e; }
-function validUsername(v) { return typeof v === 'string' && /^[\\p{L}\\p{N}_.-]{3,32}$/u.test(v); }
+function validUsername(v) { return typeof v === 'string' && /^[\p{L}\p{N}_.-]{3,32}$/u.test(v); }
 function validPassword(v) { return typeof v === 'string' && v.length >= 8 && v.length <= 128; }
 function userKey(v) { return v.normalize('NFKC').toLocaleLowerCase('en-US'); }
 function digest(token) { return createHash('sha256').update(token).digest('hex'); }
@@ -47,12 +47,12 @@ function cleanSnapshot(input) {
   for (const t of input.tasks) {
     if (!t || typeof t !== 'object' || !['string','number'].includes(typeof t.id) ||
         typeof t.title !== 'string' || !t.title.trim() || typeof t.date !== 'string' ||
-        !/^\\d{4}-\\d{2}-\\d{2}$/.test(t.date) ||
+        !/^\d{4}-\d{2}-\d{2}$/.test(t.date) ||
         ids.has(String(t.id))) throw error(400, 'Повреждённые задачи.');
     ids.add(String(t.id));
   }
   for (const [date, notes] of Object.entries(input.secrets)) {
-    if (!/^\\d{4}-\\d{2}-\\d{2}$/.test(date) || !Array.isArray(notes))
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(date) || !Array.isArray(notes))
       throw error(400, 'Повреждённые заметки.');
   }
   return JSON.parse(data);
@@ -150,15 +150,15 @@ async function route(req, res, url) {
   if (url.pathname.startsWith('/api/')) throw error(404, 'Команда не найдена.');
   if (!['GET','HEAD'].includes(req.method)) throw error(405, 'Метод не поддерживается.');
   const requested = decodeURIComponent(url.pathname);
-  let rel = requested.replace(/^\\/+/, '') || 'index.html';
+  let rel = requested.replace(/^\/+/, '') || 'index.html';
   if (rel.endsWith('/')) rel += 'index.html';
-  if (rel.includes('..') || rel.includes('\\\\') || rel.startsWith('.')) throw error(404, 'Не найдено.');
+  if (rel.includes('..') || rel.includes('\\') || rel.startsWith('.')) throw error(404, 'Не найдено.');
   // Never expose server source, passwords, git files, package metadata or data directory.
   const permitted = rel === 'index.html' || rel === 'install.html' ||
-    /^icons\\/[\\w.-]+\\.(png|svg|ico)$/.test(rel) ||
-    /^assets\\/[\\w.-]+\\.(png|jpe?g|webp)$/.test(rel) ||
-    /^sync\\/(client|merge)\\.js$/.test(rel) ||
-    /^(?:desktop\\/(?:preload-data|save-data)\\.js|[\\w-]+\\.(?:js|css|webmanifest))$/.test(rel);
+    /^icons\/[\w.-]+\.(png|svg|ico)$/.test(rel) ||
+    /^assets\/[\w.-]+\.(png|jpe?g|webp)$/.test(rel) ||
+    /^sync\/(client|merge)\.js$/.test(rel) ||
+    /^(?:desktop\/(?:preload-data|save-data)\.js|[\w-]+\.(?:js|css|webmanifest))$/.test(rel);
   if (!permitted) throw error(404, 'Не найдено.');
   const target = path.resolve(ROOT, rel);
   if (!target.startsWith(ROOT + path.sep)) throw error(403, 'Недоступно.');
