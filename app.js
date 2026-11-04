@@ -1622,6 +1622,13 @@ const WeekGridManager = {
 
         if (!title || typeof StorageAPI === 'undefined') return;
 
+        const cleanedTitle = title.trim();
+        if (!cleanedTitle || !DateUtils.isValidISODate(dateISO)) {
+          showToast('Укажи название дела и правильную дату.');
+          return;
+        }
+
+        let savedTaskId = editingId || null;
         try {
           if (editingId) {
             const existingTask = StorageAPI.getTaskById(editingId);
@@ -1630,34 +1637,48 @@ const WeekGridManager = {
               return;
             }
             const updated = StorageAPI.updateTask(editingId, {
-              title: title.trim(),
+              title: cleanedTitle,
               time: time ? time.trim() : null,
               priority,
               completed: isCompleted
             });
-            if (!updated) {
-              showToast('Не удалось обновить дело. Данные не изменены.');
-              return;
-            }
+            if (!updated) throw new Error('Не удалось обновить дело.');
           } else {
             const newTask = StorageAPI.addTask({
-              title: title.trim(),
+              title: cleanedTitle,
               date: dateISO,
               time: time ? time.trim() : null,
               priority
             });
-            if (isCompleted && newTask) {
-              StorageAPI.updateTask(newTask.id, { completed: true });
+            savedTaskId = newTask.id;
+            if (isCompleted && !StorageAPI.updateTask(newTask.id, { completed: true })) {
+              throw new Error('Дело записано, но отметка выполнения не сохранилась. Проверь задачу.');
             }
-            this.expandedDays.add(dateISO);
+          }
+          const verified = StorageAPI.getTaskById(savedTaskId);
+          if (!verified || verified.title !== cleanedTitle || verified.date !== dateISO ||
+              verified.priority !== priority || (verified.time || '') !== (time || '')) {
+            throw new Error('Не удалось подтвердить сохранение задачи. Форма оставлена открытой.');
           }
         } catch (error) {
           console.error('[Три гвоздя] Ошибка сохранения дела:', error);
           showToast(error.message || 'Ошибка сохранения. Дело не записано.');
-          return; // Keep the form and all entered fields open for retry.
+          return;
         }
+
+        this.expandedDays.add(dateISO);
+        // Always show the saved task even if the user navigated to another week.
+        this.currentMonday = DateUtils.getMonday(new Date(dateISO + 'T12:00:00'));
         this.closeTaskModal();
         this.render();
+        requestAnimationFrame(() => {
+          const card = Array.from(document.querySelectorAll('#weekGrid .task-card'))
+            .find(el => el.dataset.taskId === String(savedTaskId));
+          if (card && window.matchMedia('(max-width: 767px)').matches) {
+            card.scrollIntoView({ block: 'nearest', inline: 'nearest' });
+          }
+        });
+        showToast('Дело сохранено.');
       });
     }
   },
@@ -1902,6 +1923,7 @@ const WeekGridManager = {
       if (Step7.selectedDate === dateISO) col.classList.add('calendar-selected-day');
       if (isPastDay) col.classList.add('past-day'); // Прошедшие неактивные дни уходят в серый тон
       if (isHoliday) col.classList.add('holiday');
+      if (hasTasks) col.classList.add('has-tasks');
       col.classList.add(isExpanded ? 'expanded' : 'collapsed');
 
       col.setAttribute('data-date', dateISO);
