@@ -1,5 +1,5 @@
-const VERSION = "three-nails-pwa-v19-aligned-day-titles";
-const SHELL = ["./", "./index.html", "./style.css", "./mobile.css", "./mobile-header.css", "./mobile-header.js", "./print.css", "./help.css", "./app.js", "./desktop/preload-data.js", "./desktop/save-data.js", "./mobile.js", "./tablet-scale.js", "./print.js", "./help.js", "./install.js", "./manifest.webmanifest", "./icons/icon.svg", "./icons/icon-192.png", "./icons/icon-512.png", "./assets/city-day.jpg", "./assets/city-night.jpg"];
+const VERSION = "three-nails-pwa-v20-login-sync-20261105";
+const SHELL = ["./", "./index.html", "./style.css", "./mobile.css", "./mobile-header.css", "./mobile-header.js", "./print.css", "./help.css", "./app.js", "./sync/client.js", "./sync/merge.js", "./sync/client.css", "./desktop/preload-data.js", "./desktop/save-data.js", "./mobile.js", "./tablet-scale.js", "./print.js", "./help.js", "./install.js", "./manifest.webmanifest", "./icons/icon.svg", "./icons/icon-192.png", "./icons/icon-512.png", "./assets/city-day.jpg", "./assets/city-night.jpg"];
 self.addEventListener("install", event => {
   event.waitUntil(caches.open(VERSION).then(cache => cache.addAll(SHELL)).then(() => self.skipWaiting()));
 });
