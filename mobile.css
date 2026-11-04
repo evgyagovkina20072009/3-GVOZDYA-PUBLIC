@@ -8,7 +8,7 @@
   display: none;
 }
 
-@media screen and (max-width: 767px) {
+@media screen and (max-width: 767px), screen and (min-width: 768px) and (min-height: 650px) and (pointer: coarse) {
   html,
   body {
     width: 100%;
@@ -786,7 +786,7 @@
 .mobile-briefcase-icon,
 .mobile-today-icon { display: none; }
 
-@media screen and (max-width: 767px) {
+@media screen and (max-width: 767px), screen and (min-width: 768px) and (min-height: 650px) and (pointer: coarse) {
   .app-layout { gap: 5px; }
   .app-header {
     display: flex;
@@ -957,7 +957,7 @@
 
 
 /* Все 7 дат недели помещаются по ширине телефона без горизонтального свайпа. */
-@media screen and (max-width: 767px) {
+@media screen and (max-width: 767px), screen and (min-width: 768px) and (min-height: 650px) and (pointer: coarse) {
   .mobile-day-jump {
     display: grid;
     grid-template-columns: repeat(7, minmax(0, 1fr));
@@ -998,7 +998,7 @@
 
 /* Приветствие на мобильном: компактнее только три строки с гвоздями.
    Остальной текст и логика приветственного окна сохраняются. */
-@media screen and (max-width: 767px) {
+@media screen and (max-width: 767px), screen and (min-width: 768px) and (min-height: 650px) and (pointer: coarse) {
   .modal-card.onboarding-card .onboarding-list {
     gap: 3px;
   }
@@ -1023,7 +1023,7 @@
 
 /* Мобильный поиск: лупа строго между портфелем и Печатью. */
 .mobile-search-toggle { display: none; }
-@media screen and (max-width: 767px) {
+@media screen and (max-width: 767px), screen and (min-width: 768px) and (min-height: 650px) and (pointer: coarse) {
   /* Сама кнопка занимает место в ряду, поле появляется только по нажатию. */
   .header-right { position: relative; z-index: 200; }
   .header-right > .search-container {
@@ -1095,7 +1095,7 @@
 
 /* Портфель переносится к календарю, лупа остаётся во втором ряду. */
 .mobile-brand-tools { display: none; }
-@media screen and (max-width: 767px) {
+@media screen and (max-width: 767px), screen and (min-width: 768px) and (min-height: 650px) and (pointer: coarse) {
   .header-left {
     padding-right: 0;
     gap: 5px;
@@ -1137,7 +1137,7 @@
 }
 
 /* Неделя целиком на одном экране: семь строк, даты ДД.ММ.ГГГГ. */
-@media screen and (max-width: 767px) {
+@media screen and (max-width: 767px), screen and (min-width: 768px) and (min-height: 650px) and (pointer: coarse) {
   /* Дополнительные семь маленьких вкладок не нужны: все дни видны ниже. */
   .mobile-day-jump { display: none !important; }
   .mobile-quick-add { display: none !important; }
@@ -1284,7 +1284,7 @@
 /* 2026-10-31. Не растягивать семь дней на весь экран:
    пустой день занимает только компактный заголовок, а содержимое
    непустого дня растёт по необходимости, но не заслоняет воскресенье. */
-@media screen and (max-width: 767px) {
+@media screen and (max-width: 767px), screen and (min-width: 768px) and (min-height: 650px) and (pointer: coarse) {
   .main-workspace {
     align-items: flex-start;
   }
@@ -1316,7 +1316,7 @@
 
 /* Поощрение только под конкретным завершённым днём, строго в одну строку. */
 .day-completion-note { display: none; }
-@media screen and (max-width: 767px) {
+@media screen and (max-width: 767px), screen and (min-width: 768px) and (min-height: 650px) and (pointer: coarse) {
   /* Прошедшие дни: стрелка не нужна, история по нажатию на дату доступна. */
   .day-column.past-day .btn-toggle-col { display: none !important; }
 
@@ -1339,7 +1339,7 @@
 }
 
 /* Прошедшие дни мобильной недели полностью неактивны. */
-@media screen and (max-width: 767px) {
+@media screen and (max-width: 767px), screen and (min-width: 768px) and (min-height: 650px) and (pointer: coarse) {
   /* Оставляем дату и старые записи видимыми, но запрещаем любые нажатия. */
   .week-grid .day-column.past-day,
   .week-grid .day-column.past-day * {
@@ -1359,7 +1359,7 @@
 }
 
 /* Порядок мобильной шапки: логотип → неделя → действия. */
-@media screen and (max-width: 767px) {
+@media screen and (max-width: 767px), screen and (min-width: 768px) and (min-height: 650px) and (pointer: coarse) {
   .app-header {
     display: flex;
     flex-direction: column;
@@ -1473,7 +1473,7 @@
   }
 }
 /* Нажатие на значок «Сегодня»: видимый отклик даже на текущей неделе. */
-@media screen and (max-width: 767px) {
+@media screen and (max-width: 767px), screen and (min-width: 768px) and (min-height: 650px) and (pointer: coarse) {
   .app-header #todayBtn {
     position: relative;
     z-index: 1;
@@ -1508,7 +1508,7 @@
 }
 
 /* Секретные напоминания: всегда под делами и всегда доступны. */
-@media screen and (max-width: 767px) {
+@media screen and (max-width: 767px), screen and (min-width: 768px) and (min-height: 650px) and (pointer: coarse) {
   .week-grid .day-column.expanded .day-tasks-container {
     flex: 1 1 auto;
     min-height: 0;
@@ -1606,7 +1606,7 @@
 
 /* Fix: keep the approved seven-day initial screen, but let days with tasks grow.
    The scrolling region is the planner workspace (not seven tiny clipped task boxes). */
-@media screen and (max-width: 767px) {
+@media screen and (max-width: 767px), screen and (min-width: 768px) and (min-height: 650px) and (pointer: coarse) {
   .app-layout > .main-workspace {
     display: block;
     flex: 1 1 auto;
@@ -1641,5 +1641,51 @@
   }
   #weekGrid > .day-column.expanded.has-tasks > .day-secret-container {
     flex-shrink: 0;
+  }
+}
+
+
+/* Larger touch tablets: keep the approved three-row phone UI, scaled as
+   a single coordinate system. 768x1024 is the reference portrait viewport.
+   Standard phones (<=767px) and non-touch desktops are unaffected.
+   Scale is set by tablet-scale.js to fit BOTH width and height. */
+@media screen and (min-width: 768px) and (min-height: 650px) and (pointer: coarse) {
+  html {
+    overflow: hidden;
+  }
+  body {
+    --tablet-ui-scale: var(--nails-tablet-ui-scale, 1);
+    box-sizing: border-box;
+    position: relative;
+    width: calc(100vw / var(--tablet-ui-scale)) !important;
+    height: calc(100dvh / var(--tablet-ui-scale)) !important;
+    min-height: 0;
+    overflow: hidden;
+    transform-origin: 0 0;
+    transform: scale(var(--tablet-ui-scale));
+  }
+  .app-layout {
+    box-sizing: border-box;
+    width: 100% !important;
+    height: 100% !important;
+    min-height: 0;
+  }
+  .app-header > .header-left .brand-slogan {
+    display: block !important;
+  }
+  .modal-overlay {
+    box-sizing: border-box;
+    width: 100%;
+    height: 100%;
+    max-height: 100%;
+  }
+  .modal-card, .modal-card.onboarding-card,
+  #onboardingModal .modal-card.onboarding-card {
+    max-height: calc(100dvh / var(--tablet-ui-scale) - 24px);
+  }
+  .app-layout > .main-workspace {
+    min-height: 0;
+    overflow-x: hidden;
+    overflow-y: auto;
   }
 }
