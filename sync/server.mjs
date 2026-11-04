@@ -157,7 +157,7 @@ async function route(req, res, url) {
   const permitted = rel === 'index.html' || rel === 'install.html' ||
     /^icons\/[\w.-]+\.(png|svg|ico)$/.test(rel) ||
     /^assets\/[\w.-]+\.(png|jpe?g|webp)$/.test(rel) ||
-    /^sync\/(client|merge)\.js$/.test(rel) ||
+    /^sync\/(?:client\.(?:js|css)|merge\.js)$/.test(rel) ||
     /^(?:desktop\/(?:preload-data|save-data)\.js|[\w-]+\.(?:js|css|webmanifest))$/.test(rel);
   if (!permitted) throw error(404, 'Не найдено.');
   const target = path.resolve(ROOT, rel);
