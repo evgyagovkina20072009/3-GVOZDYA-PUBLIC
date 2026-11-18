@@ -527,38 +527,6 @@
     }
   </script>
 
-  <!-- Первое открытие: честное уведомление о локальном хранении задач -->
-  <dialog id="localPrivacyDialog" aria-labelledby="localPrivacyTitle" style="box-sizing:border-box;width:min(92vw,420px);max-height:85dvh;overflow-y:auto;border:1px solid #d6ac60;border-radius:20px;padding:25px;background:#101e35;color:#fff;box-shadow:0 18px 58px #000a;font-family:system-ui,-apple-system,Segoe UI,sans-serif;text-align:center">
-    <div aria-hidden="true" style="font-size:2rem;margin-bottom:10px">🔒</div>
-    <h2 id="localPrivacyTitle" style="margin:0 0 15px;font-size:1.3rem">Ваши задачи — только ваши!</h2>
-    <p style="line-height:1.55;margin:0 0 12px">Все ваши записи сохраняются на вашем телефоне и никому не передаются.</p>
-    <p style="line-height:1.55;margin:0 0 12px">Вы управляете своими данными самостоятельно.</p>
-    <p style="line-height:1.5;margin:0 0 10px;font-size:.9rem;color:#d6deeb">Синхронизация с другими устройствами не предусмотрена.</p>
-    <p style="line-height:1.5;margin:0 0 22px;font-size:.9rem;color:#d6deeb">При удалении приложения данные могут быть потеряны.</p>
-    <button type="button" id="localPrivacyAccept" style="width:100%;padding:13px;border:0;border-radius:12px;background:#e7bb68;color:#16243a;font:700 1rem system-ui,-apple-system,Segoe UI,sans-serif;cursor:pointer">Понятно, начать работу</button>
-  </dialog>
-  <script>
-    (() => {
-      const key = 'tg_local_privacy_seen_v1';
-      const notice = document.getElementById('localPrivacyDialog');
-      const start = document.getElementById('startAppBtn');
-      const accept = document.getElementById('localPrivacyAccept');
-      let seen = false;
-      try { seen = localStorage.getItem(key) === 'true'; } catch (_) {}
-      if (!seen && start && notice) {
-        start.addEventListener('click', () => {
-          if (notice.open) return;
-          // Дождаться окончания анимации закрытия первоначального приветствия.
-          setTimeout(() => { if (!notice.open) notice.showModal(); }, 1300);
-        });
-      }
-      if (accept && notice) {
-        accept.addEventListener('click', () => {
-          try { localStorage.setItem(key, 'true'); } catch (_) {}
-          notice.close();
-        });
-      }
-    })();
-  </script>
+
 </body>
 </html>
