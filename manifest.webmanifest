@@ -3,7 +3,7 @@
   "short_name": "Три гвоздя",
   "description": "Планировщик задач «Три гвоздя». Работает локально, без регистрации.",
   "id": "./",
-  "start_url": "./",
+  "start_url": "./index.html",
   "scope": "./",
   "display": "standalone",
   "background_color": "#061935",
