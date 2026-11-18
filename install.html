@@ -34,42 +34,35 @@ p{line-height:1.5}
   <img class="icon" src="./icons/icon-192.png" alt="Иконка «Три гвоздя»: три золотых гвоздя на тёмно-синем фоне">
   <h1>Три гвоздя</h1>
   <p class="slogan">Прибей хаос к плану</p>
-  <p>Установи планировщик с нашей иконкой на телефон или ноутбук. <strong>Без регистрации и СМС.</strong></p>
-  <a class="primary" id="windowsInstaller" href="https://github.com/evgyagovkina20072009/3-GVOZDYA-PUBLIC/releases/download/windows-v0.1.3/Three-Nails-Setup-0.1.3-Windows-x64.exe" hidden>⬇️ Скачать установщик для Windows (.exe)</a>
+  <p>Установи планировщик на телефон. <strong>Без регистрации и СМС.</strong></p>
   <button class="primary" id="installAction" type="button">📲 Установить приложение</button>
-  <p class="small" id="windowsInstallerNote" hidden>Windows 10/11, 64-бит. Файл около 122 МБ. Это настоящая установка программы с ярлыком на рабочем столе, а не веб-версия. Установщик пока без цифровой подписи — Windows может предупредить о неизвестном издателе.</p>
   <a class="secondary" href="./">Открыть планировщик без установки</a>
   <p class="status" id="installStatus" role="status" aria-live="polite"></p>
   <section class="details" aria-labelledby="guideTitle">
     <h2 id="guideTitle">Как установить</h2>
     <div id="guideSteps"></div>
   </section>
-  <p class="small">Задачи пока сохраняются только на этом устройстве. Вход по телефону и синхронизация между устройствами ещё не подключены. Не удаляй данные браузера до создания резервной копии.</p>
+  <p class="small">Все задачи хранятся на вашем устройстве, без синхронизации. При удалении приложения или очистке данных задачи могут быть потеряны. Сохраняйте резервную копию (JSON).</p>
 </main>
 <script>
 (() => {
  const guide = document.getElementById('guideSteps');
  const btn = document.getElementById('installAction');
- const winInstaller = document.getElementById('windowsInstaller');
- const winNote = document.getElementById('windowsInstallerNote');
+
+
  const windows = /Windows NT/.test(navigator.userAgent);
  const status = document.getElementById('installStatus');
  const apple = /iPhone|iPad|iPod/.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
  const android = /Android/.test(navigator.userAgent);
  const standalone = matchMedia('(display-mode: standalone)').matches || navigator.standalone === true;
  let installPrompt = null;
- if (windows && !standalone) {
-   btn.hidden = true;
-   winInstaller.hidden = false;
-   winNote.hidden = false;
-   guide.innerHTML = '<ol><li>Нажми <strong>«Скачать установщик для Windows (.exe)»</strong>.</li><li>Открой скачанный файл в папке «Загрузки» и установи программу.</li><li>На рабочем столе появится иконка «Три гвоздя».</li><li>Задачи будут сохраняться на компьютере: «Документы» → «Три гвоздя».</li></ol>';
- } else if (apple) {
+ if (apple) {
    guide.innerHTML = '<ol><li>Нажми выше <strong>«Открыть планировщик для установки»</strong>.</li><li>На открывшемся экране планировщика в Safari нажми «Поделиться» — квадрат со стрелкой.</li><li>Выбери <strong>«На экран Домой»</strong>, затем «Добавить».</li><li>Запускай планировщик с иконки на экране.</li></ol>';
    btn.textContent = '📲 Открыть планировщик для установки';
  } else if (android) {
    guide.innerHTML = '<ol><li>Открой эту страницу в Chrome.</li><li>Нажми кнопку «Установить приложение» выше или открой меню ⋮.</li><li>Выбери «Установить приложение» / «Добавить на главный экран».</li></ol>';
  } else {
-   guide.innerHTML = '<ol><li>Открой эту страницу в Chrome или Microsoft Edge.</li><li>Нажми кнопку «Установить приложение» выше.</li><li>Если браузер не показывает запрос — используй значок установки в адресной строке или меню ⋮ → «Установить приложение».</li></ol>';
+   guide.innerHTML = '<ol><li>На Android открой эту страницу в Chrome.</li><li>Нажми кнопку «Установить приложение» выше.</li><li>Если браузер не показывает запрос — используй значок установки в адресной строке или меню ⋮ → «Установить приложение».</li></ol>';
  }
  if (standalone) {
    btn.hidden = true;
