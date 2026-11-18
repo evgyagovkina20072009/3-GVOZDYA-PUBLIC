@@ -26,6 +26,11 @@ p{line-height:1.5}
 .details ol{margin:8px 0 0;padding-left:23px;line-height:1.7}
 .status{min-height:22px;color:#ffe9ad;font-size:.93rem;margin:13px 0 0}
 .small{font-size:.83rem;color:#c5d0e2}
+.intro{text-align:center;font-size:1rem}
+.privacy{border-radius:14px;background:#192c49;border:1px solid #38506e;padding:16px 18px;margin:17px 0}
+.privacy h2{text-align:center;color:#f1d18b;font-size:1.16rem;margin:0 0 15px}
+.privacy p{margin:10px 0;line-height:1.5}
+.declined{text-align:center;line-height:1.6;padding:22px 8px}
 [hidden]{display:none!important}
 </style>
 </head>
@@ -34,20 +39,37 @@ p{line-height:1.5}
   <img class="icon" src="./icons/icon-192.png" alt="Иконка «Три гвоздя»: три золотых гвоздя на тёмно-синем фоне">
   <h1>Три гвоздя</h1>
   <p class="slogan">Прибей хаос к плану</p>
-  <p>Установи планировщик на телефон. <strong>Без регистрации и СМС.</strong></p>
-  <button class="primary" id="installAction" type="button">📲 Установить приложение</button>
-  <a class="secondary" href="./">Открыть планировщик без установки</a>
+  <section id="installChoice" aria-label="Условия установки">
+    <p class="intro">Хотите установить планировщик «Три гвоздя» на свой телефон?</p>
+    <div class="privacy">
+      <h2>Ваши задачи — только ваши!</h2>
+      <p>Все ваши записи сохраняются на вашем телефоне и никому не передаются.</p>
+      <p>Вы управляете своими данными самостоятельно.</p>
+      <p>Синхронизация с другими устройствами не предусмотрена.</p>
+      <p>При удалении приложения данные могут быть потеряны.</p>
+    </div>
+    <button class="primary" id="installAction" type="button">📲 Установить приложение</button>
+    <button class="secondary" id="declineAction" type="button">Нет, не устанавливать</button>
+  </section>
+  <p id="declineMessage" class="declined" hidden>Установка отменена. Приложение не устанавливается. Можете закрыть эту вкладку.</p>
   <p class="status" id="installStatus" role="status" aria-live="polite"></p>
   <section class="details" aria-labelledby="guideTitle">
     <h2 id="guideTitle">Как установить</h2>
     <div id="guideSteps"></div>
   </section>
-  <p class="small">Все задачи хранятся на вашем устройстве, без синхронизации. При удалении приложения или очистке данных задачи могут быть потеряны. Сохраняйте резервную копию (JSON).</p>
+  <p class="small">Для сохранности задач рекомендуем регулярно создавать резервную копию JSON в приложении.</p>
 </main>
 <script>
 (() => {
  const guide = document.getElementById('guideSteps');
  const btn = document.getElementById('installAction');
+ const declineBtn = document.getElementById('declineAction');
+ declineBtn.addEventListener('click', () => {
+   document.getElementById('installChoice').hidden = true;
+   document.querySelector('.details').hidden = true;
+   document.getElementById('declineMessage').hidden = false;
+   document.getElementById('installStatus').textContent = '';
+ });
 
 
  const windows = /Windows NT/.test(navigator.userAgent);
@@ -66,13 +88,14 @@ p{line-height:1.5}
  }
  if (standalone) {
    btn.hidden = true;
+   declineBtn.hidden = true;
    status.textContent = 'Приложение уже открыто как установленное.';
  }
  window.addEventListener('beforeinstallprompt', e => {
    e.preventDefault(); installPrompt = e;
  });
  window.addEventListener('appinstalled', () => {
-   btn.hidden = true; installPrompt = null; status.textContent = 'Приложение установлено. Ищи золотую иконку на устройстве.';
+   btn.hidden = true; declineBtn.hidden = true; installPrompt = null; status.textContent = 'Приложение установлено. Ищи золотую иконку на устройстве.';
  });
  btn.addEventListener('click', async () => {
    if (installPrompt) {
