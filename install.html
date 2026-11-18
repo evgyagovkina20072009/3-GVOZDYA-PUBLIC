@@ -43,17 +43,14 @@ p{line-height:1.5}
     <p class="intro">Хотите установить планировщик «Три гвоздя» на свой телефон?</p>
     <div class="privacy">
       <h2>Ваши задачи — только ваши!</h2>
-      <p>Все ваши записи сохраняются на вашем телефоне и никому не передаются.</p>
-      <p>Вы управляете своими данными самостоятельно.</p>
-      <p>Синхронизация с другими устройствами не предусмотрена.</p>
-      <p>При удалении приложения данные могут быть потеряны.</p>
+      <p>Задачи хранятся только на этом устройстве и не передаются нам. Синхронизации нет. При удалении данные могут исчезнуть — сохраняйте резервную копию JSON.</p>
     </div>
     <button class="primary" id="installAction" type="button">📲 Установить приложение</button>
     <button class="secondary" id="declineAction" type="button">Нет, не устанавливать</button>
   </section>
   <p id="declineMessage" class="declined" hidden>Установка отменена. Приложение не устанавливается. Можете закрыть эту вкладку.</p>
   <p class="status" id="installStatus" role="status" aria-live="polite"></p>
-  <section class="details" aria-labelledby="guideTitle">
+  <section class="details" aria-labelledby="guideTitle" hidden>
     <h2 id="guideTitle">Как установить</h2>
     <div id="guideSteps"></div>
   </section>
@@ -62,11 +59,12 @@ p{line-height:1.5}
 <script>
 (() => {
  const guide = document.getElementById('guideSteps');
+ const details = document.querySelector('.details');
  const btn = document.getElementById('installAction');
  const declineBtn = document.getElementById('declineAction');
  declineBtn.addEventListener('click', () => {
    document.getElementById('installChoice').hidden = true;
-   document.querySelector('.details').hidden = true;
+   details.hidden = true;
    document.getElementById('declineMessage').hidden = false;
    document.getElementById('installStatus').textContent = '';
  });
@@ -79,17 +77,17 @@ p{line-height:1.5}
  const standalone = matchMedia('(display-mode: standalone)').matches || navigator.standalone === true;
  let installPrompt = null;
  if (apple) {
-   guide.innerHTML = '<ol><li>Нажми выше <strong>«Открыть планировщик для установки»</strong>.</li><li>На открывшемся экране планировщика в Safari нажми «Поделиться» — квадрат со стрелкой.</li><li>Выбери <strong>«На экран Домой»</strong>, затем «Добавить».</li><li>Запускай планировщик с иконки на экране.</li></ol>';
+   guide.innerHTML = '<ol><li>Открой планировщик в <strong>Safari</strong>.</li><li>Нажми <strong>«Поделиться» → «На экран Домой» → «Добавить»</strong>.</li><li>Запусти «Три гвоздя» с новой иконки.</li></ol>'; 
    btn.textContent = '📲 Открыть планировщик для установки';
  } else if (android) {
-   guide.innerHTML = '<ol><li>Открой страницу в Chrome.</li><li>Нажми «Установить приложение» и подтверди установку, если Chrome предложит её.</li><li>Если предложение не появилось, открой планировщик, затем в меню Chrome ⋮ выбери <strong>«Установить приложение»</strong>. Если есть только «Добавить на главный экран», это может создать обычный ярлык с адресной строкой.</li><li>После установки запускай приложение с его иконки.</li></ol>';
+   guide.innerHTML = '<ol><li>Открой планировщик в <strong>Google Chrome</strong>.</li><li>В меню <strong>⋮ → «Установить приложение»</strong> подтверди установку, если такой пункт есть.</li><li>Запусти его с иконки. «Добавить ярлык» может оставить панели браузера.</li></ol>'; 
  } else {
-   guide.innerHTML = '<ol><li>На Android открой эту страницу в Chrome.</li><li>Нажми кнопку «Установить приложение» выше.</li><li>Если браузер не показывает запрос — используй значок установки в адресной строке или меню ⋮ → «Установить приложение».</li></ol>';
+   guide.innerHTML = '<p>Открой планировщик, затем воспользуйся пунктом установки приложения в меню браузера.</p>'; 
  }
  if (standalone) {
-   btn.hidden = true;
-   declineBtn.hidden = true;
-   status.textContent = 'Приложение уже открыто как установленное.';
+   btn.textContent = 'Открыть планировщик';
+   details.hidden = true;
+   status.textContent = 'Приложение уже установлено.';
  }
  window.addEventListener('beforeinstallprompt', e => {
    e.preventDefault(); installPrompt = e;
@@ -100,11 +98,14 @@ p{line-height:1.5}
  btn.addEventListener('click', async () => {
    if (installPrompt) {
      const ev = installPrompt; installPrompt = null;
-     try { await ev.prompt(); } catch (e) { status.textContent = 'Установка не запустилась. Используй инструкцию ниже.'; }
-   } else if (apple) {
+     try { await ev.prompt(); } catch (e) { details.hidden = false; status.textContent = 'Не удалось вызвать установку автоматически.'; }
+   } else if (standalone) {
      window.location.assign('./index.html');
    } else {
-     status.textContent = 'Системное окно установки не появилось. Открываю планировщик — установи его через меню Chrome ⋮ → «Установить приложение».'; window.location.assign('./index.html');
+     details.hidden = false;
+     status.textContent = apple ? 'На iPhone установка выполняется через Safari.' : 'Если предложение установки не появилось, используй меню Google Chrome.';
+     btn.textContent = 'Открыть планировщик';
+     btn.onclick = () => window.location.assign('./index.html');
    }
  });
  if ('serviceWorker' in navigator && (location.protocol === 'https:' || location.hostname === 'localhost')) {
