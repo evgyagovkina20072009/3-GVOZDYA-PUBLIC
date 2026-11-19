@@ -207,14 +207,14 @@ const StorageAPI = {
     // После появления 😈 дата, время и остальные свойства фиксируются.
     // Единственное допустимое изменение — отметить задачу выполненной
     // до окончания назначенного дня; нельзя обойти запрет через API.
-    if (task.failed) return null;
+    if (task.failed || task.completed) return null;
     if (DateUtils.isDevilTask(task)) {
       if (!DateUtils.canCompleteDevilTask(task) || !updates ||
           Object.keys(updates).length !== 1 || updates.completed !== true) return null;
     } else if (!DateUtils.isTaskEditable(task) &&
         !(updates && Object.keys(updates).length === 1 &&
           typeof updates.completed === 'boolean' && DateUtils.canToggleTaskCompletion(task))) {
-      // После назначенного часа галочку всё ещё можно поставить или снять
+      // После назначенного часа галочку всё ещё можно поставить
       // до конца календарных суток. Прочие изменения остаются запрещены.
       return null;
     }
@@ -259,22 +259,14 @@ const StorageAPI = {
       task.priority = updates.priority;
     }
 
-    // Изменяем статус только при реальном переключении; перенос не создаётся.
+    // Завершение окончательное: обратного переключения нет.
     if (updates.completed === true && !task.completed) {
       task.completed = true;
       task.completedAt = now.toISOString();
       task.editHistory.push({
         timestamp,
         type: 'completed',
-        details: 'Дело отмечено выполненным. До назначенного срока отметку можно снять.'
-      });
-    } else if (updates.completed === false && task.completed) {
-      task.completed = false;
-      task.completedAt = null;
-      task.editHistory.push({
-        timestamp,
-        type: 'completion_cancelled',
-        details: 'Отметка о выполнении снята до наступления срока.'
+        details: 'Дело выполнено окончательно. Отметка не снимается.'
       });
     }
 
@@ -287,14 +279,14 @@ const StorageAPI = {
 
   toggleTaskCompleted(id) {
     const task = this.getTaskById(id);
-    if (!task || task.failed) return null;
+    if (!task || task.failed || task.completed) return null;
     if (DateUtils.isDevilTask(task)) {
       // При 😈 разрешено только однократное выполнение до конца суток.
       if (!DateUtils.canCompleteDevilTask(task)) return null;
       return this.updateTask(id, { completed: true });
     }
     if (!DateUtils.canToggleTaskCompletion(task)) return null;
-    return this.updateTask(id, { completed: !task.completed });
+    return this.updateTask(id, { completed: true });
   },
 
   deleteTask(id) {
@@ -577,7 +569,7 @@ const DateUtils = {
   // Время не ограничивает отметку выполнения; граница — конец суток.
   canToggleTaskCompletion(task) {
     if (!task || task.failed || !this.isValidISODate(task.date)) return false;
-    return Date.now() <= new Date(`${task.date}T23:59:59.999`).getTime();
+    return !task.completed && Date.now() <= new Date(`${task.date}T23:59:59.999`).getTime();
   },
 
   // Для прочих правок сохраняется действующее ограничение по назначенному времени.
@@ -1553,8 +1545,8 @@ const WeekGridManager = {
       const task = (typeof StorageAPI !== 'undefined') ? StorageAPI.getTaskById(taskId) : null;
       if (!task) return;
 
-      if (!DateUtils.isTaskEditable(task)) {
-        showToast('Редактирование недоступно: дата и время этого дела уже наступили.');
+      if (task.completed || !DateUtils.isTaskEditable(task)) {
+        showToast('Выполненное дело закреплено; редактирование недоступно.');
         return;
       }
 
@@ -1637,7 +1629,7 @@ const WeekGridManager = {
         try {
           if (editingId) {
             const existingTask = StorageAPI.getTaskById(editingId);
-            if (!existingTask || !DateUtils.isTaskEditable(existingTask)) {
+            if (!existingTask || existingTask.completed || !DateUtils.isTaskEditable(existingTask)) {
               showToast('Время дела уже наступило, изменения не сохранены.');
               return;
             }
@@ -2051,7 +2043,7 @@ const WeekGridManager = {
           card.classList.add('is-completed'); // Спокойный фоновый серый тон
         }
 
-        const isEditable = DateUtils.isTaskEditable(t);
+        const isEditable = !t.completed && DateUtils.isTaskEditable(t);
         if (isEditable) {
           card.classList.add('editable');
           card.title = 'Кликните для редактирования дела';
@@ -2136,24 +2128,22 @@ const WeekGridManager = {
           actionsBlock.appendChild(deleteBtn);
         }
 
-        // При 😈 галочка доступна до конца назначенного дня, а снять её
-        // после выполнения уже нельзя. У обычных задач правила не меняем.
+        // Отметка выполнения окончательная для всех задач.
+        // Галочка доступна только невыполненным делам до конца суток.
         if ((postponements >= 4 && DateUtils.canCompleteDevilTask(t)) ||
             (postponements < 4 && DateUtils.canToggleTaskCompletion(t))) {
           const doneBtn = document.createElement('button');
           doneBtn.type = 'button';
           doneBtn.className = 'btn-task-action btn-task-done';
-          doneBtn.textContent = t.completed ? '☑' : '✓';
-          doneBtn.title = t.completed
-            ? 'Снять отметку о выполнении до конца суток'
-            : 'Отметить дело выполненным';
-          doneBtn.setAttribute('aria-label', t.completed ? 'Снять отметку о выполнении' : 'Отметить выполненным');
+          doneBtn.textContent = '✓';
+          doneBtn.title = 'Отметить дело выполненным окончательно';
+          doneBtn.setAttribute('aria-label', 'Отметить выполненным окончательно');
           doneBtn.addEventListener('click', event => {
             event.stopPropagation();
             const updated = StorageAPI.toggleTaskCompleted(t.id);
             if (updated) {
               this.render();
-              showToast(updated.completed ? 'Дело отмечено выполненным!' : 'Отметка снята. Дело снова активно.');
+              showToast('Дело выполнено и закреплено!');
             } else {
               this.render(); // на случай наступления срока после отображения карточки
               showToast('Изменение статуса недоступно после завершения суток.');
