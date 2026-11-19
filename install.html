@@ -101,11 +101,21 @@ p{line-height:1.5}
      try { await ev.prompt(); } catch (e) { details.hidden = false; status.textContent = 'Не удалось вызвать установку автоматически.'; }
    } else if (standalone) {
      window.location.assign('./index.html');
+   } else if (apple) {
+     // На iOS нет программной установки: открываем приложение сразу,
+     // а затем пользователь добавляет его на экран «Домой» через Safari.
+     window.location.assign('./index.html');
    } else {
      details.hidden = false;
-     status.textContent = apple ? 'На iPhone установка выполняется через Safari.' : 'Если предложение установки не появилось, используй меню Google Chrome.';
+     status.textContent = 'Если предложение установки не появилось, используй меню Google Chrome.';
      btn.textContent = 'Открыть планировщик';
-     btn.onclick = () => window.location.assign('./index.html');
+     // Не назначаем onclick внутри другого click: при повторном нажатии
+     // этот же обработчик должен надёжно переходить в приложение.
+     if (btn.dataset.guideShown === 'true') {
+       window.location.assign('./index.html');
+     } else {
+       btn.dataset.guideShown = 'true';
+     }
    }
  });
  if ('serviceWorker' in navigator && (location.protocol === 'https:' || location.hostname === 'localhost')) {
