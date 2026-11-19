@@ -211,8 +211,11 @@ const StorageAPI = {
     if (DateUtils.isDevilTask(task)) {
       if (!DateUtils.canCompleteDevilTask(task) || !updates ||
           Object.keys(updates).length !== 1 || updates.completed !== true) return null;
-    } else if (task.completed && !DateUtils.isTaskEditable(task)) {
-      // У обычной досрочно выполненной задачи редактирование до срока остаётся.
+    } else if (!DateUtils.isTaskEditable(task) &&
+        !(updates && Object.keys(updates).length === 1 &&
+          typeof updates.completed === 'boolean' && DateUtils.canToggleTaskCompletion(task))) {
+      // После назначенного часа галочку всё ещё можно поставить или снять
+      // до конца календарных суток. Прочие изменения остаются запрещены.
       return null;
     }
     if (!Array.isArray(task.postponedHistory)) task.postponedHistory = [];
@@ -290,7 +293,7 @@ const StorageAPI = {
       if (!DateUtils.canCompleteDevilTask(task)) return null;
       return this.updateTask(id, { completed: true });
     }
-    if (task.completed && !DateUtils.isTaskEditable(task)) return null;
+    if (!DateUtils.canToggleTaskCompletion(task)) return null;
     return this.updateTask(id, { completed: !task.completed });
   },
 
@@ -367,22 +370,15 @@ const StorageAPI = {
         return;
       }
 
-      // У задачи без времени срок — конец дня, как и раньше.
-      const scheduled = task.time
-        ? new Date(`${task.date}T${task.time}:00`)
-        : new Date(`${task.date}T23:59:59.999`);
-      if (!Number.isFinite(scheduled.getTime()) || scheduled.getTime() > now.getTime()) return;
+      // Время задачи — ориентир, но не крайний срок выполнения.
+      // Невыполненная задача переносится только по завершении суток.
+      const endOfScheduledDay = new Date(`${task.date}T23:59:59.999`);
+      if (!Number.isFinite(endOfScheduledDay.getTime()) ||
+          endOfScheduledDay.getTime() >= now.getTime()) return;
 
-      // Если сегодня тот же час ещё впереди — переносим на сегодня;
-      // иначе на завтра. История и количество гвоздей не дублируются.
-      let targetDate = todayISO;
-      if (task.time) {
-        const todayScheduled = new Date(`${todayISO}T${task.time}:00`);
-        if (!Number.isFinite(todayScheduled.getTime())) return;
-        if (todayScheduled.getTime() <= now.getTime()) {
-          targetDate = DateUtils.addDaysISO(todayISO, 1);
-        }
-      }
+      // Просроченная вчера задача переходит на сегодня; сегодняшняя —
+      // на завтра только после полуночи (при следующем запуске).
+      const targetDate = task.date < todayISO ? todayISO : DateUtils.addDaysISO(todayISO, 1);
       if (!targetDate || targetDate <= task.date) return;
       const oldDate = task.date;
       task.date = targetDate;
@@ -578,7 +574,13 @@ const DateUtils = {
     return Number.isFinite(endOfDay) && Date.now() <= endOfDay;
   },
 
-  // Для обычных задач сохраняется редактирование до назначенного срока.
+  // Время не ограничивает отметку выполнения; граница — конец суток.
+  canToggleTaskCompletion(task) {
+    if (!task || task.failed || !this.isValidISODate(task.date)) return false;
+    return Date.now() <= new Date(`${task.date}T23:59:59.999`).getTime();
+  },
+
+  // Для прочих правок сохраняется действующее ограничение по назначенному времени.
   isTaskEditable(task) {
     if (!task || task.failed || !this.isValidISODate(task.date) ||
         this.isDevilTask(task)) return false;
@@ -2137,13 +2139,13 @@ const WeekGridManager = {
         // При 😈 галочка доступна до конца назначенного дня, а снять её
         // после выполнения уже нельзя. У обычных задач правила не меняем.
         if ((postponements >= 4 && DateUtils.canCompleteDevilTask(t)) ||
-            (postponements < 4 && (!t.completed || isEditable))) {
+            (postponements < 4 && DateUtils.canToggleTaskCompletion(t))) {
           const doneBtn = document.createElement('button');
           doneBtn.type = 'button';
           doneBtn.className = 'btn-task-action btn-task-done';
           doneBtn.textContent = t.completed ? '☑' : '✓';
           doneBtn.title = t.completed
-            ? 'Снять отметку о выполнении до наступления срока'
+            ? 'Снять отметку о выполнении до конца суток'
             : 'Отметить дело выполненным';
           doneBtn.setAttribute('aria-label', t.completed ? 'Снять отметку о выполнении' : 'Отметить выполненным');
           doneBtn.addEventListener('click', event => {
@@ -2154,7 +2156,7 @@ const WeekGridManager = {
               showToast(updated.completed ? 'Дело отмечено выполненным!' : 'Отметка снята. Дело снова активно.');
             } else {
               this.render(); // на случай наступления срока после отображения карточки
-              showToast('Изменение статуса недоступно после наступления срока.');
+              showToast('Изменение статуса недоступно после завершения суток.');
             }
           });
           actionsBlock.insertBefore(doneBtn, historyBtn);
